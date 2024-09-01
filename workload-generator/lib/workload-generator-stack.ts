@@ -6,7 +6,7 @@ import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 
-const WORKLOAD_GENERATOR_RATE_MINUTES = Duration.minutes(1);
+const WORKLOAD_GENERATOR_RATE_MINUTES = Duration.minutes(5);
 const MAX_LAMBDA_DURATION = Duration.minutes(15);
 
 export class WorkloadGeneratorStack extends Stack {
@@ -15,6 +15,7 @@ export class WorkloadGeneratorStack extends Stack {
 
     // DynamoDB table to store responses
     const benchmarkResults = new Table(this, 'BenchmarkResults', {
+      tableName: 'results-20240901-2', // change table name to drop all previous results
       billingMode: BillingMode.PAY_PER_REQUEST,
       partitionKey: { name: 'timestamp', type: AttributeType.NUMBER },
     });
@@ -23,13 +24,13 @@ export class WorkloadGeneratorStack extends Stack {
     const workloadGenerator = new NodejsFunction(this, 'WorkloadGenerator', {
       bundling: {
         banner: '/* global fetch */', // to avoid AWS console warning
-        externalModules: ['@aws-sdk/*'], // otherwise modules are bundled, which is not required on Lambda
+        externalModules: ['@aws-sdk/*'], // otherwise these modules are bundled, which is not required on Lambda
         format: OutputFormat.ESM, // CJS is the unwanted default
       },
       entry: './lib/workload-generator-lambda.ts',
       environment: { TABLE_NAME: benchmarkResults.tableName },
       functionName: 'WorkloadGeneratorFunction',
-      memorySize: 1024,
+      memorySize: 512,
       runtime: Runtime.NODEJS_20_X,
       timeout: MAX_LAMBDA_DURATION
     });

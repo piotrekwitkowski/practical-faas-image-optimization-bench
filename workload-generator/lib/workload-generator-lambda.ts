@@ -4,10 +4,14 @@ import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
-const URL = 'https://jsonplaceholder.typicode.com/posts/1';
+const URL = 'https://30a0oxyee9.execute-api.us-east-1.amazonaws.com/1';
 
 export const handler = async () => {
-  const timestamp = Date.now();
+  const start = new Date();
+  const timeInfo = {
+    timestamp: start.getTime(),
+    '!isoDate': start.toISOString(),
+  }
 
   try {
     const response = await fetch(URL);
@@ -16,10 +20,9 @@ export const handler = async () => {
     }
 
     const result = await response.json();
-    const params = { TableName: process.env.TABLE_NAME, Item: { timestamp, result } };
+    const params = { TableName: process.env.TABLE_NAME, Item: { ...timeInfo, ...result } };
     const command = new PutCommand(params);
     await docClient.send(command);
-    console.log("Success - item added", timestamp);
     return 200;
 
   } catch (err) {
