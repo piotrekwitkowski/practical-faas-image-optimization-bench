@@ -22,11 +22,21 @@ export class ImageProcessingStack extends Stack {
       compatibleArchitectures: [Architecture.X86_64],
     });
 
+    const memorySize = 256; // MBs
+
     // Lambda function for image processing
     const imageProcessingForId = (id: string) => new NodejsFunction(this, `ImageProcessing${id}`, {
-      bundling: { externalModules: ['@aws-sdk/*', 'sharp'], format: OutputFormat.ESM },
+      bundling: {
+        banner: '/* global crypto */', // to avoid AWS Lambda console warning
+        externalModules: ['@aws-sdk/*', 'sharp'], // available in runtime
+        format: OutputFormat.ESM, // CJS is the unwanted default
+      },
       entry: 'lib/image-processing-lambda.ts',
-      environment: { IMAGE_ID: id },
+      environment: {
+        ASSOCIATED_MEMORY_MB: '' + memorySize,
+        IMAGE_ID: id
+      },
+      memorySize,
       layers: [sharpNativeLayer],
       role: lambdaBasicExecutionRole,
       runtime: Runtime.NODEJS_20_X,
