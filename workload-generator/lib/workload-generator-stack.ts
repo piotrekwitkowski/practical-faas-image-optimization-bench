@@ -15,7 +15,7 @@ export class WorkloadGeneratorStack extends Stack {
 
     // DynamoDB table to store responses
     const benchmarkResults = new Table(this, 'BenchmarkResults', {
-      tableName: 'results-20240901-2', // change table name to drop all previous results
+      tableName: 'results-20240913', // change table name to drop all previous results
       billingMode: BillingMode.PAY_PER_REQUEST,
       partitionKey: { name: 'timestamp', type: AttributeType.NUMBER },
     });
@@ -23,7 +23,7 @@ export class WorkloadGeneratorStack extends Stack {
     // Lambda function to invoke HTTP endpoints
     const workloadGenerator = new NodejsFunction(this, 'WorkloadGenerator', {
       bundling: {
-        banner: '/* global fetch */', // to avoid AWS console warning
+        banner: '/* global fetch */', // to avoid AWS Lambda console warning
         externalModules: ['@aws-sdk/*'], // otherwise these modules are bundled, which is not required on Lambda
         format: OutputFormat.ESM, // CJS is the unwanted default
       },
