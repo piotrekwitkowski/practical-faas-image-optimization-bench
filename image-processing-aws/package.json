@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "install-native-lambda-dependencies": "npm ci --prefix lib/dependencies/nodejs --force --omit=optional",
+    "install-lambda-sharp-dependencies": "npm ci --prefix lib/sharp/nodejs --force --omit=optional",
     "postinstall": "npm run install-native-lambda-dependencies"
   },
   "devDependencies": {

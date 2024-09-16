@@ -18,7 +18,7 @@ export class ImageProcessingStack extends Stack {
 
     // Lambda layer dependencies
     const sharpNativeLayer = new LayerVersion(this, 'SharpNativeLayer', {
-      code: Code.fromAsset('lib/dependencies'),
+      code: Code.fromAsset('lib/layers/sharp'),
       compatibleArchitectures: [Architecture.X86_64],
     });
 
