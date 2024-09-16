@@ -13,6 +13,7 @@
     "postinstall": "npm run install-native-lambda-dependencies"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
     "@types/jest": "^29.5.12",
     "@types/node": "20.14.9",
     "aws-cdk": "2.155.0",
