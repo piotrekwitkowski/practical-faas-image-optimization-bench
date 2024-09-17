@@ -4,8 +4,6 @@ import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 const client = new DynamoDBClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
-const URL = 'https://30a0oxyee9.execute-api.us-east-1.amazonaws.com/1';
-
 export const handler = async () => {
   const start = new Date();
   const timeInfo = {
@@ -14,7 +12,7 @@ export const handler = async () => {
   }
 
   try {
-    const response = await fetch(URL);
+    const response = await fetch(process.env.URL!);
     if (!response.ok) {
       throw new Error(`Fetch failed with status ${response.status}`);
     }
