@@ -10,41 +10,46 @@ export class ImageProcessingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    // Memory size associated with the function
+    const lambdaMemorySize = 256; // MBs
+
     // Shared role for all Lambda functions
     const lambdaBasicExecutionRole = new Role(this, 'LambdaBasicExecutionRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole")]
     })
 
-    // Lambda layer dependencies
-    const sharpNativeLayer = new LayerVersion(this, 'SharpNativeLayer', {
-      code: Code.fromAsset('lib/layers/sharp'),
+    // Lambda layers for dependencies like images and native libraries
+    const layer = (id: string, path: string) => new LayerVersion(this, id, {
+      code: Code.fromAsset(path),
       compatibleArchitectures: [Architecture.X86_64],
     });
-
-    const memorySize = 256; // MBs
+    const sharpNativeLayer = layer('SharpNativeLayer', 'lib/layers/sharp');
 
     // Lambda function for image processing
-    const imageProcessingForId = (id: string) => new NodejsFunction(this, `ImageProcessing${id}`, {
-      bundling: {
-        banner: '/* global crypto */', // to avoid AWS Lambda console warning
-        externalModules: ['@aws-sdk/*', 'sharp'], // available in runtime
-        format: OutputFormat.ESM, // CJS is the unwanted default
-      },
-      entry: 'lib/image-processing-lambda.ts',
-      environment: {
-        ASSOCIATED_MEMORY_MB: '' + memorySize,
-        IMAGE_ID: id
-      },
-      memorySize,
-      layers: [sharpNativeLayer],
-      role: lambdaBasicExecutionRole,
-      runtime: Runtime.NODEJS_20_X,
-      timeout: Duration.seconds(600),
-    });
+    const imageProcessingForId = (id: string) => {
+      const imageLayer = layer(`ImageLayer${id}`, `lib/layers/image${id}`);
+      return new NodejsFunction(this, `ImageProcessing${id}`, {
+        bundling: {
+          banner: '/* global crypto */', // to avoid AWS Lambda console warning
+          externalModules: ['@aws-sdk/*', 'sharp'], // available in runtime
+          format: OutputFormat.ESM, // CJS is the unwanted default
+        },
+        entry: 'lib/image-processing-lambda.ts',
+        environment: {
+          ASSOCIATED_MEMORY_MB: '' + lambdaMemorySize,
+          IMAGE_ID: id
+        },
+        memorySize: lambdaMemorySize,
+        layers: [sharpNativeLayer, imageLayer],
+        role: lambdaBasicExecutionRole,
+        runtime: Runtime.NODEJS_20_X,
+        timeout: Duration.seconds(600),
+      });
+    }
 
     // IDs of individual images / lambda functions, 1-based
-    const ids = new Array(1).fill(0).map((_, i) => i + 1);
+    const ids = new Array(2).fill(0).map((_, i) => i + 1);
 
     // API Gateway to expose Lambda functions
     const api = new HttpApi(this, 'ImageProcessingApi', {});

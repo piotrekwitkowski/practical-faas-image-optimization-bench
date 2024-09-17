@@ -1,10 +1,15 @@
+import { APIGatewayProxyEventV2 } from 'aws-lambda';
+import { readFileSync } from 'fs';
 import { cpus, totalmem } from 'os';
 const coldStartTime = Date.now();
 const executionEnvironmentId = crypto.randomUUID();
 let handlerCount = 0;
 
-export const handler = async () => {
+const imageBuffer = readFileSync('/opt/nodejs/image.jpg');
+
+export const handler = async (event: APIGatewayProxyEventV2) => {  
   handlerCount++;
+  console.log(JSON.stringify(event));
   const startTime = Date.now();
   // TODO: optimize image
 
@@ -14,7 +19,7 @@ export const handler = async () => {
     handlerCount,
     imageId: process.env.IMAGE_ID,
 
-    originalBytes: 0,
+    originalBytes: imageBuffer.byteLength,
     originalHeight: 0,
     originalWidth: 0,
 
