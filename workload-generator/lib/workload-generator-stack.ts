@@ -16,7 +16,7 @@ export class WorkloadGeneratorStack extends Stack {
 
     // DynamoDB table to store responses
     const benchmarkResults = new Table(this, 'BenchmarkResults', {
-      tableName: 'results-20240917', // change table name to drop all previous results
+      tableName: 'results-20240928', // change table name to drop all previous results
       billingMode: BillingMode.PAY_PER_REQUEST,
       partitionKey: { name: 'timestamp', type: AttributeType.NUMBER },
     });
@@ -28,7 +28,7 @@ export class WorkloadGeneratorStack extends Stack {
     });
 
     // Lambda function to invoke HTTP endpoints
-    const workloadGenerator = (id: string, url: string) => new NodejsFunction(this, `WorkloadGenerator${id}`, {
+    const workloadGenerator = (id: number) => new NodejsFunction(this, `WorkloadGenerator${id}`, {
       bundling: {
         banner: '/* global fetch */', // to avoid AWS Lambda console warning
         externalModules: ['@aws-sdk/*'], // otherwise these modules are bundled, which is not required on Lambda
@@ -37,18 +37,18 @@ export class WorkloadGeneratorStack extends Stack {
       entry: './lib/workload-generator-lambda.ts',
       environment: {
         TABLE_NAME: benchmarkResults.tableName,
-        URL: url
+        URL: `https://30a0oxyee9.execute-api.us-east-1.amazonaws.com/${id}`,
       },
       functionName: `WorkloadGeneratorFunction${id}`,
-      memorySize: 512,
+      memorySize: 1769, // https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html
       role: lambdaExecutionRole,
       runtime: Runtime.NODEJS_20_X,
       timeout: MAX_LAMBDA_DURATION
     });
 
     // Workload generator functions
-    const fn1 = workloadGenerator('1', 'https://30a0oxyee9.execute-api.us-east-1.amazonaws.com/1');
-    const fn2 = workloadGenerator('2', 'https://30a0oxyee9.execute-api.us-east-1.amazonaws.com/2');
+    const fn1 = workloadGenerator(1);
+    const fn2 = workloadGenerator(2);
 
     benchmarkResults.grantWriteData(lambdaExecutionRole);
 

@@ -11,7 +11,8 @@ export class ImageProcessingStack extends Stack {
     super(scope, id, props);
 
     // Memory size associated with the function
-    const lambdaMemorySize = 256; // MBs
+    // https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html
+    const lambdaMemorySize = 1769; // MBs
 
     // Shared role for all Lambda functions
     const lambdaBasicExecutionRole = new Role(this, 'LambdaBasicExecutionRole', {

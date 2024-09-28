@@ -1,31 +1,46 @@
-import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { readFileSync } from 'fs';
 import { cpus, totalmem } from 'os';
+import sharp from 'sharp'
+
 const coldStartTime = Date.now();
-const executionEnvironmentId = crypto.randomUUID();
+const environmentId = crypto.randomUUID();
 let handlerCount = 0;
 
-const imageBuffer = readFileSync('/opt/nodejs/image.jpg');
-
-export const handler = async (event: APIGatewayProxyEventV2) => {  
+export const handler = async () => {
+  const handlerStartTime = Date.now();
   handlerCount++;
-  console.log(JSON.stringify(event));
-  const startTime = Date.now();
-  // TODO: optimize image
 
-  const finishTime = Date.now();
+  // Load image to memory
+  const inputImageBuffer = readFileSync('/opt/nodejs/image.jpg');
+  const inputImage = sharp(inputImageBuffer);
+  const inputMetadata = await inputImage.metadata();
+  const outputImage = inputImage.resize(1080).toFormat('jpeg');
+
+  // Process image and store it as Node.js Buffer
+  const processingStartTime = Date.now();
+  const { info: outputInfo } = await outputImage.toBuffer({ resolveWithObject: true });
+  const processingFinishTime = Date.now();
+
   const response = {
-    executionEnvironmentId,
+    coldStart: handlerCount === 1,
+    durationHandlerStartSinceColdStartMs: handlerStartTime - coldStartTime,
+    durationHandlerTotalMs: processingFinishTime - handlerStartTime,
+    durationImageLoadingMs: processingStartTime - handlerStartTime,
+    durationImageProcessingMs: processingFinishTime - processingStartTime,
+
+    environmentId,
     handlerCount,
     imageId: process.env.IMAGE_ID,
 
-    originalBytes: imageBuffer.byteLength,
-    originalHeight: 0,
-    originalWidth: 0,
+    inputBytes: inputMetadata.size,
+    inputFormat: inputMetadata.format,
+    inputHeight: inputMetadata.height,
+    inputWidth: inputMetadata.width,
 
-    processedBytes: 0,
-    processedHeight: 0,
-    processedWidth: 0,
+    outputBytes: outputInfo.size,
+    outputFormat: outputInfo.format,
+    outputHeight: outputInfo.height,
+    outputWidth: outputInfo.width,
 
     providerArch: process.arch,
     providerCpus: cpus().length,
@@ -33,9 +48,6 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
     providerMemoryAvailable: totalmem() / 1024 / 1024,
     providerName: 'test-aws-lambda',
     providerNodeVersion: process.version,
-    timeSinceStartMs: finishTime - startTime,
-    timeSinceColdStartMs: finishTime - coldStartTime,
-    wasColdStart: handlerCount === 1,
   }
   return JSON.stringify(response);
 }

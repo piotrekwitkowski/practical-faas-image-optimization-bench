@@ -20,6 +20,8 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
+    "paths": { "sharp": ["./lib/layers/sharp/nodejs/node_modules/sharp"] },
+    "esModuleInterop": true,
     "typeRoots": [
       "./node_modules/@types"
     ]
