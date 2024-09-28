@@ -10,6 +10,9 @@ export class ImageProcessingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    // API Gateway to expose Lambda functions
+    const api = new HttpApi(this, 'ImageProcessingApi');
+
     // Memory size associated with the function
     // https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html
     const lambdaMemorySize = 1769; // MBs
@@ -51,9 +54,6 @@ export class ImageProcessingStack extends Stack {
 
     // IDs of individual images / lambda functions, 1-based
     const ids = new Array(2).fill(0).map((_, i) => i + 1);
-
-    // API Gateway to expose Lambda functions
-    const api = new HttpApi(this, 'ImageProcessingApi', {});
 
     // Lambda functions with different images
     const lambdas = ids.map(id => imageProcessingForId(id.toString()));
