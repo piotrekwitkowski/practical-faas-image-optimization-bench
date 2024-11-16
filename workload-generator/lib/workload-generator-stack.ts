@@ -1,11 +1,11 @@
 
 import { App, Duration, Stack, StackProps } from 'aws-cdk-lib';
-import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { ResultsTable } from './constructs/results-table';
 
 const WORKLOAD_GENERATOR_RATE_MINUTES = Duration.minutes(5);
 const MAX_LAMBDA_DURATION = Duration.minutes(15);
@@ -21,12 +21,10 @@ export class WorkloadGeneratorStack extends Stack {
     });
 
     // DynamoDB table to store responses
-    const benchmarkResults = new Table(this, 'BenchmarkResults', {
-      tableName: 'results-20240929', // change table name to drop all previous results
-      billingMode: BillingMode.PAY_PER_REQUEST,
-      partitionKey: { name: 'timestamp', type: AttributeType.NUMBER },
+    const benchmarkResults = new ResultsTable(this, 'BenchmarkResults', {
+      tableName: 'results-20240929',
+      writerRole: lambdaExecutionRole
     });
-    benchmarkResults.grantWriteData(lambdaExecutionRole);
 
     // Lambda function to invoke HTTP endpoints
     const generateWorkload = (id: string) => {
