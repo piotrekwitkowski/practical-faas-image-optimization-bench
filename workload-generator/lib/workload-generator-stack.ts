@@ -17,7 +17,7 @@ export class WorkloadGeneratorStack extends Stack {
     // Shared role for all Lambda functions
     const lambdaExecutionRole = new Role(this, 'LambdaExecutionRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-      managedPolicies: [ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole")],
+      managedPolicies: [ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
     });
 
     // DynamoDB table to store responses
