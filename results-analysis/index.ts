@@ -1,7 +1,7 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import assert from 'assert';
-import { stringify } from 'csv';
+import { stringify } from 'csv-stringify/sync';
 import * as fs from 'fs';
 import { S3SyncClient } from 's3-sync-client';
 import * as zlib from 'zlib';
@@ -11,8 +11,9 @@ const { sync } = new S3SyncClient({ client });
 
 let allDatapoints: any[] = [];
 
-const BUCKET_NAME = "aaaa-image-processing";
+const BUCKET_NAME = 'practical-faas-image-optimization-bench-results';
 await sync(`s3://${BUCKET_NAME}`, './s3');
+console.log('S3 bucket synced');
 
 const dynamoDbExports = fs.readdirSync('./s3/AWSDynamoDB').sort();
 const lastDynamoDbExportDirname = dynamoDbExports.at(-1);
@@ -36,11 +37,31 @@ gzFiles.forEach(file => {
   const datapointsInDynamoFormat = JSON.parse(`[${unzippedDataWithCommas}]`);
   const unmarshallAndSort = x => Object.fromEntries(Object.entries(unmarshall(x.Item)).sort());
   const datapoints = datapointsInDynamoFormat.map(unmarshallAndSort);
-  allDatapoints.push(...datapoints);
+
+  const selectedPropsMapper = (x: any) => ({
+    timestamp: x.timestamp,
+    '!isoDate': x['!isoDate'],
+    dayOfWeek: new Date(x.timestamp).getDay(),
+    provider: x.provider,
+    outputFormat: x.outputFormat,
+    outputWidth: x.outputWidth,
+    providerMemoryAssociated: x.providerMemoryAssociated,
+  })
+
+  // const allDatapointsWithSelectedProps = datapoints.map(selectedPropsMapper);
+  console.log(datapoints.length, 'datapoints loaded from', gzFilePath);
+  allDatapoints = allDatapoints.concat(datapoints);
 });
 
 console.log(allDatapoints.length, 'datapoints loaded in total');
-const datapointsSorted = allDatapoints.sort((a, b) => a.timestamp - b.timestamp);
+const allDatapointsWithSelectedProps = allDatapoints;
+// const selectedPropsMapper = ({ timestamp, num }) => ({ timestamp })
+// const allDatapointsWithSelectedProps = allDatapoints.map(selectedPropsMapper);
+const datapointsSorted = allDatapointsWithSelectedProps.sort((a, b) => a.timestamp - b.timestamp);
 
 // Export to CSV
-stringify(datapointsSorted, { header: true }).pipe(fs.createWriteStream('image-processing-stats.csv'));
+const csv = stringify(datapointsSorted, { header: true });
+fs.writeFileSync(`image-processing-stats-latest.csv`, csv);
+console.log('CSV exported once');
+fs.writeFileSync(`image-processing-stats-${new Date(lastDynamoDbExportTimestamp).toISOString()}.csv`, csv);
+console.log('CSV exported twice');

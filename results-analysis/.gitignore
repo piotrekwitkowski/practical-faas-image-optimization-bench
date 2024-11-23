@@ -1,3 +1,5 @@
 node_modules
 s3
 ~*.*
+image-processing-stats-*.csv
+!image-processing-stats-latest.csv
