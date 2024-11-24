@@ -9,7 +9,7 @@ const format = process.env.OUTPUT_FORMAT;
 const width = Number(process.env.OUTPUT_WIDTH);
 let handlerCount = 0;
 
-http('handler', async (_, res) => {
+http('main', async (req, res) => {
   const handlerStartTime = Date.now();
   handlerCount++;
   
@@ -21,7 +21,7 @@ http('handler', async (_, res) => {
 
   // Process image and store it as Node.js Buffer
   const processingStartTime = Date.now();
-  const { info: outputInfo, data } = await outputImage.toBuffer({ resolveWithObject: true });
+  const { info: outputInfo } = await outputImage.toBuffer({ resolveWithObject: true });
   const processingFinishTime = Date.now();
 
   const response = {
@@ -51,7 +51,6 @@ http('handler', async (_, res) => {
     providerMemoryAvailable: totalmem() / 1024 / 1024,
     providerName: 'gcp-cloud-functions',
     providerNodeVersion: process.version,
-    zBase64: data.toString('base64'),
   }
   res.send(response);
 })

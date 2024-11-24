@@ -13,4 +13,5 @@
 .git
 .gitignore
 
-node_modules
+# node_modules need to be included when using vendored dependencies
+# https://cloud.google.com/functions/docs/writing/specifying-dependencies-nodejs
