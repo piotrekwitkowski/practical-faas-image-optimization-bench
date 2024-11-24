@@ -6,7 +6,7 @@ import { Construct } from "constructs";
 
 const BASE_URLS = {
   aws: 'https://30a0oxyee9.execute-api.us-east-1.amazonaws.com/',
-  gcp: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+  gcp: 'https://us-east1-piotrekwitkowski1.cloudfunctions.net/'
 }
 
 interface SchedulerFunctionProps {
@@ -19,7 +19,7 @@ interface SchedulerFunctionProps {
 export class SchedulerFunction extends NodejsFunction {
   constructor(scope: Construct, id: string, props: SchedulerFunctionProps) {
     const imageProcessingUrl = BASE_URLS[props.cloud] + id;
-    super(scope, `WorkloadGenerator-${id}`, {
+    super(scope, `WorkloadGenerator-${props.cloud}-${id}`, {
       bundling: {
         banner: '/* global fetch */', // to avoid AWS Lambda console warning
         externalModules: ['@aws-sdk/*'], // otherwise these modules are bundled, which is not required on Lambda
@@ -30,7 +30,7 @@ export class SchedulerFunction extends NodejsFunction {
         TABLE_NAME: props.resultsTableName,
         URL: imageProcessingUrl,
       },
-      functionName: `WorkloadGeneratorFunction${id}`,
+      functionName: `WorkloadGenerator-${props.cloud}-${id}`,
       memorySize: 256,
       role: props.role,
       runtime: Runtime.NODEJS_20_X,

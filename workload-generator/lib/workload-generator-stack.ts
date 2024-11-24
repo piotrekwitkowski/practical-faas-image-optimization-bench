@@ -17,12 +17,12 @@ export class WorkloadGeneratorStack extends Stack {
 
     // DynamoDB table to store responses
     const benchmarkResults = new ResultsTable(this, 'BenchmarkResults', {
-      tableName: 'results-20240929',
+      tableName: 'results-gcp',
       writerRole: lambdaExecutionRole
     });
 
     // Sets of parameters to generate functions
-    const clouds = ['aws'] as const;
+    const clouds = ['gcp'] as const;
     const imageNames = ['landscape', 'portrait'];
     const memorySizes = [885, 1769, 3538]; // 0.5vCPU, 1vCPU, 2vCPU 
     const outputFormats = ['avif', 'jpeg', 'webp'];
@@ -34,7 +34,7 @@ export class WorkloadGeneratorStack extends Stack {
         memorySizes.forEach(memorySize => {
           outputFormats.forEach(outputFormat => {
             outputWidths.forEach(outputWidth => {
-              const id = `${cloud}-${imageName}-${memorySize}-${outputFormat}-${outputWidth}`;
+              const id = `${imageName}-${memorySize}-${outputFormat}-${outputWidth}`;
               const lambda = new SchedulerFunction(this, id, {
                 cloud,
                 resultsTableName: benchmarkResults.tableName,
@@ -42,8 +42,8 @@ export class WorkloadGeneratorStack extends Stack {
               });
 
               // EventBridge rule to trigger Lambda periodically
-              new Rule(this, `WorkloadGeneratorRule-${id}`, {
-                ruleName: `WorkloadGeneratorRule-${id}`,
+              new Rule(this, `Rule-${id}`, {
+                ruleName: `rule-${id}`,
                 schedule: Schedule.rate(Duration.minutes(5)), // replace with desired interval as needed
                 targets: [new LambdaFunction(lambda)]
               });
