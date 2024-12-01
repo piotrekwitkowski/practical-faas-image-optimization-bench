@@ -11,7 +11,8 @@ const { sync } = new S3SyncClient({ client });
 
 let allDatapoints: any[] = [];
 
-const BUCKET_NAME = 'practical-faas-image-optimization-bench-results';
+// const BUCKET_NAME = 'practical-faas-image-optimization-bench-results';
+const BUCKET_NAME = 'image-processing-dynamo-results';
 await sync(`s3://${BUCKET_NAME}`, './s3');
 console.log('S3 bucket synced');
 
@@ -61,7 +62,7 @@ const datapointsSorted = allDatapointsWithSelectedProps.sort((a, b) => a.timesta
 
 // Export to CSV
 const csv = stringify(datapointsSorted, { header: true });
-fs.writeFileSync(`image-processing-stats-latest.csv`, csv);
+fs.writeFileSync(`stats-latest.csv`, csv);
 console.log('CSV exported once');
-fs.writeFileSync(`image-processing-stats-${new Date(lastDynamoDbExportTimestamp).toISOString()}.csv`, csv);
+fs.writeFileSync(`stats-${new Date(lastDynamoDbExportTimestamp).toISOString()}.csv`, csv);
 console.log('CSV exported twice');
