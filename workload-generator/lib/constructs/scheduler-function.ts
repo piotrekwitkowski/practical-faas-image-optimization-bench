@@ -5,7 +5,7 @@ import { NodejsFunction, OutputFormat } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 
 const BASE_URLS = {
-  aws: 'https://30a0oxyee9.execute-api.us-east-1.amazonaws.com/',
+  aws: 'https://zhak5f4skf.execute-api.us-east-1.amazonaws.com/',
   gcp: 'https://us-east1-piotrekwitkowski1.cloudfunctions.net/'
 }
 

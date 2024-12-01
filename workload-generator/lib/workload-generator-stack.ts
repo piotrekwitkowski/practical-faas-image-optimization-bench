@@ -17,12 +17,12 @@ export class WorkloadGeneratorStack extends Stack {
 
     // DynamoDB table to store responses
     const benchmarkResults = new ResultsTable(this, 'BenchmarkResults', {
-      tableName: 'results-gcp',
+      tableName: 'results-20241201',
       writerRole: lambdaExecutionRole
     });
 
     // Sets of parameters to generate functions
-    const clouds = ['gcp'] as const;
+    const clouds = ['aws', 'gcp'] as const;
     const imageNames = ['landscape', 'portrait'];
     const memorySizes = [885, 1769, 3538]; // 0.5vCPU, 1vCPU, 2vCPU 
     const outputFormats = ['avif', 'jpeg', 'webp'];
