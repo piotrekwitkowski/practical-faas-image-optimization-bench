@@ -5,6 +5,7 @@ import sharp from 'sharp'
 const coldStartTime = Date.now();
 const environmentId = crypto.randomUUID();
 const format = process.env.OUTPUT_FORMAT! as keyof sharp.FormatEnum;
+const inputImageBuffer = readFileSync('/opt/nodejs/image.jpg');
 const width = Number(process.env.OUTPUT_WIDTH!);
 let handlerCount = 0;
 
@@ -12,8 +13,7 @@ export const handler = async () => {
   const handlerStartTime = Date.now();
   handlerCount++;
 
-  // Load image to memory
-  const inputImageBuffer = readFileSync('/opt/nodejs/image.jpg');
+  // Set up image processing
   const inputImage = sharp(inputImageBuffer);
   const inputMetadata = await inputImage.metadata();
   const outputImage = inputImage.resize(width).toFormat(format);
@@ -24,7 +24,7 @@ export const handler = async () => {
   const processingFinishTime = Date.now();
 
   const response = {
-    coldStart: handlerCount === 1,
+    coldStart: Boolean(handlerCount === 1),
     durationHandlerStartSinceColdStartMs: handlerStartTime - coldStartTime,
     durationHandlerTotalMs: processingFinishTime - handlerStartTime,
     durationImageLoadingMs: processingStartTime - handlerStartTime,
@@ -48,7 +48,7 @@ export const handler = async () => {
     providerCpus: cpus().length,
     providerMemoryAssociated: process.env.MEMORY_SIZE,
     providerMemoryAvailable: totalmem() / 1024 / 1024,
-    providerName: 'test-aws-lambda',
+    providerName: 'aws',
     providerNodeVersion: process.version,
   }
   return JSON.stringify(response);

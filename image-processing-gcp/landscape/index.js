@@ -5,6 +5,7 @@ import sharp from 'sharp'
 
 const coldStartTime = Date.now();
 const environmentId = crypto.randomUUID();
+const inputImageBuffer = readFileSync('/workspace/image.jpg');
 const format = process.env.OUTPUT_FORMAT;
 const width = Number(process.env.OUTPUT_WIDTH);
 let handlerCount = 0;
@@ -13,8 +14,7 @@ http('main', async (req, res) => {
   const handlerStartTime = Date.now();
   handlerCount++;
   
-  // Load image to memory
-  const inputImageBuffer = readFileSync('/workspace/image.jpg');
+  // Set up image processing
   const inputImage = sharp(inputImageBuffer);
   const inputMetadata = await inputImage.metadata();
   const outputImage = inputImage.resize(width).toFormat(format);
@@ -25,7 +25,7 @@ http('main', async (req, res) => {
   const processingFinishTime = Date.now();
 
   const response = {
-    coldStart: handlerCount === 1,
+    coldStart: Boolean(handlerCount === 1),
     durationHandlerStartSinceColdStartMs: handlerStartTime - coldStartTime,
     durationHandlerTotalMs: processingFinishTime - handlerStartTime,
     durationImageLoadingMs: processingStartTime - handlerStartTime,
@@ -49,7 +49,7 @@ http('main', async (req, res) => {
     providerCpus: cpus().length,
     providerMemoryAssociated: process.env.MEMORY_SIZE,
     providerMemoryAvailable: totalmem() / 1024 / 1024,
-    providerName: 'gcp-cloud-functions',
+    providerName: 'gcp',
     providerNodeVersion: process.version,
   }
   res.send(response);

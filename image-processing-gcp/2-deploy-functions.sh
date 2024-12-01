@@ -2,7 +2,6 @@ for image_name in landscape portrait; do
   for memory_size in 885 1769 3538; do
     for output_format in avif jpeg webp; do
       for output_width in 640 1080 1920; do
-        # date +"%Y-%m-%d %H:%M:%S"
         echo "Deploying $image_name-$memory_size-$output_format-$output_width..."
   
         # Conditional CPU allocation
@@ -26,6 +25,7 @@ for image_name in landscape portrait; do
           --set-build-env-vars=GOOGLE_VENDOR_NPM_DEPENDENCIES=true \
           --set-env-vars=IMAGE_NAME=$image_name,MEMORY_SIZE=$memory_size,OUTPUT_FORMAT=$output_format,OUTPUT_WIDTH=$output_width \
           --source=$image_name \
+          --timeout=600s \
           --trigger-http
       done
     done
