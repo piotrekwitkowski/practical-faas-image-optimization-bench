@@ -42,8 +42,8 @@ export class WorkloadGeneratorStack extends Stack {
               });
 
               // EventBridge rule to trigger Lambda periodically
-              new Rule(this, `Rule-${id}`, {
-                ruleName: `rule-${id}`,
+              new Rule(this, `Rule-${cloud}-${id}`, {
+                ruleName: `rule-${cloud}-${id}`,
                 schedule: Schedule.rate(Duration.minutes(5)), // replace with desired interval as needed
                 targets: [new LambdaFunction(lambda)]
               });
