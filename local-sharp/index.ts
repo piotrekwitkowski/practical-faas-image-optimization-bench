@@ -1,21 +1,14 @@
-import { createReadStream, createWriteStream, readFileSync } from "fs";
+import { readFileSync } from "fs";
 import sharp from "sharp";
 
-const width = 1024;
-const format = 'jpeg';
-const outputFilepath = (id:string) => `${Date.now()}_${width}${id}.${format}`;
+const file = readFileSync('./image.jpeg');
+const width = 600;
+const format = 'avif';
 
-let now = performance.now();
-for (let i = 0; i < 1000; i++) {
-  await sharp(readFileSync('./image.jpeg'))
-  .resize(width)
-  .toFile(outputFilepath('f'));
+const image = sharp(file).resize(width).toFormat(format);
+sharp.cache({ items: 50 });
+
+for (let i = 0; i < 20; i++) {
+  console.log(process.memoryUsage());
+  await image.toFile('/dev/null');
 }
-console.log(performance.now() - now)
-
-
-now = performance.now();
-createReadStream('./image.jpeg')
-  .pipe(sharp().resize(width))
-  .pipe(createWriteStream(outputFilepath('s')))
-  .on('close', () => console.log(performance.now() - now));
