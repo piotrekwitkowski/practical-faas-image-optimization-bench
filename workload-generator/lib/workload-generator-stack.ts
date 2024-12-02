@@ -17,7 +17,7 @@ export class WorkloadGeneratorStack extends Stack {
 
     // DynamoDB table to store responses
     const benchmarkResults = new ResultsTable(this, 'BenchmarkResults', {
-      tableName: 'results-20241201',
+      tableName: 'results-all',
       writerRole: lambdaExecutionRole
     });
 
