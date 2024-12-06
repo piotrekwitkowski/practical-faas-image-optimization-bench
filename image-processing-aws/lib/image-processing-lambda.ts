@@ -16,7 +16,7 @@ const sharpImage = sharp(inputImageBuffer).resize(width).toFormat(format);
 
 export const handler = async () => {
   handlerCount++;
-  
+
   const { size: inputBytes, format: inputFormat, height: inputHeight, width: inputWidth } = await sharpImage.metadata();
   const processingStartTime = Date.now();
   const { size: outputBytes, format: outputFormat, height: outputHeight, width: outputWidth } = await sharpImage.toFile('/dev/null');
@@ -48,5 +48,5 @@ export const handler = async () => {
     providerName: 'aws',
     providerNodeVersion: process.version,
   }
-  return JSON.stringify(response);
+  return { statusCode: 200, body: JSON.stringify(response) };
 }

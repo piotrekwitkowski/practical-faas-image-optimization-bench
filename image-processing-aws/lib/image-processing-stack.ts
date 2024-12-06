@@ -3,15 +3,16 @@ import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Architecture, Code, LayerVersion, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
-import { HttpApi, HttpMethod } from 'aws-cdk-lib/aws-apigatewayv2';
-import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
+import { EndpointType, LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
 
 export class ImageProcessingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     // API Gateway to expose Lambda functions
-    const api = new HttpApi(this, 'ImageProcessingApi');
+    const api = new RestApi(this, 'ImageProcessingApi2', {
+      endpointTypes: [EndpointType.REGIONAL],
+    });
 
     // Shared role for all Lambda functions
     const lambdaBasicExecutionRole = new Role(this, 'LambdaBasicExecutionRole', {
@@ -54,7 +55,7 @@ export class ImageProcessingStack extends Stack {
         runtime: Runtime.NODEJS_20_X,
         timeout: Duration.seconds(600),
       });
-      api.addRoutes({ integration: new HttpLambdaIntegration(id, lambda), methods: [HttpMethod.GET], path: `/${id}`});
+      api.root.addResource(id).addMethod('GET', new LambdaIntegration(lambda, { timeout: Duration.millis(90000) }));
     };
 
     // Sets of parameters to generate functions
@@ -74,8 +75,5 @@ export class ImageProcessingStack extends Stack {
         });
       });
     });
-
-    // Publish API URL as CfnOutput
-    new CfnOutput(this, 'ExampleApiUrl', { value: api.url!, description: 'Append processing IDs to execute specific functions' });
   }
 }
