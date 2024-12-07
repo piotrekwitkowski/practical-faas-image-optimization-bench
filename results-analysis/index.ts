@@ -62,7 +62,7 @@ const datapointsSorted = allDatapointsWithSelectedProps.sort((a, b) => a.timesta
 
 // Export to CSV
 const csv = stringify(datapointsSorted, { header: true });
-fs.writeFileSync(`stats-latest.csv`, csv);
+fs.writeFileSync(`stats-all-latest.csv`, csv);
 console.log('CSV exported once');
-fs.writeFileSync(`stats-${new Date(lastDynamoDbExportTimestamp).toISOString()}.csv`, csv);
+fs.writeFileSync(`stats-all-${new Date(lastDynamoDbExportTimestamp).toISOString()}.csv`, csv);
 console.log('CSV exported twice');
