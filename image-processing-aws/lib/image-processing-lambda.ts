@@ -19,7 +19,7 @@ export const handler = async () => {
 
   const { size: inputBytes, format: inputFormat, height: inputHeight, width: inputWidth } = await sharpImage.metadata();
   const processingStartTime = Date.now();
-  const { size: outputBytes, format: outputFormat, height: outputHeight, width: outputWidth } = await sharpImage.toFile('/dev/null');
+  const { size: outputBytes, format: outputFormat, height: outputHeight, width: outputWidth } = await sharpImage.toFile('/tmp/sharp_out');
   const processingFinishTime = Date.now();
 
   const response = {
