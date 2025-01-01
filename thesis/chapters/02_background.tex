@@ -1,13 +1,29 @@
 \section{Background}
 \label{cha:background}
 
+This chapter provides readers with foundations for understanding the challenges and opportunities of serverless image processing. We begin by revisiting fundamental principles of imaging and photography. Subsequently, we describe core digital imaging concepts, emphasizing aspects relevant to web performance. We then examine the characteristics of serverless cloud computing, focusing on factors contributing to performance variability. Finally, we explore image optimization for the web, reviewing established techniques and the landscape of cloud-based solutions.
 
-\subsection{Digital Imaging Fundamentals}
-\label{sec:digital-image-fundamentals}
+\subsection{Imaging and Photography}
+\label{sec:imaging-and-photography}
 % Discuss the transition from analog to digital photography.
-% Highlight the advantages and implications of the shift.
+% "The best camera is the one that's with you" - Chase Jarvis
 
-\subsubsection{History of digital imaging and digital image processing}
+\textit{Imaging} is a broad term describing any process that helps us in visualizing and understanding physical objects, abstract concepts, or even sets of data. While this may be a purely philosophical activity, for the purpose of this thesis, we will define imaging as creating a visual representation - \textit{an image} - of physical objects and scenes. Humans are able to perceive and interpret these images thanks to our visual system, that has evolved over millions of years. Developed from the simple light-sensitive cells of early organisms to the sophisticated eyes of modern humans, this system is providing us with the ability to see color, depth, or movement.
+
+Over centuries, scholars and artists showed great interest in this process of creating visual representations to understand our own senses, as well as to be able to depict the world around us more accurately. The natural phenomenon of light passing through a small aperture, called camera obscura, helped us understand fundamental principles of optics and image formation, and according to some, greatly contributed to realism of European art during Middle Ages. We've been refining tools and techniques to enhance our vision, and improve everyday life. Devices like telescopes and microscopes allowed us to observe objects at different scales, unveiling worlds that would otherwise remain invisible to the naked eye. Eyeglasses and contact lenses correct refractive errors, demonstrating that our visual experiences can not only be externally altered, but also subjectively improved, for millions of people.
+
+Photography emerged in the 19th century as a groundbreaking invention, offering a novel approach to image creation. Unlike paintings or drawings, which rely on an artist's interpretation, photography directly captures and permanently records the physical world using light-sensitive materials. Early photographic methods required long exposure times, often making it possible to photograph only still objects and posed portraits. The daguerreotype, which used a silver-coated copper plate, was one of the first widely adopted photographic processes. Later, more versatile film technologies significantly reduced exposure times and made photography more accessible to the wider public. This ability to easily and accurately record the physical world had significant consequences. Newspapers, now able to include actual photographs, found a powerful new way to share news and social commentary through photojournalism. On a personal level, photography allowed people to preserve their own histories through portraits and the documentation of special occasions.
+
+Since the beginning of the 21st century, digital photography has become the dominant form of capturing and sharing images. Initially limited to standalone devices, digital cameras are now integrated into smartphones and personal computers. Electronic sensors capture and convert light into digital data, facilitating easy manipulation and image sharing, including over the Internet. This digital nature has led to the popularity of standardized formats, ensuring compatibility across diverse platforms.
+
+However, the ease of image creation and sharing, coupled with the vast amount of image data generated daily, may present unexpected challenges for storage and transmission. In 2024, an estimated 6 billion photos are taken daily, with 14 billion images shared on social media platforms. Especially in the context of thesis, the resulting volume of image data necessitates efficient delivery. Fortunately, optimization methods exist, relying on core concepts of image representation, encoding, and compression, to ensure efficient delivery across networks. We will explore these in the subsequent sections.
+% https://photutorial.com/photos-statistics/
+% https://www.statista.com/chart/10913/number-of-photos-taken-worldwide/
+
+% https://www.statista.com/chart/5782/digital-camera-shipments/
+% https://www.statista.com/chart/15524/worldwide-camera-shipments/
+
+\subsubsection{Digital imaging and image processing}
 % Trace the historical development of digital imaging, emphasizing the role of computers in its evolution.
 
 \subsubsection{Raster and vector graphics}
