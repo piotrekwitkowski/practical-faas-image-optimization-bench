@@ -1,0 +1,4 @@
+{"rule":"EN_A_VS_AN","sentence":"^\\QThis analysis might reveal the letter a appears far more frequently than the letter z.\\E$"}
+{"rule":"A_NNS","sentence":"^\\QFor example, a sequence of 20 consecutive a characters can be efficiently stored as instead of spelling out each individual character.\\E$"}
+{"rule":"A_NNS","sentence":"^\\QFor example, a sequence of 20 consecutive a characters can be efficiently stored as 20a instead of spelling out each individual character.\\E$"}
+{"rule":"A_NNS","sentence":"^\\QFor example, a sequence of 20 consecutive a characters can be efficiently stored as 20a instead of storing each individual character.\\E$"}

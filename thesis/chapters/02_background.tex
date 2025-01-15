@@ -13,10 +13,24 @@ This chapter provides readers with foundations for understanding the challenges 
 % let this discourage you. Instead consider it a challenge to develop creative solutions." - Digital Image Processing | An Algorithmic Introduction https://link.springer.com/book/10.1007/978-3-031-05744-1, page 5 (29)
 
 \textit{Imaging} is a broad term describing any process that helps us in visualizing and understanding physical objects, abstract concepts, or even sets of data. While this may be a purely philosophical activity, for the purpose of this thesis, we will define imaging as creating a visual representation - an image - of physical objects and scenes. Humans are able to perceive and interpret these images thanks to our visual system, that has evolved over millions of years. Developed from the simple light-sensitive cells of early organisms to the sophisticated eyes of modern humans, this system is providing us with the ability to see color, depth, or movement.
+% Land, Michael F., and Dan-Eric Nilsson. Animal eyes. OUP Oxford, 2012.
+% https://academic.oup.com/book/10639
 
-Over centuries, scholars and artists showed great interest in this process of creating visual representations to understand our own senses, as well as to be able to depict the world around us more accurately. The natural phenomenon of light passing through a small aperture, called camera obscura, helped us understand fundamental principles of optics and image formation, and according to some, greatly contributed to realism of European art during Middle Ages. We've been refining tools and techniques to enhance our vision, and improve everyday life. Devices like telescopes and microscopes allowed us to observe objects at different scales, unveiling worlds that would otherwise remain invisible to the naked eye. Eyeglasses and contact lenses correct refractive errors, demonstrating that our visual experiences can not only be externally altered, but also subjectively improved, for millions of people.
+% M Livingstone, D Hubel. Segregation of form, color, movement, and depth: anatomy, physiology, and perception.
+% https://doi.org/10.1126/science.3283936
+
+From the earliest cave paintings to modern photography and film, humans have been exploring ways to capture and recreate the visual world. Over centuries, scholars and artists showed great interest in the process of creating visual representations to understand our own mind and senses, as well as to be able to depict the world around us more accurately. The natural phenomenon of light passing through a small aperture, called camera obscura, helped us understand fundamental principles of optics and image formation, and according to some, greatly contributed to realism of European art during Middle Ages. We've been refining tools and techniques to enhance our vision, and improve everyday life. Devices like telescopes and microscopes allowed us to observe objects at different scales, unveiling worlds that would otherwise remain invisible to the naked eye. Eyeglasses and contact lenses correct refractive errors, demonstrating that our visual experiences can not only be externally altered, but also subjectively improved, for millions of people.
+% E Wachtel. The first picture show: cinematic aspects of cave art, 1993
+% https://muse.jhu.edu/pub/6/article/606950/summary
+
+% Hugh Honour, John Fleming. "The Visual Arts: A History"
+
+% Hockney, David. "Secret Knowledge: Rediscovering the Lost Techniques of the Old Masters." (2001).
 
 Photography emerged in the 19th century as a groundbreaking invention, offering a novel approach to image creation. Unlike paintings or drawings, which rely on an artist's interpretation, photography directly captures and permanently records the physical world using light-sensitive materials. Early photographic methods required long exposure times, often making it possible to photograph only still objects and posed portraits. The daguerreotype, which used a silver-coated copper plate, was one of the first widely adopted photographic processes. Later, more versatile film technologies significantly reduced exposure times and made photography more accessible to the wider public. This ability to easily and accurately record the physical world had significant consequences. Newspapers, now able to include actual photographs, found a powerful new way to share news and social commentary through photojournalism. On a personal level, photography allowed people to preserve their own histories through portraits and the documentation of special occasions.
+% A Davenport. The history of photography: an overview, 1999.
+
+% T Gervais, G Morel. The making of visual news: A history of photography in the press, 2020.
 
 Since the beginning of the 21st century, digital photography has become the dominant form of capturing and sharing images. Initially limited to standalone devices, digital cameras are now integrated into smartphones and personal computers. Electronic sensors capture and convert light into digital data, facilitating easy manipulation and image sharing, including over the Internet. This digital nature has led to the popularity of standardized formats, ensuring compatibility across diverse platforms.
 % https://www.zdnet.com/article/more-digital-than-film-cameras-sold/
@@ -28,6 +42,7 @@ However, the ease of image creation and sharing, coupled with the vast amount of
 % https://www.statista.com/chart/10913/number-of-photos-taken-worldwide/
 
 \subsubsection{Digital imaging}
+\label{sec:digital-imaging}
 % Trace the historical development of digital imaging.
 
 % "The best camera is the one that's with you" - Chase Jarvis
@@ -40,7 +55,7 @@ However, digital imaging distinguishes itself by representing images as discrete
 % O’Regan, G. (2018). Digital Photography. In: The Innovation in Computing Companion.
 % https://doi.org/10.1007/978-3-030-02619-6
 
-To create a digital image, the camera must first capture the light that's focused onto its sensor. The position of the camera and its lens determine what portion of the scene is captured by each tiny pixel on the sensor — this is known as spatial sampling. The camera also controls how long it gathers light at each pixel, called temporal sampling, and is determined by the exposure time, or using photographic terminology, shutter speed. Thanks to the photovoltaic effect, the amount of the light captured can be converted into digital value through a process called quantization. The number of distinct values that can be represented for each pixel depends on the bit depth of the image.
+To create a digital image, the camera must first capture the light that's focused onto its sensor. The position of the camera and its lens determine what portion of the scene is captured by each pixel on the sensor — this is known as spatial sampling. The camera also controls how long it gathers light at each pixel, called temporal sampling, and is determined by the exposure time, or using photographic terminology, shutter speed. Thanks to the photovoltaic effect, the amount of the light captured can be converted into digital value through a process called quantization. The number of distinct values that can be represented for each pixel depends on the bit depth of the image.
 % W. Burger & M. Burge, Digital Image Processing: An Algorithmic Introduction
 % https://link.springer.com/book/10.1007/978-3-031-05744-1
 
@@ -57,20 +72,102 @@ Digital cameras primarily use two image sensor technologies: CCD (Charge-Coupled
 % Holst, G. C., & Lomheim, T. S. (2007). CMOS/CCD sensors and camera systems.
 % https://doi.org/10.1117/3.2524677
 
-To accurately capture color, most digital cameras use a color filter array (CFA) placed over the sensor. The most common type is the Bayer filter, named after its inventor, Bryce Bayer, working at the time at Eastman Kodak. This filter arranges red, green, and blue filters in a specific pattern over the pixels. Because the human eye is more sensitive to green light, or to be specific, \textit{because the green signal contributes more to the luminance signal than the red or blue signals} \cite{}, we can find twice as many green filters as red or blue - because of this property, such pattern is also known as RGGB. Cameras capture a full-color image by interpolating the missing color information for each pixel, in a process known as demosaicing.
+To accurately capture color, most digital cameras use a color filter array (CFA) placed over the sensor. The most common type is the Bayer filter, named after its inventor, Bryce Bayer, working at the time at Eastman Kodak. This filter arranges red, green, and blue filters in a specific pattern over the pixels. Because the human eye is more sensitive to green light, or to be specific, because \textit{green signal contributes more to the luminance signal than the red or blue signals} \cite{}, in a typical Bayer filter we can find twice as many green filters as red or blue. Cameras capture a full-color image by interpolating the missing color information for each pixel, in a process known as demosaicing.
 % The Reproduction of Colour, R.W.G. Hunt, 2004
 % https://onlinelibrary.wiley.com/doi/book/10.1002/0470024275
 
-Following the Bayer filter example, it is common for color images to have three channels, such as red, green, and blue (RGB), each with its own bit depth. If each channel in an RGB image has an 8-bit resolution, it allows for 256 different values per channel, resulting in over 16 million possible color combinations for each pixel. The resolution of an image refers to the total number of pixels it contains and is often measured in megapixels (millions of pixels). Higher resolution images have more pixels, what allows for larger prints and more detailed displays. The image resolution, along with the bit depth, directly affects the size of the uncompressed image file. However, because images often contain areas of similar color, compression techniques, discussed in the next section, are frequently employed to reduce file sizes, sometimes even during the image capture process within the camera.
+% Figure . Bayer patterns: (a) BGGR, (b) GBRG, (c) GRBG, and (d) RGGB after 
+% A Methodology to Analyze the Fault Tolerance of Demosaicking Methods against Memory Single Event Functional Interrupts (SEFIs)
+% http://dx.doi.org/10.3390/electronics9101619
+
+Following the Bayer filter example, it is common for color images to have three channels, such as red, green, and blue (RGB), each with its own bit depth. If each channel in an RGB image has an 8-bit resolution, it allows for 256 different values per channel, resulting in over 16 million possible color combinations for each pixel. The resolution of an image refers to the total number of pixels it contains and is often measured in megapixels (millions of pixels). Higher resolution images have more pixels, what allows for larger prints and more detailed displays. The image resolution, along with the bit depth, directly affects the size of the uncompressed image file. However, because images often contain areas of similar color, compression techniques, discussed in the next section, are frequently employed to reduce file sizes, sometimes even during the image capture process within the camera devices.
 
 
-\subsubsection{Image data compression}
+% \subsubsection{Image data compression}
 % Describe their differences, strengths, weaknesses, and common use cases.
+% We won't make a separate subsection for this for now, but here it is to remember.
 
-\subsubsection{Image formats and their usage}
+\subsubsection{Data and image compression}
+\label{sec:image-compression-and-formats}
+
 % Explore image formats and compression.
+% Compare lossless vs lossy compression.
+% Describe differences, strengths, weaknesses, and common use cases of different image formats.
+
+% Web Almanac by HTTP Archive
+% https://almanac.httparchive.org/en/2024/media#images
+
+Digital data, whether representing text, audio, or images, is fundamentally a collection of bits. Data compression techniques aim to represent the same information using fewer bits, which is important for addressing physical constraints of digital systems, such as bandwidth, storage density, and power consumption. In 1948, C. Shannon introduced the concept of entropy as a measure of information content. Entropy defines the fundamental limit for lossless data compression algorithms, providing a theoretical target for minimizing the number of bits needed to represent information. To effectively leverage data compression techniques, it's important to differentiate between lossless and lossy compression, recognizing the trade-offs between preserving data integrity and achieving higher compression ratios.
+
+% R Hoffman. Data compression in digital systems, 2012
+% https://link.springer.com/book/10.1007/978-1-4615-6031-9
+
+% C. E. Shannon, A mathematical theory of communication, 1948
+% https://doi.org/10.1002/j.1538-7305.1948.tb01338.x
+
+\textbf{Lossless compression} methods enable reversible transformations of data into more compact forms, while preserving all original information. While this thesis primarily focuses on image processing, we would like to note that lossless techniques have much broader applications and can be applied to virtually any form of digital data, including text and binary files. This is crucial for efficient data transmission of any kind, where lossless compression reduces bandwidth requirements, but allows recipients to access the original information in its unaltered form.
+
+\emph{Run-length encoding} is a simple technique that exploits repetitions in data. For example, a sequence of the same 20 consecutive characters \emph{a} can be efficiently stored as \emph{(20, a)} instead of storing each individual character. This works especially well if the set of unique symbols in the data is small, and the data contains long \emph{runs} of the same symbol.
+
+\emph{Huffman coding} takes a statistical approach by constructing a binary tree \emph{(Huffman tree)} based on symbol probabilities. Leafs representing higher probability symbols are positioned closer to the root, with shorter code lengths. This results in a variable-length code, where the length of a symbol's bit sequence is inversely proportional to its frequency in the data. By assigning shorter codes to common symbols, Huffman coding optimizes code length, reducing the overall number of bits needed.
+
+% (Huffman) A Method for the Construction of Minimum-Redundancy Codes
+% https://ieeexplore.ieee.org/document/4051119
+
+\emph{Arithmetic coding} takes yet another approach, encoding the entire message as a single fraction between the values of \emph{0} and \emph{1}. The exact value is determined by repeatedly subdividing the interval based on the probabilities of the symbols. Each symbol narrows the interval, and the final fraction precisely represents the entire sequence, often allowing it to be represented with fewer bits than the original message. However, this method requires the probability distribution of the symbols being encoded to be shared between the encoder and the decoder.
+
+% (AC) J. Rissanen, Modeling by shortest data description
+% https://doi.org/10.1016/0005-1098(78)90005-5
+
+% (AC) R Pasco, Source coding algorithms for fast data compression. 1976
+% https://www.richpasco.org/scaffdc.pdf
+
+In addition to the methods described above that can help us understand the basics of compression, practical implementations of lossless compression often rely on dictionary-based techniques. The \emph{Lempel-Ziv} algorithms, including LZ77, LZ78, and the \emph{Lempel-Ziv-Welch} (LZW) algorithm, are important examples of this approach. LZ77 utilizes a sliding window to locate matches in preceding data, while LZ78 constructs a dictionary of previously encountered phrases. Combining LZ77 with Huffman coding, \emph{Deflate} often achieves higher compression ratios than LZ77 alone.
+
+% Ziv, Jacob; Lempel, Abraham (May 1977). "A Universal Algorithm for Sequential Data Compression". IEEE Transactions on Information Theory. 23 (3): 337–343. CiteSeerX 10.1.1.118.8921. doi:10.1109/TIT.1977.1055714. S2CID 9267632.
+% https://doi.org/10.1109%2FTIT.1977.1055714
+
+% Ziv, Jacob; Lempel, Abraham (September 1978). "Compression of Individual Sequences via Variable-Rate Coding". IEEE Transactions on Information Theory. 24 (5): 530–536. CiteSeerX 10.1.1.14.2892. doi:10.1109/TIT.1978.1055934.
+% https://doi.org/10.1109%2FTIT.1978.1055934
+
+% Welch, Terry (1984). "A Technique for High-Performance Data Compression". Computer. 17 (6): 8–19. doi:10.1109/MC.1984.1659158. S2CID 2055321.
+% https://doi.org/10.1109%2FMC.1984.1659158
+
+% DEFLATE RFC https://datatracker.ietf.org/doc/html/rfc1951
+
+\emph{Asymmetric Numeral Systems} (ANS) is a relatively new approach to entropy coding that combines the speed of Huffman coding with the compression rate of arithmetic coding. Unlike arithmetic coding, which uses two fractional numbers to represent an interval, ANS encodes data directly as a single natural number. This simpler representation, using just one integer, reduces computational complexity and allows for higher compression and decompression throughput.  We expect ANS to gain more popularity across various domains, including web delivery and image compression, as research and implementation efforts continue.
+
+% J Duda, Asymmetric numeral systems: entropy coding combining speed of Huffman coding with compression rate of arithmetic coding
+% https://arxiv.org/pdf/1311.2540
+
+% J Duda, K Tahboub, NJ Gadgil, The use of asymmetric numeral systems as an accurate replacement for Huffman coding
+% https://doi.org/10.1109/PCS.2015.7170048
+
+% PA Hsieh, JL Wu, A review of the asymmetric numeral system and its applications to digital images. 2022
+% https://pmc.ncbi.nlm.nih.gov/articles/PMC8946946/
+
+% RFC 8878: Zstandard Compression and the 'application/zstd' Media Type
+% https://doi.org/10.17487/RFC8878
+
+
+While lossless compression is crucial for preserving data integrity, lossy compression methods achieve significantly higher compression ratios by selectively discarding information.  This trade-off is often acceptable for media files like images and audio, where the human perception of minor data alterations may be limited.
+
+% N. Ahmed; T. Natarajan; K.R. Rao. Discrete Cosine Transform, 1974.
+% https://ieeexplore.ieee.org/document/1672377
+
+% https://cloudinary.com/blog/jpeg-xls-modular-mode-explained
+
+% https://ds.jpeg.org/whitepapers/jpeg-xl-whitepaper.pdf
+
+
+% Legacy: PICT, BMP, and GIF
+% Standard: TIFF, PNG, and JPEG
+% Modern: WebP, AVIF, and JPEG XL
+
+
 
 \subsubsection{Raster and vector graphics}
+\label{sec:raster-and-vector-graphics}
 % Explain the distinction between raster and vector graphics.
 % Mention strengths, weaknesses, and common use cases.
 % Discuss the concept of image size and its relationship to representation quality in both raster and vector formats.

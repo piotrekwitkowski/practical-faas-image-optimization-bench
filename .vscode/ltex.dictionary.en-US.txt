@@ -4,3 +4,5 @@ microlenses
 demosaicing
 CCDs
 DSLRs
+Lempel-Ziv
+Lempel-Ziv-Welch
