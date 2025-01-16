@@ -6,3 +6,6 @@ CCDs
 DSLRs
 Lempel-Ziv
 Lempel-Ziv-Welch
+Subsampling
+downsampling
+Butteraugli

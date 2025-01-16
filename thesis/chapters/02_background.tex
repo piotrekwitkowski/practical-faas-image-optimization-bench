@@ -150,10 +150,26 @@ In addition to the methods described above that can help us understand the basic
 % https://doi.org/10.17487/RFC8878
 
 
-While lossless compression is crucial for preserving data integrity, lossy compression methods achieve significantly higher compression ratios by selectively discarding information.  This trade-off is often acceptable for media files like images and audio, where the human perception of minor data alterations may be limited.
+\textbf{Lossy compression} methods, unlike lossless techniques, offer significantly higher compression ratios by selectively discarding information. This trade-off is often acceptable for media files like images and audio, where human perception of minor data alterations may be limited.
+
+\emph{Transform coding} represents data in a different form to identify and discard less important information. This is similar to viewing a mathematical function in the frequency domain instead of the time domain using the Fourier transform; certain operations are simplified when the data is represented in a different form.  By applying a transform, such as the \emph{Discrete Cosine Transform (DCT)} to an image, we can separate the information into components that vary in importance with respect to human perception.  For example, the DCT decomposes an image into a set of frequency components, allowing for the selective removal of high-frequency components, which often correspond to fine details less perceptible to the human eye.
 
 % N. Ahmed; T. Natarajan; K.R. Rao. Discrete Cosine Transform, 1974.
 % https://ieeexplore.ieee.org/document/1672377
+
+\emph{Quantization} reduces the number of bits needed to represent the transformed data by mapping a range of input values to a smaller set of output values. This introduces some controlled loss of information, as subtle variations within a quantized range are effectively discarded. The degree of quantization determines the balance between compression ratio and perceived quality.
+
+\emph{Subsampling} exploits the characteristics of human perception by reducing the spatial resolution of specific components within the data. In image compression, this often involves downsampling the chrominance components, as the human eye is less sensitive to color detail compared to luminance detail. This reduction in chrominance resolution contributes to a smaller file size without significantly impacting the overall perceived image quality.
+
+Ultimately, the effectiveness of lossy compression lies in its ability to intelligently discard information that is less critical to human perception. This allows for significant reductions in file size while preserving an acceptable level of quality, enabling efficient storage and transmission of multimedia data.
+
+Evaluating the effectiveness of lossy compression involves measuring the perceived difference between the original and compressed data.  Common metrics include Peak Signal-to-Noise Ratio (PSNR), which calculates the ratio between the maximum possible power of a signal and the power of corrupting noise; Structural Similarity Index Measure (SSIM), which compares luminance, contrast, and structure; and Butteraugli, which estimates the perceived difference based on a model of the human visual system.  These metrics provide a quantitative assessment of the trade-off between compression ratio and perceived quality.
+
+Another factor to consider with lossy compression is generation loss, which refers to the accumulated degradation of quality that occurs when a compressed file is repeatedly edited and recompressed. Each recompression cycle introduces additional information loss, potentially leading to noticeable artifacts and a significant reduction in overall quality. To minimize generation loss, it is important to use lossless formats for editing and recompress only when necessary.
+
+The specific requirements for lossy compression vary depending on the application. While metrics like PSNR and SSIM provide valuable insights, the ultimate measure of lossy compression effectiveness will always depend on the subjective perception of human observers. In the next section, we will explore different image formats that utilize the lossy and lossless compression techniques described above.
+
+
 
 % https://cloudinary.com/blog/jpeg-xls-modular-mode-explained
 
