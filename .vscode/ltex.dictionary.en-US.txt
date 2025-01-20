@@ -9,3 +9,9 @@ Lempel-Ziv-Welch
 Subsampling
 downsampling
 Butteraugli
+pixelation
+losslessly
+polylines
+luma
+decorrelate
+decorrelated

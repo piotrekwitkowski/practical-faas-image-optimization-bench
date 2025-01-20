@@ -88,7 +88,7 @@ Following the Bayer filter example, it is common for color images to have three 
 % We won't make a separate subsection for this for now, but here it is to remember.
 
 \subsubsection{Data and image compression}
-\label{sec:image-compression-and-formats}
+\label{sec:data-and-image-compression}
 
 % Explore image formats and compression.
 % Compare lossless vs lossy compression.
@@ -106,6 +106,9 @@ Digital data, whether representing text, audio, or images, is fundamentally a co
 % https://doi.org/10.1002/j.1538-7305.1948.tb01338.x
 
 \textbf{Lossless compression} methods enable reversible transformations of data into more compact forms, while preserving all original information. While this thesis primarily focuses on image processing, we would like to note that lossless techniques have much broader applications and can be applied to virtually any form of digital data, including text and binary files. This is crucial for efficient data transmission of any kind, where lossless compression reduces bandwidth requirements, but allows recipients to access the original information in its unaltered form.
+
+% D Salomon Data compression, 2002 - Springer
+% https://link.springer.com/book/10.1007/978-1-84628-603-2
 
 \emph{Run-length encoding} is a simple technique that exploits repetitions in data. For example, a sequence of the same 20 consecutive characters \emph{a} can be efficiently stored as \emph{(20, a)} instead of storing each individual character. This works especially well if the set of unique symbols in the data is small, and the data contains long \emph{runs} of the same symbol.
 
@@ -150,43 +153,101 @@ In addition to the methods described above that can help us understand the basic
 % https://doi.org/10.17487/RFC8878
 
 
-\textbf{Lossy compression} methods, unlike lossless techniques, offer significantly higher compression ratios by selectively discarding information. This trade-off is often acceptable for media files like images and audio, where human perception of minor data alterations may be limited.
+\textbf{Lossy compression} methods, unlike lossless techniques, offer significantly higher compression ratios by selectively discarding information. This trade-off is often acceptable for media files like images and audio, where human perception of minor data alterations may be limited, but may be not acceptable for other data types, such as computer programs.
 
-\emph{Transform coding} represents data in a different form to identify and discard less important information. This is similar to viewing a mathematical function in the frequency domain instead of the time domain using the Fourier transform; certain operations are simplified when the data is represented in a different form.  By applying a transform, such as the \emph{Discrete Cosine Transform (DCT)} to an image, we can separate the information into components that vary in importance with respect to human perception.  For example, the DCT decomposes an image into a set of frequency components, allowing for the selective removal of high-frequency components, which often correspond to fine details less perceptible to the human eye.
+% D Salomon Data compression, 2002 - Springer
+% https://link.springer.com/book/10.1007/978-1-84628-603-2
+
+\emph{Transform coding} is a common technique used in lossy compression that serves two purposes. By compacting the original data samples into the transform coefficients with increasingly smaller variances, it is eventually able to remove smaller coefficients with negligible reconstruction errors. Additionally, decorrelated coefficients can be quantized and entropy coded individually without losing compression performance. By applying a transform, such as the \emph{Discrete Cosine Transform (DCT)}, we can separate the information into components that vary in importance with respect to human perception. In lossy image compression, transforms allow for the selective removal of high-frequency components which correspond to image details less perceptible to human eyes.
+
+% The Discrete Cosine Transform and Its Impact on Visual Compression: Fifty Years From Its Invention
+% https://ieeexplore.ieee.org/abstract/document/10243458
 
 % N. Ahmed; T. Natarajan; K.R. Rao. Discrete Cosine Transform, 1974.
 % https://ieeexplore.ieee.org/document/1672377
 
-\emph{Quantization} reduces the number of bits needed to represent the transformed data by mapping a range of input values to a smaller set of output values. This introduces some controlled loss of information, as subtle variations within a quantized range are effectively discarded. The degree of quantization determines the balance between compression ratio and perceived quality.
+\emph{Subsampling} exploits the characteristics of human perception by reducing the spatial resolution of specific components within the data. In image compression, this often involves relative downsampling the chrominance components \emph{(chroma)}, as the human eye is less sensitive to color detail compared to luminance \emph{(luma)} detail. The reduction in chrominance resolution contributes to a smaller file size without significantly impacting the overall perceived image quality.
 
-\emph{Subsampling} exploits the characteristics of human perception by reducing the spatial resolution of specific components within the data. In image compression, this often involves downsampling the chrominance components, as the human eye is less sensitive to color detail compared to luminance detail. This reduction in chrominance resolution contributes to a smaller file size without significantly impacting the overall perceived image quality.
+% DA Kerr, Chrominance subsampling in digital images
+% http://www.dougkerr.net/Pumpkin/articles/Subsampling.pdf
 
-Ultimately, the effectiveness of lossy compression lies in its ability to intelligently discard information that is less critical to human perception. This allows for significant reductions in file size while preserving an acceptable level of quality, enabling efficient storage and transmission of multimedia data.
+Evaluating the effectiveness of lossy compression involves measuring the perceived difference between the original and compressed images. Selected evaluation metrics include Peak Signal-to-Noise Ratio (PSNR), Structural Similarity Index Measure (SSIM), and Butteraugli. While metrics like PSNR and SSIM provide objective measurement of the differences between pictures, the ultimate measure of lossy compression effectiveness will eventually depend on the subjective perception of its observers.
 
-Evaluating the effectiveness of lossy compression involves measuring the perceived difference between the original and compressed data.  Common metrics include Peak Signal-to-Noise Ratio (PSNR), which calculates the ratio between the maximum possible power of a signal and the power of corrupting noise; Structural Similarity Index Measure (SSIM), which compares luminance, contrast, and structure; and Butteraugli, which estimates the perceived difference based on a model of the human visual system.  These metrics provide a quantitative assessment of the trade-off between compression ratio and perceived quality.
+% Image Quality Metrics: PSNR vs. SSIM
+% https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5596999
 
-Another factor to consider with lossy compression is generation loss, which refers to the accumulated degradation of quality that occurs when a compressed file is repeatedly edited and recompressed. Each recompression cycle introduces additional information loss, potentially leading to noticeable artifacts and a significant reduction in overall quality. To minimize generation loss, it is important to use lossless formats for editing and recompress only when necessary.
+Another factor to consider with lossy compression is generation loss, which refers to the accumulated degradation of quality that occurs when a compressed file is repeatedly edited and recompressed. Each recompression cycle may introduce additional information loss, potentially leading to noticeable artifacts and a significant reduction in overall subjective quality of the image. In the next section, we will explore different image formats that utilize the lossy and lossless compression techniques described above.
 
-The specific requirements for lossy compression vary depending on the application. While metrics like PSNR and SSIM provide valuable insights, the ultimate measure of lossy compression effectiveness will always depend on the subjective perception of human observers. In the next section, we will explore different image formats that utilize the lossy and lossless compression techniques described above.
+% Not really to include in the thesis
+% https://imgs.xkcd.com/comics/digital_data_2x.png
 
+\subsubsection{Raster and vector graphics}
+\label{sec:raster-and-vector-graphics}
 
+Image formats are standardized ways of organizing digital image data and metadata within files. They ensure compatibility and allow different software, devices, and operating systems to work with the same images. Two fundamental categories of image formats are \emph{raster} and \emph{vector}.
+
+Raster images are fundamentally composed of a grid of individual pixels, each representing a specific color. This structure directly corresponds to the way digital cameras capture images and is well-suited for representing photographs and other visuals with continuous tones. The term raster originates from the scanning pattern \emph{(raster scan)} of CRT monitors, where the electron beam illuminates the screen pixel by pixel, line by line. In addition to color data, some raster formats incorporate an alpha channel, which controls each pixel's transparency. Image quality in raster formats is fundamentally connected to the resolution, measured by the total number of pixels. When scaling a raster image beyond its original size, preserving a fixed number of pixels can lead to a visible pixelation - a situation when individual pixels become visible to a naked eye. The alternative approach of introducing new pixels also has drawbacks: traditional \emph{generating a raster image with a higher resolution than its source} using pixel interpolation methods may cause a visible loss of sharpness, also known as \emph{edge blurring}.
+
+% James D. Foley Computer Graphics: Principles and Practice (raster)
+
+% T Porter, T Duff, Compositing digital images. (alpha channel)
+% https://dl.acm.org/doi/abs/10.1145/800031.808606
+
+% Dianyuan Han, Comparison of Commonly Used Image Interpolation Methods
+% https://www.atlantis-press.com/article/4822.pdf
+
+% J.D. van Ouwerkerk, Image super-resolution survey (loss of sharpness)
+% https://www.sciencedirect.com/science/article/pii/S0262885606001089
+
+% Generative methods may hallucinate image features, making them unsafe in certain applications like medical diagnosis.
+% Distribution Matching Losses Can Hallucinate Features in Medical Image Translation, https://arxiv.org/pdf/1805.08841
+
+Vector graphics offer a fundamentally different approach, representing visuals using geometrical primitives like lines, curves, circles, ellipses, or polylines and polygons. These primitives are defined by their mathematical properties, not as individual pixels. For instance, a circle may be defined by its center point coordinates and radius, while a curve might be represented using its end point and control points. This allows vector graphics to be inherently scalable, as the same geometrical definitions are used to render the graphic at any size.
+
+% Michael E. Mortenson, Mathematics for Computer Graphics Applications (Bézier)
+
+While the following sections of our thesis will focus on raster image optimizations, a brief comparison of image optimization techniques for both vector and raster images is beneficial for the comprehensive understanding of the topic. Pixel-based methods, such as reducing image resolution, the bit depth, or applying lossy compression can not be directly translated to their vector counterparts, as vector graphics do not rely on a pixel grid. Instead, byte size of vector graphics may be optimized through methods unique to their geometrical nature. While lossless compression methods still apply, further optimizations are typically achieved by reducing the precision of values defining geometrical primitives, simplifying complex shapes by using fewer defining points, and, in formats supporting reusable styles, minimizing the number of distinct styles used.
+
+% A Libby, Beginning SVG: A Practical Introduction to SVG Using Real-world Examples, 2018. Springer
+% https://link.springer.com/content/pdf/10.1007/978-1-4842-3760-1.pdf
+
+% Guillaume, C. 2015. Optimising SVG images [Online publication]. Mozilla Hackshttps://hacks.mozilla.org/2015/03/optimising-svg-images/
+
+\subsubsection{Raster image formats}
+\label{sec:raster-image-formats}
+
+Building upon our understanding of raster graphics and the various compression techniques, we will now explore specific raster image formats. While often based on shared compression principles, different formats use different strategies for storing and compressing pixel data.
+
+The existence of multiple formats is driven by the need to support a diverse range of viewers (clients), each with varying capabilities and limitations. To ensure optimal image delivery across this spectrum, it becomes necessary to provide assets in multiple formats, resolutions, and quality settings. This approach maximizes performance and visual fidelity for each user, but introduces the significant challenge of increased complexity in asset management.
+
+Consequently, they vary in file size, image quality, and supported features. In the domain of image optimization, existence of different formats this necessitates supporting multiple formats, and often multiple versions of the same image within a given format, to accommodate the varying capabilities of end-user devices and software.
+
+BMP (Bitmap) is one of the oldest and simplest raster formats, developed by Microsoft for Windows. It primarily uses lossless compression through run-length encoding (RLE), or can store images uncompressed. While BMP supports various color depths, its compression is generally inefficient compared to more modern formats, leading to larger file sizes. BMP's simplicity makes it compatible with a wide range of software, but its lack of advanced features and efficient compression limits its use in scenarios where file size is a major concern. BMP is better suited for situations requiring simple, uncompressed image storage or compatibility with older systems.
+
+GIF (Graphics Interchange Format), introduced in 1987, was an early internet staple due to its support for animation and lossless compression based on the LZW algorithm.  However, GIF is limited to an 8-bit palette, meaning it can only display 256 colors. This restriction makes it unsuitable for photographs but still viable for graphics with limited color ranges, such as logos or simple icons. GIF also supports transparency, allowing for irregularly shaped, non-rectangular images. While GIF has been largely superseded by PNG for static images, its animation capabilities continue to make it relevant for short, looping animations, especially in online contexts.
+
+PNG (Portable Network Graphics) was developed as a patent-free alternative to GIF, offering improved lossless compression and extended features. Using the Deflate algorithm, PNG achieves better compression than GIF without sacrificing image quality. It supports a wider range of color depths, including 24-bit and 48-bit, making it suitable for both simple graphics and photographs. PNG also offers full alpha channel support, allowing for smooth transparency gradients. These features have made PNG the preferred choice for web graphics requiring high quality and transparency, such as logos, icons, and interface elements.
+
+JPEG (Joint Photographic Experts Group) is the dominant format for photographic images on the web and in digital cameras. JPEG employs lossy compression based on the Discrete Cosine Transform (DCT), quantization, and entropy coding, achieving significant file size reductions. Users can typically adjust the compression level, allowing for a trade-off between image quality and file size. While JPEG excels at compressing continuous-tone images like photographs, the lossy nature of the compression can introduce visible artifacts, especially around sharp edges and areas of high contrast. JPEG does not support transparency, making it unsuitable for graphics that require it.
+
+% TODO: Speak about JFIF.
+
+JPEG 2000 was designed as a successor to JPEG, offering improved compression efficiency and a wider range of features.  Instead of DCT, JPEG 2000 utilizes wavelet transforms, which provide better image quality at higher compression ratios. It supports both lossy and lossless compression, as well as advanced features like region of interest (ROI) encoding, allowing specific areas of an image to be encoded with higher quality than others. While JPEG 2000 offers technical advantages, its adoption has been limited due to factors like licensing costs and the widespread use of the original JPEG format. It finds niche applications in fields like medical imaging and digital archiving, where its advanced features are beneficial.
+
+WebP is a relatively new format developed by Google, specifically for web use. It supports both lossy and lossless compression, providing smaller file sizes compared to JPEG and PNG, respectively. WebP's lossy compression is based on the VP8 video codec, while its lossless mode uses a variety of techniques, including dictionary coding, Huffman coding, and color indexing. WebP also supports transparency and animation, potentially replacing both PNG and GIF in many web applications. While browser support for WebP has been steadily increasing, it is still not universally supported at the time of writing.
+
+AVIF (AV1 Image File Format) is a modern image format derived from the AV1 video codec, designed to offer superior compression compared to existing formats like JPEG, PNG, and even WebP. AVIF supports both lossy and lossless compression and boasts a wide range of features, including support for high dynamic range (HDR) and wide color gamut (WCG) images, as well as transparency. AVIF generally offers significant file size reductions compared to JPEG while maintaining comparable visual quality. Its support for advanced features like HDR and WCG makes it suitable for high-quality images and modern display technologies.
+
+JPEG XL is another modern image format designed to be a versatile successor to JPEG. It offers both lossy and lossless compression, outperforming JPEG in terms of compression efficiency. One of JPEG XL's key strengths is its ability to losslessly recompress existing JPEG files, reducing their size without any further quality loss. This feature, along with progressive decoding capabilities, can improve user experience, particularly for those on slower networks. JPEG XL also supports animation, alpha channels, and a wide range of color depths, including HDR, making it suitable for diverse use cases.
+
+% The JPEG still picture compression standard
+% GK Wallace - Communications of the ACM, 1991 - dl.acm.org
+% https://dl.acm.org/doi/pdf/10.1145/103085.103089
 
 % https://cloudinary.com/blog/jpeg-xls-modular-mode-explained
 
 % https://ds.jpeg.org/whitepapers/jpeg-xl-whitepaper.pdf
 
-
-% Legacy: PICT, BMP, and GIF
-% Standard: TIFF, PNG, and JPEG
-% Modern: WebP, AVIF, and JPEG XL
-
-
-
-\subsubsection{Raster and vector graphics}
-\label{sec:raster-and-vector-graphics}
-% Explain the distinction between raster and vector graphics.
-% Mention strengths, weaknesses, and common use cases.
-% Discuss the concept of image size and its relationship to representation quality in both raster and vector formats.
 
 
 
