@@ -259,18 +259,50 @@ The existence of multiple formats is driven by technological advancements in the
 \label{sec:cloud-computing}
 % Provide a concise overview of cloud computing models.
 
-Various organizations and standardization bodies have formulated alternative definitions of cloud computing based on their specific priorities and perspectives. ISO/IEC 22123-1 defines cloud computing as a "paradigm for enabling network access to a scalable and elastic pool of shareable physical or virtual resources with self-service provisioning and administration on-demand". This definition, with the emphasis on essential characteristics like on-demand availability and self-service, shares similarities with the one provided by the National Institute of Standards and Technology in \emph{The NIST Definition of Cloud Computing}. However, NIST also provides a more focused categorization of cloud services, identifying three service models (Software as a Service, Platform as a Service, and Infrastructure as a Service) and four deployment models (private, community, public, and hybrid clouds) instead of 7 service categories and 8 deployment models in the ISO standard. In contrast to the frameworks offered by ISO/IEC and NIST, commercial organizations like Amazon Web Services (AWS) tend to use more concise and business-oriented definitions, such as "on-demand delivery of IT resources over the Internet with pay-as-you-go pricing". Despite these variations, all definitions focus on the core value proposition of cloud computing: providing flexible, accessible, and easy-to-manage computing services.
+% “Lock-in” comes because others depend on the benefit from your services, not because you’re completely in control. Tim O’Reilly
 
-In a manner similar to services such as water and electricity supply, cloud computing can be seen as a utility and an on-demand enabler for innovation and agility without an upfront investment in one's own IT infrastructure. With access to public cloud infrastructures, organizations do not have to build and maintain their own data centers, much like how most individuals and businesses no longer need to build their own power plants. Instead, they can focus on their unique strengths and leverage the scale and efficiency of shared resources, essentially offloading undifferentiated heavy-lifting. Furthermore, many cloud providers offer free tier access to a range of their services, allowing IT practitioners and business decision makers to experiment and gain familiarity with cloud environments before committing to substantial financial investments.
+Various organizations and standardization bodies have formulated alternative definitions of cloud computing based on their specific priorities and perspectives. ISO/IEC 22123-1 \cite{} defines cloud computing as a "paradigm for enabling network access to a scalable and elastic pool of shareable physical or virtual resources with self-service provisioning and administration on-demand". This definition, with the emphasis on essential characteristics like on-demand availability and self-service, shares similarities with the one provided by the National Institute of Standards and Technology in \emph{The NIST Definition of Cloud Computing} \cite{}. However, NIST also provides a more focused categorization of cloud services, identifying three service models (Software as a Service, Platform as a Service, and Infrastructure as a Service) and four deployment models (private, community, public, and hybrid clouds) instead of 7 service categories and 8 deployment models in the ISO standard. In contrast to the frameworks offered by ISO/IEC and NIST, commercial organizations like Amazon Web Services (AWS) tend to use more concise and business-oriented definitions, such as "on-demand delivery of IT resources over the Internet with pay-as-you-go pricing" \cite{}. Despite these variations, all definitions focus on the core value proposition of cloud computing: providing flexible, accessible, and easy-to-manage computing services.
+
+% ISO/IEC 22123-1
+% https://www.iso.org/standard/82758.html
+
+% NIST
+% https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-145.pdf
+
+% https://aws.amazon.com/what-is-cloud-computing/
+
+In a manner similar to services such as water and electricity supply, cloud computing can be seen as a utility and an on-demand enabler for innovation and agility without an upfront investment \cite{} in one's own IT infrastructure. With access to public cloud infrastructures, organizations do not have to build and maintain their own data centers, much like how most individuals and businesses no longer need to build their own power plants. Instead, they can focus on their unique strengths and leverage the scale and efficiency of shared resources, essentially offloading undifferentiated heavy-lifting \cite{}. Furthermore, many cloud providers offer free tier access to a range of their services, allowing IT practitioners and business decision makers to experiment and gain familiarity with cloud environments before committing to substantial financial investments.
+
+% The Case for Cloud Computing
+% https://ieeexplore.ieee.org/abstract/document/4804045
 
 % Cloud Technologies and Services. Theoretical Concepts and Practical Applications. Well Architected Framework.
 % https://link.springer.com/chapter/10.1007/978-3-031-33669-0_5
 
+Cloud service models described earlier form a spectrum. Starting from the least \emph{managed} types of services in the \emph{IaaS} model, bare-metal servers and virtual machines offer maximum control, but require the highest degree of direct infrastructure management. In the \emph{PaaS} model, developers and software vendors trade some of this control for simplified operations \cite{}. It is still required to provide source code for applications, but the platform provider typically manages the operating system and offers additional capabilities with help of the platform-specific APIs and SDKs. In the \emph{SaaS} model, a pre-built cloud service is solving a specific business problem for its users, with the least amount of flexibility comparing to previous models. SaaS services work well for repeatable workloads, such as project management software (Asana, Trello), communication and collaboration tools (Slack, Google Workspace), or e-commerce (Shopify) that can be applied with minimal modifications for wide range of customers \cite{}.
 
-Cloud service models described earlier form a spectrum. Starting from the least \emph{managed} types of services in the \emph{IaaS} model, bare-metal servers and virtual machines offer maximum control, but require the highest degree of direct infrastructure management. In the \emph{PaaS} model, users trade some of this control for simplified operations. It is still required to provide source code for applications, but the platform provider typically manages the operating system and offers additional capabilities with help of the platform-specific APIs and SDKs. In the \emph{SaaS} model, a pre-built cloud service is solving a specific business problem, with the least amount of flexibility comparing to previous models. SaaS services work well for well-defined, repeatable workloads, such as project management software (Asana, Trello), communication and collaboration tools (Slack, Google Workspace), business intelligence products (Tableau, Power BI), and e-commerce solutions (Shopify).
+% Comparing PaaS offerings in light of SaaS development
+% https://link.springer.com/article/10.1007/s00607-013-0346-9
+
+% Cloud Service Models, Michael Kavis
+% http://onlinelibrary.wiley.com/doi/10.1002/9781118691779.ch2
 
 
-\subsubsection{Event-driven architectures}
+No two cloud platforms are the same. Leveraging differentiating, proprietary features can accelerate development of cloud-based services, but at the same requires careful consideration before adoption. These features, often exclusive to specific providers, can lead to a situation where users inadvertently depend on a particular technology, known as \emph{vendor lock-in} or \emph{feature lock-in} \cite{Portability_and_interoperability_between_clouds}. This dependency can pose a challenge when migrating to a different cloud vendor or pursuing a multi-cloud deployment strategy. Moreover, the perceived value and associated risks of such dependencies can change over time, influenced by evolving business needs and technological landscape. While initial \emph{buy-in} from development teams is important for exploring and implementing new features, a shift in focus towards addressing lock-in may become more strategic as a cloud-based system matures and scales. Literature such as \cite{} discusses pitfalls and fallacies of serverless computing which is useful for understanding the broader context of such architectural decisions.
+
+% Portability and Interoperability between Clouds: Challenges and Case Study
+% https://link.springer.com/chapter/10.1007/978-3-642-24755-2_6
+
+% Cloud Programming Simplified: A Berkeley View on Serverless Computing
+% https://arxiv.org/pdf/1902.03383
+
+
+\subsubsection{Serverless computing}
+
+
+
+
+
 % Define Serverless and Function as a Service (FaaS), its key characteristics like automatic scaling
 % Advantages and disadvantages of FaaS, e.g., reduced operational overhead, cost-efficiency
 % Discuss the challenges associated with FaaS, such as vendor lock-in, cold starts, and debugging complexities
