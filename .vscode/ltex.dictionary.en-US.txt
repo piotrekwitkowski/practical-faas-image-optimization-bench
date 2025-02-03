@@ -16,3 +16,5 @@ luma
 decorrelate
 decorrelated
 outweight
+FaaS
+BaaS
