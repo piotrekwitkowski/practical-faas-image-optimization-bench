@@ -18,3 +18,4 @@ decorrelated
 outweight
 FaaS
 BaaS
+Cognito

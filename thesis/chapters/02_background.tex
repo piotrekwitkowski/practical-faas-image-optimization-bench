@@ -198,11 +198,11 @@ Raster images \cite{raster} are fundamentally composed of a grid of individual p
 % Generative methods may hallucinate image features, making them unsafe in certain applications like medical diagnosis.
 % Distribution Matching Losses Can Hallucinate Features in Medical Image Translation, https://arxiv.org/pdf/1805.08841
 
-Vector graphics offer a fundamentally different approach, representing visuals using geometrical primitives like lines, curves, circles, ellipses, or polylines and polygons. These primitives are defined by their mathematical properties, not as individual pixels. For instance, a circle may be defined by its center point coordinates and radius, while a curve might be represented using its end point and control points. This allows vector graphics to be inherently scalable, as the same geometrical definitions are used to render the graphic at any size.
+Vector graphics offer a fundamentally different approach, representing visuals using geometrical primitives like lines, curves, circles, ellipses, or polylines and polygons \cite{maths-for-computer-graphics}. These primitives are defined by their mathematical properties, not as individual pixels. For instance, a circle may be defined by its center point coordinates and radius, while a curve might be represented using its end point and control points. This allows vector graphics to be inherently scalable, as the same geometrical definitions are used to render the graphic at any size.
 
 % Michael E. Mortenson, Mathematics for Computer Graphics Applications (Bézier)
 
-While the following sections of our thesis will focus on raster image optimizations, a brief comparison of image optimization techniques for both vector and raster images is beneficial for the comprehensive understanding of the topic. Pixel-based methods, such as reducing image resolution, the bit depth, or applying lossy compression can not be directly translated to their vector counterparts, as vector graphics do not rely on a pixel grid. Instead, byte size of vector graphics may be optimized through methods unique to their geometrical nature. While lossless compression methods still apply, further optimizations are typically achieved by reducing the precision of values defining geometrical primitives, simplifying complex shapes by using fewer defining points, and, in formats supporting reusable styles, minimizing the number of distinct styles used.
+While the following sections of our thesis will focus on raster image optimizations, a brief comparison of image optimization techniques for both vector and raster images is beneficial for the comprehensive understanding of the topic. Pixel-based methods, such as reducing image resolution, the bit depth, or applying lossy compression can not be directly translated to their vector counterparts, as vector graphics do not rely on a pixel grid \cite{introduction-to-svg}. Instead, byte size of vector graphics may be optimized through methods unique to their geometrical nature. While lossless compression methods still apply, further optimizations are typically achieved by reducing the precision of values defining geometrical primitives, simplifying complex shapes by using fewer defining points, and, in formats supporting reusable styles, minimizing the number of distinct styles used \cite{optimizing-svg}.
 
 % A Libby, Beginning SVG: A Practical Introduction to SVG Using Real-world Examples, 2018. Springer
 % https://link.springer.com/content/pdf/10.1007/978-1-4842-3760-1.pdf
@@ -216,7 +216,8 @@ Building upon our understanding of various compression techniques and raster gra
 
 The existence of multiple formats is driven by technological advancements in the field of image processing, evolving consumer needs, as well as industry competition. While new algorithms and standards allow for smaller file sizes and additional features, widespread adoption can only happen if the benefits of new image formats outweight compatibility issues and justifies additional investment (monetary and engineering) needed to enable and integrate the new technology into existing systems and workflows.
 
-
+TODO: more raster formats
+\clearpage
 
 % the need to support a diverse range of viewers (clients), each with varying capabilities and limitations. To ensure optimal image delivery across this spectrum, it becomes necessary to provide assets in multiple formats, resolutions, and quality settings. This approach maximizes performance and visual fidelity for each user, but introduces the significant challenge of increased complexity in asset management.
 
@@ -257,7 +258,7 @@ The existence of multiple formats is driven by technological advancements in the
 
 % “Lock-in” comes because others depend on the benefit from your services, not because you’re completely in control. Tim O’Reilly
 
-Various organizations and standardization bodies have formulated alternative definitions of cloud computing based on their specific priorities and perspectives. ISO/IEC 22123-1 \cite{} defines cloud computing as a "paradigm for enabling network access to a scalable and elastic pool of shareable physical or virtual resources with self-service provisioning and administration on-demand". This definition, with the emphasis on essential characteristics like on-demand availability and self-service, shares similarities with the one provided by the National Institute of Standards and Technology in \emph{The NIST Definition of Cloud Computing} \cite{}. However, NIST also provides a more focused categorization of cloud services, identifying three service models (Infrastructure as a Service - \emph{IaaS}, Platform as a Service - \emph{PaaS}, and Software as a Service - \emph{SaaS}) and four deployment models (private, community, public, and hybrid clouds) instead of 7 service categories and 8 deployment models in the ISO standard. In contrast to the frameworks offered by ISO/IEC and NIST, commercial organizations like Amazon Web Services (AWS) tend to use more concise and business-oriented definitions, such as "on-demand delivery of IT resources over the Internet with pay-as-you-go pricing" \cite{}. Despite these variations, all definitions focus on the core value proposition of cloud computing: providing flexible, accessible, and easy-to-manage computing services.
+Various organizations and standardization bodies have formulated alternative definitions of cloud computing based on their specific priorities and perspectives. ISO/IEC 22123-1 \cite{iso22123-1} defines cloud computing as a "paradigm for enabling network access to a scalable and elastic pool of shareable physical or virtual resources with self-service provisioning and administration on-demand". This definition, with the emphasis on essential characteristics like on-demand availability and self-service, shares similarities with the one provided by the National Institute of Standards and Technology in \emph{The NIST Definition of Cloud Computing} \cite{nist-definition-cloud}. However, NIST also provides a more focused categorization of cloud services, identifying three service models (Infrastructure as a Service - \emph{IaaS}, Platform as a Service - \emph{PaaS}, and Software as a Service - \emph{SaaS}) and four deployment models (private, community, public, and hybrid clouds) instead of 7 service categories and 8 deployment models in the ISO standard. In contrast to the frameworks offered by ISO/IEC and NIST, commercial organizations like Amazon Web Services (AWS) tend to use more concise and business-oriented definitions, such as "on-demand delivery of IT resources over the Internet with pay-as-you-go pricing" \cite{aws-definition-cloud}. Despite these variations, all definitions focus on the core value proposition of cloud computing: providing flexible, accessible, and easy-to-manage computing services.
 
 % ISO/IEC 22123-1
 % https://www.iso.org/standard/82758.html
@@ -267,7 +268,7 @@ Various organizations and standardization bodies have formulated alternative def
 
 % https://aws.amazon.com/what-is-cloud-computing/
 
-In a manner similar to services such as water and electricity supply, cloud computing can be seen as a utility and an on-demand enabler for innovation and agility without an upfront investment \cite{} in one's own IT infrastructure. With access to public cloud infrastructures, organizations do not have to build and maintain their own data centers, much like how most individuals and businesses no longer need to build their own power plants. Instead, they can focus on their unique strengths and leverage the scale and efficiency of shared resources, essentially offloading the \emph{undifferentiated heavy-lifting} \cite{}. Furthermore, many cloud providers offer free tier access to a range of their services, allowing IT practitioners and business decision makers to experiment and gain familiarity with cloud environments before committing to substantial financial investments.
+In a manner similar to services such as water and electricity supply, cloud computing can be seen as a utility and an on-demand enabler for innovation and agility without an upfront investment \cite{case-for-cloud-computing} in one's own IT infrastructure. With access to public cloud infrastructures, organizations do not have to build and maintain their own data centers, much like how most individuals and businesses no longer need to build their own power plants. Instead, they can focus on their unique strengths and leverage the scale and efficiency of shared resources, essentially offloading the \emph{undifferentiated heavy-lifting} \cite{WAF-framework}. Furthermore, many cloud providers offer free tier access to a range of their services, allowing IT practitioners and business decision makers to experiment and gain familiarity with cloud environments before committing to substantial financial investments.
 
 % The Case for Cloud Computing
 % https://ieeexplore.ieee.org/abstract/document/4804045
@@ -275,7 +276,7 @@ In a manner similar to services such as water and electricity supply, cloud comp
 % Cloud Technologies and Services. Theoretical Concepts and Practical Applications. Well Architected Framework.
 % https://link.springer.com/chapter/10.1007/978-3-031-33669-0_5
 
-Cloud service models described earlier form a spectrum. Starting from the least \emph{managed} types of services in the \emph{IaaS} model, bare-metal servers and virtual machines offer maximum control, but require the highest degree of direct infrastructure management. In the \emph{PaaS} model, developers and software vendors \footnote{By developers and software vendors, we mean personas setting up and maintaining cloud deployments.} trade some of this control for simplified operations \cite{}. It is still required to provide source code for applications, but the platform provider typically manages the operating system and offers additional capabilities with help of the platform-specific APIs and SDKs. In the \emph{SaaS} model, a pre-built cloud service is solving a specific business problem for its users\footnote{By users, we mean end-users of the services and applications deployed on the cloud.}, with the least amount of flexibility comparing to previous models. SaaS services work well for repeatable workloads, such as project management software (Asana, Trello), communication and collaboration tools (Slack, Google Workspace), or e-commerce (Shopify) that can be applied with minimal modifications for a wide range of customers \cite{}.
+Cloud service models described earlier form a spectrum. Starting from the least \emph{managed} types of services in the \emph{IaaS} model, bare-metal servers and virtual machines offer maximum control, but require the highest degree of direct infrastructure management. In the \emph{PaaS} model, developers and software vendors\footnote{By developers and software vendors, we mean personas setting up and maintaining cloud deployments.} trade some of this control for simplified operations \cite{comparing-paas}. It is still required to provide source code for applications, but the platform provider typically manages the operating system and offers additional capabilities with help of the platform-specific APIs and SDKs. In the \emph{SaaS} model, a pre-built cloud service is solving a specific business problem for its users\footnote{By users, we mean end-users of the services and applications deployed on the cloud.}, with the least amount of flexibility comparing to previous models. SaaS services work well for repeatable workloads, such as project management software (Asana, Trello), communication and collaboration tools (Slack, Google Workspace), or e-commerce (Shopify) that can be applied with minimal modifications for a wide range of customers \cite{cloud-service-models}.
 
 % Comparing PaaS offerings in light of SaaS development
 % https://link.springer.com/article/10.1007/s00607-013-0346-9
@@ -285,12 +286,21 @@ Cloud service models described earlier form a spectrum. Starting from the least 
 
 % Cloud environments discussed above, such as IaaS and PaaS, are delivered over the Internet and don't require setting up physical data centers by customers anymore. However, like in a traditional data center, they may require extensive configuration of the environment before cloud-based applications can be launched. This can include setting up virtualized networking, security policies, or observability, as well as architecting for high availability, elasticity, and more.
 
-No two cloud platforms are the same. Leveraging differentiating, proprietary features can accelerate development of cloud-based services, but at the same requires careful consideration before adoption. These features, often exclusive to specific providers, can lead to a situation where users inadvertently depend on a particular technology, known as \emph{vendor lock-in} or \emph{feature lock-in} \cite{Portability_and_interoperability_between_clouds}. This dependency can pose a challenge when migrating to a different cloud vendor or pursuing a multi-cloud deployment strategy. Moreover, the perceived value and associated risks of such dependencies can change over time, influenced by evolving business needs and technological landscape.
+No two cloud platforms are the same. Leveraging differentiating, proprietary features can accelerate development of cloud-based services, but at the same requires careful consideration before adoption. These features, often exclusive to specific providers, can lead to a situation where users inadvertently depend on a particular technology, known as \emph{vendor lock-in} or \emph{feature lock-in} \cite{portability-and-interoperability-between-clouds}. This dependency can pose a challenge when migrating to a different cloud vendor or pursuing a multi-cloud deployment strategy. Moreover, the perceived value and associated risks of such dependencies can change over time, influenced by evolving business needs and technological landscape.
 
 % Portability and Interoperability between Clouds: Challenges and Case Study
 % https://link.springer.com/chapter/10.1007/978-3-642-24755-2_6
 
-The following section will focus on serverless computing, a paradigm where, contrary to its name, servers still exist. Serverless operations are abstracted even further from the developers, therefore, as before, it is important to make an informed decision whether to opt into vendor-specific features of such platforms. Existing literature, such as \cite{}, explores the potential pitfalls and fallacies associated with serverless computing, providing a valuable context for understanding the broader implications of these decisions. Finally, adoption of cloud computing, like any technology, while potentially beneficial, must be evaluated with the user in mind. As Tim O'Reilly put it, "lock-in comes because others depend on the benefit from your services, not because you are completely in control" \cite{} - it is the users who eventually benefit from, or are constrained by, all architectural choices.
+\textbf{Shared Responsibility Model} is a framework adopted by independently by multiple public cloud providers. In its basic form, it refers to the security \emph{of the cloud} and the security \emph{in the cloud}. In this model, both cloud provider and cloud user share responsibility of different security aspects of the cloud-based workloads.
+\begin{itemize}
+  \item Cloud provider is responsible for the physical security of the data center facilities, providing uninterrupted power and cooling supply, and maintaining integrity of the infrastructure. Cloud provider is also responsible for providing customers with building blocks to implement architectural best practices, such as resiliency to natural disasters with multiple regions and availability zones.
+  
+  \item Developers and software vendors are responsible, for example, for preparing disaster recovery strategy including platform support, following the principle of last privilege, timely updates of their application code, or applying application-layer encryption.
+\end{itemize}
+
+In addition to the above, we would like to note that the exact split in the shared responsibility model depends greatly on the used service delivery model. While things like power or cooling for IT resources are hidden from end users independent of the used model, many other responsibilities, similar to the lock-in discussion above, depend on whether users opt into abstractions provided by the cloud provider. Typically, the more \emph{managed} a service or model is, the more responsibility is taken by the cloud service provider. Providers abstracting typical IT use cases, such as OS supervision, load balancing, and availability of the managed services according to the SLAs of individual services. This leads to less freedom in configurability, but instead, users can shift their development and operational effort towards developing high-value, differentiating capabilities in their domain of expertise. For example, when comparing bare-metal instances with virtual machines, users will be required to set up and maintain a hypervisor only in the first situation. On top of security, similar shared responsibility models can be applied to domains like compliance or even sustainability.
+
+The following sections and the rest of our thesis will focus on serverless computing, a paradigm where, contrary to its name, servers still exist. Serverless operations are abstracted even further from the developers, therefore, as before, it is important to make an informed decision whether to opt into platforms' vendor-specific features. Existing literature, such as \cite{berkeley-view-on-serverless}, explores the potential pitfalls and fallacies associated with serverless computing, providing a valuable context for understanding the broader implications of these decisions. Finally, adoption of cloud computing, like any technology, while potentially beneficial, must be evaluated with the user in mind. As Tim O'Reilly put it, "lock-in comes because others depend on the benefit from your services, not because you are completely in control" \cite{oreilly-paradigm-shift} - it is the users who eventually benefit from, or are constrained by, all architectural choices.
 
 % Cloud Programming Simplified: A Berkeley View on Serverless Computing
 % https://arxiv.org/pdf/1902.03383"
@@ -298,28 +308,31 @@ The following section will focus on serverless computing, a paradigm where, cont
 % O'Reilly, Tim. "The open source paradigm shift." Jun. 2003
 % https://www.oreilly.com/tim/archives/ParadigmShift.pdf
 
+\subsubsection{Cloud service benchmarking}
+% How can we measure performance of the cloud and services running in the cloud?
+% Shared responsibility model for the cloud
+
+
 \subsubsection{Serverless computing}
 
 % The data center is now the computer. Luiz Barroso (2007) 
 
-Serverless is an approach where cloud providers aim to simplify cloud operations even further. While sharing many similarities with the PaaS model, PaaS services typically operate on the application or microservice level. Serverless approach is instead concerned about individual capabilities or business functions within an application. In this model, software vendors typically have very little control over actual hardware, for example size and type of (virtual) machine, on which their business logic is executed. Capacity provisioning, capacity planning, architecting for redundancy and high availability, as well as detailed monitoring features are built into serverless platforms, and managed by the platform provider. Two most popular service deployment models applicable to the serverless approach are described as follows.
+Serverless is an approach where cloud providers aim to simplify cloud operations even further. While sharing many similarities with the PaaS model, PaaS services typically operate on the application or microservice level. Serverless approach is instead concerned about individual capabilities or business functions within an application. In this model, software vendors have very little control over actual hardware, for example size and type of (virtual) machine, on which their business logic is executed. Capacity provisioning, capacity planning, architecting for redundancy and high availability, as well as detailed monitoring features are built into serverless platforms, and managed by the platform provider.
 
-In the \textbf{Function as a Service (FaaS)} model developers or software vendors are responsible for providing code performing certain function. Examples of FaaS services include AWS Lambda and Google Cloud Functions. Functions can be synchronous or asynchronous. Responding to an HTTP request is an example of the former, and event-based invocation is an example of the latter. Asynchronous functions are typically executed for their side effects, such as storing the result of a computation in an external data store. While function may persist state between invocations, service provider can terminate a function that is not actively handling an invocation. If the provider supports custom container images as the function source, users are not limited to any specific programming language when authoring functions. We will describe different method to adjust performance of serverless functions in later sections.
+Two most popular service deployment models applicable to the serverless approach are:
 
-In the \textbf{Backend as a Service (BaaS)} developers or software vendors configure cloud-based services to be directly used by client applications, such as websites and mobile applications. Examples of BaaS services include Google's Firebase or AWS Amplify, and typical use cases include user authentication, persistent key-value and object storage, or notifications management. Their implementation is similar to other SDK-based integrations, with the difference BaaS performing core functions of an application, and additional SDKs responsible for capabilities coming from third-party providers.
+\begin{itemize}
+  \item \textbf{Backend as a Service (BaaS)} model provides developers and software vendors with options to adopt cloud-based services directly by clients, such as websites and mobile applications. Examples of BaaS frameworks include Google's Firebase or AWS Amplify\footnote{Similar to Google's Firebase, AWS Amplify lets users host static pages and predefined application backends. In contrast to Firebase, Amplify offers purely client-side wrappers for other managed AWS services, such as Amazon Cognito, Amazon API Gateway, or Amazon S3, for easier client-side integration.}, and typical use cases include authentication, persistent storage coupled with user's identity, or notifications management. Implementation-wise, BaaS is similar to integrating with any other SDK, with the major difference of focusing on rather \emph{core} capabilities of an application, in line with application's visual language, and transparently for the users.
+  
+  \item \textbf{Function as a Service (FaaS)} enables developers and software vendors to run code without the need to manage the underlying infrastructure or runtime. Examples of FaaS services include AWS Lambda and Google Cloud Functions. Functions can be synchronous or asynchronous. Responding to an HTTP request is an example of the former, and event-based invocation is an example of the latter. Asynchronous functions are typically executed for their side effects, such as storing the result of a computation in an external data store. While functions may persist state between invocations, service providers can terminate execution environments that are not actively handling an invocation. If the provider supports custom container images as the function source, users are not limited to any specific programming language (runtime) when authoring functions.
+  
+  % AWS re:Invent 2014 | (MBL202) NEW LAUNCH: Getting Started with AWS Lambda
+  % https://www.youtube.com/watch?v=UFj27laTWQA
+\end{itemize}
 
-Thanks to granular monitoring mentioned earlier, serverless services offer fine-grained, usage-based pricing models. These operate on dimensions such as individual requests, CPU time with resolution as low as 1 millisecond, amount of specific API operations, or metrics such as MAU (monthly active users).
+Thanks to granular monitoring mentioned earlier, serverless services offer fine-grained, usage-based pricing models. These operate on dimensions such as individual requests, CPU time with high resolution (as low as 1 millisecond, which is not the case in IaaS or PaaS models), amount of specific API operations, or metrics such as MAU (monthly active users).
 
-
-The event may be an HTTP request, and in this case, according to the HTTP protocol the function will return a response. There may be more types of events, such as changes in an object storage, or appending a new record to a cloud-based database, triggered by different services on a given cloud platform. 
-
-
-
-% AWS re:Invent 2014 | (MBL202) NEW LAUNCH: Getting Started with AWS Lambda
-% https://www.youtube.com/watch?v=UFj27laTWQA
-
-
-Define Serverless and Function as a Service (FaaS), its key characteristics like automatic scaling
+Capacity of serverless backends scales automatically, and in real-time, in response to traffic. Although image optimization can be done in a serverless fashion with both BaaS and FaaS approach, we will investigate only on the FaaS model. In the following sections, whenever we In the FaaS model, serverless provider will spin up new execution environments to satisfy incoming requests. 
 
 Advantages and disadvantages of FaaS, e.g., reduced operational overhead, cost-efficiency
 
@@ -329,9 +342,6 @@ Compare and contrast popular FaaS platforms like AWS Lambda, Google Cloud Functi
 
 Focusing on their features relevant to image optimization (e.g., supported runtimes, storage integrations)
 
-\subsubsection{Cloud service benchmarking}
-% How can we measure performance of the cloud and services running in the cloud?
-% Shared responsibility model for the cloud
 
 \subsubsection{Performance variability of serverless platforms}
 % Peeking Behind the Curtains of Serverless Platforms
@@ -352,6 +362,8 @@ Focusing on their features relevant to image optimization (e.g., supported runti
 
 % \clearpage
 \subsection{Image Optimization for the Web}
+
+Image optimization for the Web is 
 % Explain why image optimization is crucial for web performance
 
 \subsubsection{Impact of images on browsing experience}
@@ -374,6 +386,7 @@ Focusing on their features relevant to image optimization (e.g., supported runti
 % HTTP caching and CDNs
 
 \subsubsection{Deployment methods for cloud-based image optimization}
+\label{sec:deployment-methods-for-cloud-based-optimization}
 % Image CDNs
 % Explain how FaaS can be used to create efficient and scalable image optimization workflows.
 % Discuss the benefits of serverless image optimization (e.g., on-demand scaling, cost-effectiveness, automation).
