@@ -268,7 +268,7 @@ Various organizations and standardization bodies have formulated alternative def
 
 % https://aws.amazon.com/what-is-cloud-computing/
 
-In a manner similar to services such as water and electricity supply, cloud computing can be seen as a utility and an on-demand enabler for innovation and agility without an upfront investment \cite{case-for-cloud-computing} in one's own IT infrastructure. With access to public cloud infrastructures, organizations do not have to build and maintain their own data centers, much like how most individuals and businesses no longer need to build their own power plants. Instead, they can focus on their unique strengths and leverage the scale and efficiency of shared resources, essentially offloading the \emph{undifferentiated heavy-lifting} \cite{WAF-framework}. Furthermore, many cloud providers offer free tier access to a range of their services, allowing IT practitioners and business decision makers to experiment and gain familiarity with cloud environments before committing to substantial financial investments.
+In a manner similar to services such as water and electricity supply, cloud computing can be seen as a utility and an on-demand enabler for innovation and agility without an upfront investment \cite{case-for-cloud-computing} in one's own IT infrastructure. With access to public cloud infrastructures, organizations do not have to build and maintain their own data centers, much like how most individuals and businesses no longer need to build their own power plants. Instead, they can focus on their unique strengths and leverage the scale and efficiency of shared resources, essentially offloading the \emph{undifferentiated heavy-lifting} \cite{well-architected-framework}. Furthermore, many cloud providers offer free tier access to a range of their services, allowing IT practitioners and business decision makers to experiment and gain familiarity with cloud environments before committing to substantial financial investments.
 
 % The Case for Cloud Computing
 % https://ieeexplore.ieee.org/abstract/document/4804045
@@ -310,12 +310,27 @@ The following sections and the rest of our thesis will focus on serverless compu
 
 \subsubsection{Cloud service benchmarking}
 % How can we measure performance of the cloud and services running in the cloud?
-% Shared responsibility model for the cloud
+
+Cloud service benchmarking is the process of systematically evaluating and comparing different qualities of cloud-based services. In contrast to monitoring, which is a continuous, low-impact observation of production environments to detect undesirable system states, benchmarking answers specific questions about the system under test (SUT), often as a result of an offline analysis, and based on the recording of arbitrary metrics from the test environment \cite{cloud-service-benchmarking}. 
+
+Because cloud services are consumed over the Internet, designing benchmarks from the client perspective that closely reflect later use is essential to get meaningful results. In particular, even if additional information about the system is available (for example, source code of the application), literature \cite{cloud-service-benchmarking} suggests treating the underlying cloud platform and application deployed on it as a \emph{black box}, given that it is consumed by clients like service, or an API - based on externalized contract, rather than depending on the actual implementation, which may change over time.
+
+In addition to performance-related metrics, such as latency and throughput, a few other qualities are important specifically for cloud-based services. 
+
+Consistency and CAP
+
+Scalability
+
+Resiliency
+
+Geo-location of probes
+
+
 
 
 \subsubsection{Serverless computing}
 
-% The data center is now the computer. Luiz Barroso (2007) 
+% The data center is now the computer. Luiz Barroso (2007)
 
 Serverless is an approach where cloud providers aim to simplify cloud operations even further. While sharing many similarities with the PaaS model, PaaS services typically operate on the application or microservice level. Serverless approach is instead concerned about individual capabilities or business functions within an application. In this model, software vendors have very little control over actual hardware, for example size and type of (virtual) machine, on which their business logic is executed. Capacity provisioning, capacity planning, architecting for redundancy and high availability, as well as detailed monitoring features are built into serverless platforms, and managed by the platform provider.
 
