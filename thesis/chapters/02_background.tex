@@ -311,19 +311,28 @@ The following sections and the rest of our thesis will focus on serverless compu
 \subsubsection{Cloud service benchmarking}
 % How can we measure performance of the cloud and services running in the cloud?
 
-Cloud service benchmarking is the process of systematically evaluating and comparing different qualities of cloud-based services. In contrast to monitoring, which is a continuous, low-impact observation of production environments to detect undesirable system states, benchmarking answers specific questions about the system under test (SUT), often as a result of an offline analysis, and based on the recording of arbitrary metrics from the test environment \cite{cloud-service-benchmarking}. 
+Cloud service benchmarking is the process of systematically evaluating and comparing different qualities of cloud-based services. Quality can be defined as a measurement of any non-functional property of a service. In other words, quality tells us not \emph{if}, but \emph{how good} a system fulfills its purpose. Qualities may describe radically different aspects of a system, for example, measure error rate of a given operation or degree of compliance with a particular standard or regulation. While importance of a quality depends on a specific system, qualities in general express the difference from an ideal, sometimes only theoretical state. Continuing with the examples, an ideal system or service of the highest quality would yield an error rate of 0 (no errors, or undesired results), and demonstrate complete alignment with, or no exception from, a certain specification.
 
-Because cloud services are consumed over the Internet, designing benchmarks from the client perspective that closely reflect later use is essential to get meaningful results. In particular, even if additional information about the system is available (for example, source code of the application), literature \cite{cloud-service-benchmarking} suggests treating the underlying cloud platform and application deployed on it as a \emph{black box}, given that it is consumed by clients like service, or an API - based on externalized contract, rather than depending on the actual implementation, which may change over time.
+While \emph{monitoring} is a continuous, low-impact observation of the production environment, used to detect undesirable system states \cite{cloud-service-benchmarking}, \emph{benchmarking} answers specific questions about the system under test (SUT). It is often a result of an offline analysis, and based on the recording of arbitrary metrics from the test environment. A separate environment is used specifically as certain operations, for example stress-testing or fault injection, may be too risky and disruptive in a production setting. They may also or result in undesired consequences, such as a service outage or revenue loss.
+% Cloud service benchmarking - D Bermbach, E Wittern, S Tai - 2017
+% https://link.springer.com/book/10.1007/978-3-319-55483-9
 
-In addition to performance-related metrics, such as latency and throughput, a few other qualities are important specifically for cloud-based services. 
+Benchmarking is about comparison, Measuring the same environment with different configuration or 
 
-Consistency and CAP
+- we can compare measurement values from different systems or different configurations of the same system, or compare the very same system at different points in time.
 
-Scalability
 
-Resiliency
+Because cloud services are consumed over the Internet, designing benchmarks from the client perspective that closely reflect later use is essential to get meaningful results. In particular, even if additional information about the system is available (for example, source code of the application), literature \cite{cloud-service-benchmarking} suggests treating the underlying cloud platform and application deployed on it as a \emph{black box}. The reliance on the service's external interface / API contract, rather than depending on the actual implementation, allows us to compare different versions of the same service, and also align as closely as possible to the actual consumers' quality experience.
 
-Geo-location of probes
+
+To facilitate benchmarking, a few components of a \emph{benchmarking system} are needed: 
+
+workload generator
+cause otherwise the system is idling
+experiment controller
+measurement database
+
+
 
 
 
