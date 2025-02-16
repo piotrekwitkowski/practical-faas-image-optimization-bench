@@ -20,3 +20,6 @@ FaaS
 BaaS
 Cognito
 SUT
+Tradeoffs
+Technische
+Universität
