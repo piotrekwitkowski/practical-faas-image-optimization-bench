@@ -311,6 +311,8 @@ The following sections and the rest of our thesis will focus on serverless compu
 
 \subsubsection{Serverless computing}
 
+% There are no solutions, only trade-offs. Thomas Sowell (1986)
+
 % The data center is now the computer. Luiz Barroso (2007)
 
 Serverless is an approach where cloud providers aim to simplify cloud operations even further. While sharing many similarities with the PaaS model, PaaS services typically operate on the application or microservice level. Serverless approach is instead concerned about individual capabilities or business functions within an application. In this model, software vendors have very little control over actual hardware, for example size and type of the(virtual) machine, on which their business logic is executed. Capacity provisioning, capacity planning, architecting for redundancy and high availability, as well as detailed monitoring features are built into serverless platforms, and managed by the platform provider.
@@ -326,11 +328,25 @@ Two most popular service deployment models applicable to the serverless approach
   % https://www.youtube.com/watch?v=UFj27laTWQA
 \end{itemize}
 
-Thanks to granular monitoring mentioned earlier, serverless services offer fine-grained, usage-based pricing models. These operate on dimensions such as individual requests, CPU time with high resolution (as low as 1 millisecond, which is not the case in IaaS or PaaS models), amount of specific API operations, or metrics such as MAU (monthly active users). On-demand capacity of serverless backends scales automatically, and in real-time, in response to traffic.
+Thanks to granular monitoring mentioned earlier, serverless services offer fine-grained, usage-based pricing models. These operate on dimensions such as individual requests, CPU time with high resolution (as low as 1 millisecond, which is not the case in IaaS or PaaS models), amount of specific API operations, or metrics such as MAU (monthly active users). On-demand capacity of serverless backends scales automatically, and in real-time, in response to traffic. However, all this flexibility, especially in the FaaS model, comes at a cost. \emph{Limited lifetime} \cite{hellerstein-serverless-two-steps-back} of serverless functions prescribes that their internal state may not persist between invocations. True \emph{on-demand scaling to zero} only works, if we accept the trade-off of potential cold starts. With provisioned capacity we can avoid cold starts, but scaling to zero will not be possible anymore. Similarly, a choice must be made to the question of using a built-in runtime versus a custom container image. All of such architectural choices have to balance the complexity of the deployment, cost, as well as performance \cite{dantas-cold-start-strategies} of the resulting service.
 
-Although similar from the client's point of view, backend as a service is typically a third-party service offering a predefined set of capabilities, while function as a service is a cloud-native approach to running custom, self-contained event-driven logic. In the following sections, when speaking about serverless, we will focus exclusively on the function as a service model, as it is more relevant to the image optimization use case we are exploring in this thesis.
+% Joseph M. Hellerstein. Serverless Computing: One Step Forward, Two Steps Back
+% https://arxiv.org/abs/1812.03651
 
-% Now write a paragraph that will explain tradeoffs of the FaaS model. Discuss the challenges associated with FaaS, such as cold starts, and debugging complexities of distributed systems. Compare and contrast popular FaaS platforms like AWS Lambda, Google Cloud Functions, and Azure Functions. Focus on their features relevant to image optimization (e.g., supported runtimes, storage integrations)
+% J Dantas, 2022. Application deployment strategies for reducing the cold start delay of AWS Lambda.
+% https://ieeexplore.ieee.org/abstract/document/9860368
+
+In FaaS deployments, minification and tree-shaking can be used to reduce the size of the deployment package, and therefore the cold start time \cite{puripunpinyo-optimizing-java}. Native libraries can be used within serverless functions, even without a custom container, but in such cases, it's crucial to ensure that the CPU architecture and operating system runtime of the serverless platform is compatible with the library code. By leveraging such libraries, developers can avoid typical performance penalty associated with scripting languages \cite{ousterhout-scrpting}, while enjoying convenience of high-level language to handle an event. To sum up, serverless computing offers a compelling approach to cloud operations, shifting the focus from infrastructure management to individual functions or capabilities. While BaaS simplifies client-side integrations with core application features, FaaS allows code execution without runtime management.
+
+% H. Puripunpinyo, Effect of optimizing Java deployment artifacts on AWS Lambda
+% https://ieeexplore.ieee.org/abstract/document/8116416
+
+% J.K. Ousterhout, Scripting: higher level programming for the 21st Century
+% https://ieeexplore.ieee.org/abstract/document/660187
+
+
+In the following sections, when speaking about serverless, we will focus exclusively on the Function as a Service model, as it is more relevant to the self-hosted image optimization use case we are exploring in this thesis.
+
 
 \subsubsection{Cloud service benchmarking}
 % How can we measure performance of the cloud and services running in the cloud?
@@ -341,19 +357,11 @@ While \emph{monitoring} is a continuous, low-impact observation of the productio
 % Cloud service benchmarking - D Bermbach, E Wittern, S Tai - 2017
 % https://link.springer.com/book/10.1007/978-3-319-55483-9
 
-% Write another paragraph saying that benchmarking is about comparison, measuring the same environment with different configuration or different environments with the same configuration.
 Benchmarking allows for the evaluation of different configurations within the same environment, such as testing various memory allocations of a serverless application. It also enables comparing different systems while maintaining consistent configuration parameters, for example, measuring performance across multiple cloud providers or regions. This comparative nature helps identify optimal settings for specific use cases and understand the trade-offs between different implementation choices. By keeping some variables constant while varying others, benchmarking provides insights into how different factors influence system behavior.
 
 Because cloud services are consumed over the Internet, designing benchmarks from the client perspective that closely reflect later use is essential to get meaningful results. In particular, even if additional information about the system is available (for example, source code of the application), literature \cite{cloud-service-benchmarking} suggests treating the underlying cloud platform and application deployed on it as a \emph{black box}. The reliance on the service's external interface / API contract, rather than depending on the actual implementation, allows us to compare different versions of the same service, and also align as closely as possible to the actual consumers' quality experience.
 
-
-Finally, to facilitate benchmarking, a few components of a \emph{benchmarking system} are needed: 
-
-workload generator
-cause otherwise the system is idling
-experiment controller
-measurement database
-
+To facilitate benchmarking, a few components of a \emph{benchmarking system} are needed. A \emph{workload generator} is responsible for creating a realistic load on the system under test, as otherwise the system is idling. An \emph{experiment controller} automates the execution of benchmark runs, managing configurations and collecting results. Finally, a \emph{measurement database} stores the collected performance data, enabling analysis and comparison across different scenarios.
 
 \subsubsection{Performance variability of serverless platforms}
 % Peeking Behind the Curtains of Serverless Platforms
