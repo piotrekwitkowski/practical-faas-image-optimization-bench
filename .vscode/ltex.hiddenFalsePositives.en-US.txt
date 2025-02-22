@@ -11,3 +11,5 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q2017 IEEE Conference on Computer Communications Workshops (INFOCOM WKSHPS)\\E$"}
 {"rule":"STARS_AND_STEPS","sentence":"^\\QServerless Computing: One Step Forward, Two Steps Back\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QConference of the 2nd International Conference on Computer Science and Electronics Engineering (ICCSEE 2013)\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q.\\E$"}
+{"rule":"SENTENCE_WHITESPACE","sentence":"^\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q .\\E$"}

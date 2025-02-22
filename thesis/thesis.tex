@@ -42,12 +42,13 @@
 % we use the cleveref package to refer to figures, sections, etc.
 % instead of "Figure~\ref{fig:example}", write only "\cref{fig:example}" and the word "Figure" (or table, etc) will be inserted normally
 \usepackage[noabbrev,capitalise]{cleveref}
+\usepackage[final,nopatch=footnote]{microtype}
 
 \usepackage[
     maxbibnames=99,
     style=alphabetic,
     url=false,
-    backend=bibtex8,
+    backend=biber,
     sortcites=true,
 ]{biblatex}
 \addbibresource{refs.bib}

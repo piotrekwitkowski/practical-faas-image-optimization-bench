@@ -269,7 +269,7 @@ The existence of multiple formats is driven by technological advancements in the
 
 % “Lock-in” comes because others depend on the benefit from your services, not because you’re completely in control. Tim O’Reilly
 
-Various organizations and standardization bodies have formulated alternative definitions of cloud computing based on their specific priorities and perspectives. ISO/IEC 22123-1 \cite{iso22123-1} defines cloud computing as a "paradigm for enabling network access to a scalable and elastic pool of shareable physical or virtual resources with self-service provisioning and administration on-demand". This definition, with the emphasis on essential characteristics like on-demand availability and self-service, shares similarities with the one provided by the National Institute of Standards and Technology in \emph{The NIST Definition of Cloud Computing} \cite{mell2011nist-definition}. However, NIST also provides a more focused categorization of cloud services, identifying three service models (Infrastructure as a Service - \emph{IaaS}, Platform as a Service - \emph{PaaS}, and Software as a Service - \emph{SaaS}) and four deployment models (private, community, public, and hybrid clouds) instead of 7 service categories and 8 deployment models in the ISO standard. In contrast to the frameworks offered by ISO/IEC and NIST, commercial organizations like Amazon Web Services (AWS) tend to use more concise and business-oriented definitions, such as "on-demand delivery of IT resources over the Internet with pay-as-you-go pricing" \cite{aws-what-is-cloud}. Despite these variations, all definitions focus on the core value proposition of cloud computing: providing flexible, accessible, and easy-to-manage computing services.
+Various organizations and standardization bodies have formulated alternative definitions of cloud computing based on their specific priorities and perspectives. ISO/IEC 22123-1 \cite{ISOIEC22123-1} defines cloud computing as a "paradigm for enabling network access to a scalable and elastic pool of shareable physical or virtual resources with self-service provisioning and administration on-demand". This definition, with the emphasis on essential characteristics like on-demand availability and self-service, shares similarities with the one provided by the National Institute of Standards and Technology in \emph{The NIST Definition of Cloud Computing} \cite{mell2011nist-definition}. However, NIST also provides a more focused categorization of cloud services, identifying three service models (Infrastructure as a Service - \emph{IaaS}, Platform as a Service - \emph{PaaS}, and Software as a Service - \emph{SaaS}) and four deployment models (private, community, public, and hybrid clouds) instead of 7 service categories and 8 deployment models in the ISO standard. In contrast to the frameworks offered by ISO/IEC and NIST, commercial organizations like Amazon Web Services (AWS) tend to use more concise and business-oriented definitions, such as "on-demand delivery of IT resources over the Internet with pay-as-you-go pricing" \cite{aws-what-is-cloud}. Despite these variations, all definitions focus on the core value proposition of cloud computing: providing flexible, accessible, and easy-to-manage computing services.
 
 % ISO/IEC 22123-1
 % https://www.iso.org/standard/82758.html
@@ -297,7 +297,7 @@ Cloud service models described earlier form a spectrum. Starting from the least 
 
 % Cloud environments discussed above, such as IaaS and PaaS, are delivered over the Internet and don't require setting up physical data centers by customers anymore. However, like in a traditional data center, they may require extensive configuration of the environment before cloud-based applications can be launched. This can include setting up virtualized networking, security policies, or observability, as well as architecting for high availability, elasticity, and more.
 
-No two cloud platforms are the same. Leveraging differentiating, proprietary features can accelerate development of cloud-based services, but at the same requires careful consideration before adoption. These features, often exclusive to specific providers, can lead to a situation where users inadvertently depend on a particular technology, known as \emph{vendor lock-in} or \emph{feature lock-in} \cite{portability-and-interoperability-between-clouds}. This dependency can pose a challenge when migrating to a different cloud vendor or pursuing a multi-cloud deployment strategy. Moreover, the perceived value and associated risks of such dependencies can change over time, influenced by evolving business needs and technological landscape.
+No two cloud platforms are the same. Leveraging differentiating, proprietary features can accelerate development of cloud-based services, but at the same requires careful consideration before adoption. These features, often exclusive to specific providers, can lead to a situation where users inadvertently depend on a particular technology, known as \emph{vendor lock-in} or \emph{feature lock-in} \cite{petcu2011portability}. This dependency can pose a challenge when migrating to a different cloud vendor or pursuing a multi-cloud deployment strategy. Moreover, the perceived value and associated risks of such dependencies can change over time, influenced by evolving business needs and technological landscape.
 
 % Portability and Interoperability between Clouds: Challenges and Case Study
 % https://link.springer.com/chapter/10.1007/978-3-642-24755-2_6
@@ -311,12 +311,12 @@ No two cloud platforms are the same. Leveraging differentiating, proprietary fea
 
 In addition to the above, we would like to note that the exact split in the shared responsibility model depends greatly on the used service delivery model. While things like power or cooling for IT resources are hidden from end users independent of the used model, many other responsibilities, similar to the lock-in discussion above, depend on whether users opt into abstractions provided by the cloud provider. Typically, the more \emph{managed} a service or model is, the more responsibility is taken by the cloud service provider. Providers abstracting typical IT use cases, such as OS supervision, load balancing, and availability of the managed services according to the SLAs of individual services. This leads to less freedom in configurability, but instead, users can shift their development and operational effort towards developing high-value, differentiating capabilities in their domain of expertise. For example, when comparing bare-metal instances with virtual machines, users will be required to set up and maintain a hypervisor only in the first situation. On top of security, similar shared responsibility models can be applied to domains like compliance or even sustainability.
 
-The following sections and the rest of our thesis will focus on serverless computing, a paradigm where, contrary to its name, servers still exist. Serverless operations are abstracted even further from the developers, therefore, as before, it is important to make an informed decision whether to opt into platforms' vendor-specific features. Existing literature, such as \cite{berkeley-view-on-serverless}, explores the potential pitfalls and fallacies associated with serverless computing, providing a valuable context for understanding the broader implications of these decisions. Finally, adoption of cloud computing, like any technology, while potentially beneficial, must be evaluated with the user in mind. As Tim O'Reilly put it, "lock-in comes because others depend on the benefit from your services, not because you are completely in control" \cite{oreilly-paradigm-shift} - it is the users who eventually benefit from, or are constrained by, all architectural choices.
+The following sections and the rest of our thesis will focus on serverless computing, a paradigm where, contrary to its name, servers still exist. Serverless operations are abstracted even further from the developers, therefore, as before, it is important to make an informed decision whether to opt into platforms' vendor-specific features. Existing literature, such as \cite{jonas2019cloud-programming-simplified}, explores the potential pitfalls and fallacies associated with serverless computing, providing a valuable context for understanding the broader implications of these decisions. Finally, adoption of cloud computing, like any technology, while potentially beneficial, must be evaluated with the user in mind. As Tim O'Reilly put it, "lock-in comes because others depend on the benefit from your services, not because you are completely in control" \cite{o2003open-source-paradigm} - it is the users who eventually benefit from, or are constrained by, all architectural choices.
 
 % Cloud Programming Simplified: A Berkeley View on Serverless Computing
-% https://arxiv.org/pdf/1902.03383"
+% https://arxiv.org/pdf/1902.03383
 
-% O'Reilly, Tim. "The open source paradigm shift." Jun. 2003
+% O'Reilly, T. The Open Source Paradigm Shift (2003)
 % https://www.oreilly.com/tim/archives/ParadigmShift.pdf
 
 
@@ -392,22 +392,22 @@ Performance variability is a key consideration in Function as a Service environm
 % Schirmer T. et al., Night Shift
 % https://dl.acm.org/doi/10.1145/3592533.3592808
 
-One of the primary contributors to performance fluctuation is the phenomenon of \emph{cold starts}. When a function is invoked for the first time, the cloud provider must allocate resources, such as memory space, initialize the runtime, and load the required function code, including additional dependencies used by the function. Subsequent requests can reuse this environment, but due to the on-demand capacity management, these resources will be deallocated after a period of inactivity. FaaS providers do not provide any guarantees about the lifetime of the environment, and we must assume that they can be deallocated at any time. In this case, the provider must repeat the initialization process when a new request arrives, resulting in another cold start delay. Research \cite{dantas-cold-start-strategies} shows that the cold start latency depends on the deployment method, as well as the used programming language: 
+One of the primary contributors to performance fluctuation is the phenomenon of \emph{cold starts}. When a function is invoked for the first time, the cloud provider must allocate resources, such as memory space, initialize the runtime, and load the required function code, including additional dependencies used by the function. Subsequent requests can reuse this environment, but due to the on-demand capacity management, these resources will be deallocated after a period of inactivity. FaaS providers do not provide any guarantees about the lifetime of the environment, and we must assume that they can be deallocated at any time. In this case, the provider must repeat the initialization process when a new request arrives, resulting in another cold start delay. Research \cite{dantas2022application} shows that the cold start latency depends on the deployment method, as well as the used programming language: 
 \begin{itemize}
   \item \emph{ZIP deployments} - which use built-in runtimes, are the preferred methods for small functions with few dependencies for Node.js and Python runtimes, and the preferred option for Java functions of any size,
   \item \emph{container deployments} - which use custom, user-provided container images - for larger functions written in Node.js and Python.
 \end{itemize}
 
-Especially Java functions are known to take longer than those of other runtimes. , Due to significantly larger size of the JVM, comparing to Node.js or Python runtimes, cold starts of 
+Especially Java functions \cite{wu2022performance} are known to take longer than those of other runtimes. Due to significantly larger size of the JVM, comparing to Node.js or Python runtimes
 
 % wu2022performance
 % https://ieeexplore.ieee.org/abstract/document/10061795
 
-. \cite{java-lambda-best-practices} discusses performance-related best practices for AWS Lambda functions written in Java. Java Virtual Machine (JVM) poses challenges in serverless environments due to its relatively large size and slow startup.
+Java Virtual Machine (JVM) poses challenges in serverless environments due to its relatively large size and slow startup.
 
-leveraging ahead-of-time compilation, as well as utilizing memory snapshots of the initialized execution environment.
+Leveraging ahead-of-time compilation, as well as utilizing memory snapshots of the initialized execution environment.
 
- Cold starts are a major concern in FaaS.
+Cold starts are a major concern in FaaS.
 
 Mitigation strategies include Ahead-of-Time (AOT) compilation with GraalVM, and memory snapshots (e.g., AWS Lambda SnapStart) to reduce startup time. However, AOT increases deployment size, and snapshots add complexity.
 
@@ -416,7 +416,7 @@ Despite challenges, Java's ecosystem and performance make it suitable for server
 
 
 
-provided minimize cold start latency for smaller functions, and container deployments are , . impacting the overall response time of applications. To mitigate this effect, techniques such as provisioned concurrency can be employed, though they come with trade-offs in cost and resource utilization.
+Provided minimize cold start latency for smaller functions, and container deployments are. Impacting the overall response time of applications. To mitigate this effect, techniques such as provisioned concurrency can be employed, though they come with trade-offs in cost and resource utilization.
 
 Another factor is the variability in resource allocation. Cloud providers dynamically assign CPU, memory, and network resources to each function invocation. Variations in resource availability—due to multi-tenancy and underlying hardware differences—can lead to inconsistent execution times even for identical workloads. This inherent unpredictability means that developers must design their FaaS applications to gracefully handle such fluctuations, possibly by incorporating adaptive retry mechanisms or external caching strategies.
 
@@ -424,7 +424,7 @@ Network latency also plays a role, particularly when functions interact with oth
 
 Finally, concurrency and queuing effects contribute to performance variability. When multiple function invocations occur simultaneously, the cloud provider's orchestration layer may queue requests or reassign execution environments based on its internal scheduling algorithms. The resulting delays can be variable, especially during peak usage periods, and may affect the end-to-end latency experienced by users.
 
-In summary, the performance variability of FaaS platforms is influenced by a combination of cold start overheads, dynamic resource allocation, network variability, and concurrency management. A thorough understanding of these factors, as discussed in works such as \cite{hellerstein-serverless-two-steps-back} and \cite{dantas-cold-start-strategies}, is essential for designing robust serverless applications. In the subsequent sections, we will present experimental evaluations and benchmarking strategies that further illuminate how these factors affect image optimization workflows in serverless environments.
+In summary, the performance variability of FaaS platforms is influenced by a combination of cold start overheads, dynamic resource allocation, network variability, and concurrency management. A thorough understanding of these factors, is essential for designing robust serverless applications. In the subsequent sections, we will present experimental evaluations and benchmarking strategies that further illuminate how these factors affect image optimization workflows in serverless environments.
 
 
 % \clearpage

@@ -39,3 +39,5 @@ zstd
 Whitepaper
 IISWC
 STeLLAR
+ServiceWave
+Electrotechnical
