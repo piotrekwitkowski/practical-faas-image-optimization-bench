@@ -8,3 +8,6 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe reproduction of colour\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe Reproduction of Colour\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QOptimising SVG images\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q2017 IEEE Conference on Computer Communications Workshops (INFOCOM WKSHPS)\\E$"}
+{"rule":"STARS_AND_STEPS","sentence":"^\\QServerless Computing: One Step Forward, Two Steps Back\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QConference of the 2nd International Conference on Computer Science and Electronics Engineering (ICCSEE 2013)\\E$"}
