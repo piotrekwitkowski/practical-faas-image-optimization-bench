@@ -3,3 +3,8 @@
 {"rule":"A_NNS","sentence":"^\\QFor example, a sequence of 20 consecutive a characters can be efficiently stored as 20a instead of spelling out each individual character.\\E$"}
 {"rule":"A_NNS","sentence":"^\\QFor example, a sequence of 20 consecutive a characters can be efficiently stored as 20a instead of storing each individual character.\\E$"}
 {"rule":"A_BIT","sentence":"^\\QIn contrast, vector graphics are not optimized by reducing bit depth or resolution, but rather through methods unique to their geometrical nature.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qelasticity (cold warm starts) In practice, it varies due to several interrelated factors, such as In this section, we analyze these factors and their implications.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe book also covers the evolution and taxonomic distribution of each type of eye, and their roles in the behaviour and ecology of the animals that possess them.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe reproduction of colour\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe Reproduction of Colour\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QOptimising SVG images\\E$"}

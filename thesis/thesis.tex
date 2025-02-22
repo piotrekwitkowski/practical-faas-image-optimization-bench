@@ -43,17 +43,17 @@
 % instead of "Figure~\ref{fig:example}", write only "\cref{fig:example}" and the word "Figure" (or table, etc) will be inserted normally
 \usepackage[noabbrev,capitalise]{cleveref}
 
-% \usepackage[
-%     maxbibnames=99,
-%     style=alphabetic,
-%     url=false,
-%     backend=bibtex8,
-%     sortcites=true,
-% ]{biblatex}
-% \addbibresource{refs.bib}
-% \DeclareFieldFormat[online]{urldate}{Last accessed: #1}
-% \DeclareFieldFormat{eprint}{arXiv: \href{https://arxiv.org/abs/#1}{#1}}
-% \DeclareFieldFormat[report]{title}{``#1''}
+\usepackage[
+    maxbibnames=99,
+    style=alphabetic,
+    url=false,
+    backend=bibtex8,
+    sortcites=true,
+]{biblatex}
+\addbibresource{refs.bib}
+\DeclareFieldFormat[online]{urldate}{Last accessed: #1}
+\DeclareFieldFormat{eprint}{arXiv: \href{https://arxiv.org/abs/#1}{#1}}
+\DeclareFieldFormat[report]{title}{``#1''}
 
 
 \newcommand{\projectTitle}{Practical FaaS Performance Variability Implications in the Serverless Image Optimization Scenario}
@@ -117,5 +117,5 @@
 \include{chapters/06_conclusion.tex}
 
 \newpage
-% \printbibliography
+\printbibliography
 \end{document}
