@@ -122,14 +122,6 @@ Digital data, whether representing text, audio, or images, is fundamentally a co
 % (AC) R Pasco, Source coding algorithms for fast data compression. 1976
 % https://www.richpasco.org/scaffdc.pdf
 
-% @book{pasco1976source,
-%   title={Source Coding Algorithms for Fast Data Compression},
-%   author={Pasco, R.C.},
-%   year={1976},
-%   publisher={Stanford University}
-% }
-
-
 In addition to the methods described above that can help us understand the basics of compression, practical implementations of lossless compression often rely on dictionary-based techniques. The \emph{Lempel-Ziv} algorithms, including LZ77 \cite{ziv1977universal-compression}, LZ78 \cite{ziv1978compression}, and the \emph{Lempel-Ziv-Welch} (LZW) \cite{welch1984technique-compression} algorithm, are important examples of this approach. LZ77 utilizes a sliding window to locate matches in preceding data, while LZ78 constructs a dictionary of previously encountered phrases. Combining LZ77 with Huffman coding, \emph{Deflate} \cite{deflate1996} often achieves higher compression ratios than LZ77 alone.
 
 % Ziv, Jacob; Lempel, Abraham (May 1977). "A Universal Algorithm for Sequential Data Compression". IEEE Transactions on Information Theory. 23 (3): 337–343. CiteSeerX 10.1.1.118.8921. doi:10.1109/TIT.1977.1055714. S2CID 9267632.
@@ -236,7 +228,7 @@ The existence of multiple formats is driven by technological advancements in the
 
 % BMP (Bitmap) is one of the oldest and simplest raster formats, developed by Microsoft for Windows. It primarily uses lossless compression through run-length encoding (RLE), or can store images uncompressed. While BMP supports various color depths, its compression is generally inefficient compared to more modern formats, leading to larger file sizes. BMP's simplicity makes it compatible with a wide range of software, but its lack of advanced features and efficient compression limits its use in scenarios where file size is a major concern. BMP is better suited for situations requiring simple, uncompressed image storage or compatibility with older systems.
 
-% GIF (Graphics Interchange Format), introduced in 1987, was an early internet staple due to its support for animation and lossless compression based on the LZW algorithm.  However, GIF is limited to an 8-bit palette, meaning it can only display 256 colors. This restriction makes it unsuitable for photographs but still viable for graphics with limited color ranges, such as logos or simple icons. GIF also supports transparency, allowing for irregularly shaped, non-rectangular images. While GIF has been largely superseded by PNG for static images, its animation capabilities continue to make it relevant for short, looping animations, especially in online contexts.
+% GIF (Graphics Interchange Format), introduced in 1987, was an early internet staple due to its support for animation and lossless compression based on the LZW algorithm. However, GIF is limited to an 8-bit palette, meaning it can only display 256 colors. This restriction makes it unsuitable for photographs but still viable for graphics with limited color ranges, such as logos or simple icons. GIF also supports transparency, allowing for irregularly shaped, non-rectangular images. While GIF has been largely superseded by PNG for static images, its animation capabilities continue to make it relevant for short, looping animations, especially in online contexts.
 
 % PNG (Portable Network Graphics) was developed as a patent-free alternative to GIF, offering improved lossless compression and extended features. Using the Deflate algorithm, PNG achieves better compression than GIF without sacrificing image quality. It supports a wider range of color depths, including 24-bit and 48-bit, making it suitable for both simple graphics and photographs. PNG also offers full alpha channel support, allowing for smooth transparency gradients. These features have made PNG the preferred choice for web graphics requiring high quality and transparency, such as logos, icons, and interface elements.
 
@@ -244,7 +236,7 @@ The existence of multiple formats is driven by technological advancements in the
 
 % % TODO: Speak about JFIF.
 
-% JPEG 2000 was designed as a successor to JPEG, offering improved compression efficiency and a wider range of features.  Instead of DCT, JPEG 2000 utilizes wavelet transforms, which provide better image quality at higher compression ratios. It supports both lossy and lossless compression, as well as advanced features like region of interest (ROI) encoding, allowing specific areas of an image to be encoded with higher quality than others. While JPEG 2000 offers technical advantages, its adoption has been limited due to factors like licensing costs and the widespread use of the original JPEG format. It finds niche applications in fields like medical imaging and digital archiving, where its advanced features are beneficial.
+% JPEG 2000 was designed as a successor to JPEG, offering improved compression efficiency and a wider range of features. Instead of DCT, JPEG 2000 utilizes wavelet transforms, which provide better image quality at higher compression ratios. It supports both lossy and lossless compression, as well as advanced features like region of interest (ROI) encoding, allowing specific areas of an image to be encoded with higher quality than others. While JPEG 2000 offers technical advantages, its adoption has been limited due to factors like licensing costs and the widespread use of the original JPEG format. It finds niche applications in fields like medical imaging and digital archiving, where its advanced features are beneficial.
 
 % WebP is a relatively new format developed by Google, specifically for web use. It supports both lossy and lossless compression, providing smaller file sizes compared to JPEG and PNG, respectively. WebP's lossy compression is based on the VP8 video codec, while its lossless mode uses a variety of techniques, including dictionary coding, Huffman coding, and color indexing. WebP also supports transparency and animation, potentially replacing both PNG and GIF in many web applications. While browser support for WebP has been steadily increasing, it is still not universally supported at the time of writing.
 
@@ -333,7 +325,7 @@ Two most popular service deployment models applicable to the serverless approach
 \begin{itemize}
   \item \textbf{Backend as a Service (BaaS)} model provides developers and software vendors with options to adopt cloud-based services directly by clients, such as websites and mobile applications. Examples of BaaS frameworks include Google's Firebase or AWS Amplify\footnote{Similar to Google's Firebase, AWS Amplify lets users host static pages and predefined application backends. In contrast to Firebase, Amplify offers purely client-side wrappers for other managed AWS services, such as Amazon Cognito, Amazon API Gateway, or Amazon S3, to simplify client-side integrations with these services.}, and typical use cases include authentication, persistent storage coupled with user's identity, or notifications management. Implementation-wise, BaaS is similar to integrating with any other SDK, with the major difference of focusing on rather \emph{core} capabilities of an application transparently for the users - often without making them aware about its reliance on a particular BaaS product, as if the application custom-made backend was used.
   
-  \item \textbf{Function as a Service (FaaS)} enables developers and software vendors to run code without the need to manage the underlying infrastructure or runtime. Examples of FaaS services include AWS Lambda and Google Cloud Functions. Functions can be synchronous or asynchronous. Responding to an HTTP request is an example of the former, and event-based invocation is an example of the latter. Asynchronous functions are typically executed for their side effects, such as storing the result of a computation in an external data store. While functions can persist state between invocations, service providers may terminate execution environments at any time they are not actively handling an invocation. Therefore, functions should be designed to operate independently of any existing state within the execution environment. Sometimes, simply providing the function code is sufficient, with the FaaS platform managing dependencies and the execution environment.  If the provider supports custom container images as the function source, users are not limited to any specific programming language or runtime when authoring functions, but they will need to build, deploy, and maintain these container images themselves.
+  \item \textbf{Function as a Service (FaaS)} enables developers and software vendors to run code without the need to manage the underlying infrastructure or runtime. Examples of FaaS services include AWS Lambda and Google Cloud Functions. Functions can be synchronous or asynchronous. Responding to an HTTP request is an example of the former, and event-based invocation is an example of the latter. Asynchronous functions are typically executed for their side effects, such as storing the result of a computation in an external data store. While functions can persist state between invocations, service providers may terminate execution environments at any time they are not actively handling an invocation. Therefore, functions should be designed to operate independently of any existing state within the execution environment. Sometimes, simply providing the function code is sufficient, with the FaaS platform managing dependencies and the execution environment. If the provider supports custom container images as the function source, users are not limited to any specific programming language or runtime when authoring functions, but they will need to build, deploy, and maintain these container images themselves.
   
   % AWS re:Invent 2014 | (MBL202) NEW LAUNCH: Getting Started with AWS Lambda
   % https://www.youtube.com/watch?v=UFj27laTWQA
@@ -354,7 +346,6 @@ In FaaS deployments, minification and tree-shaking can be used to reduce the siz
 
 % J.K. Ousterhout, Scripting: higher level programming for the 21st Century
 % https://ieeexplore.ieee.org/abstract/document/660187
-
 
 In the following sections, when speaking about serverless, we will focus exclusively on the Function as a Service model, as it is more relevant to the self-hosted image optimization use case we are exploring in this thesis.
 
@@ -378,10 +369,7 @@ To facilitate benchmarking, a few components of a \emph{benchmarking system} are
 \subsubsection{Performance variability of serverless workloads}
 \label{sec:performance-variability}
 
-Performance variability is a key consideration in Function as a Service environments due to the high level of abstraction and limited control over the underlying infrastructure. Existing literature has explored and identified several sources of this performance variability within serverless platforms, including \cite{wang2018peeking} investigating performance isolation efficiency, \cite{lloyd2018serverless} studying cold and warm service performance, \cite{ustiugov2021analyzing} researching influence of storage accesses and bursty function invocations, and \cite{schirmer2023night} exploring variations in functions' execution duration, and the frequency of unexpected cold starts depending on temporal performance variability patterns.
-
-% Wang L. Peeking Behind the Curtains of Serverless Platforms
-% https://www.usenix.org/system/files/conference/atc18/atc18-wang-liang.pdf
+Performance variability is a key consideration in Function as a Service (FaaS) environments due to the high level of abstraction and limited control over the underlying infrastructure. Existing literature has explored and identified several sources of this performance variability within serverless platforms, including \cite{lloyd2018serverless} studying cold and warm service performance, \cite{ustiugov2021analyzing} researching influence of storage accesses and bursty function invocations, and \cite{schirmer2023night} exploring variations in functions' execution duration, and the frequency of unexpected cold starts depending on temporal performance variability patterns. \cite{wang2018peeking} investigates performance isolation efficiency of different serverless platforms.
 
 % Lloyd, W. Serverless computing: An investigation of factors influencing microservice performance
 % https://www.cs.colostate.edu/~shrideep/papers/ServerlessComputing-IC2E-2018.pdf
@@ -389,42 +377,26 @@ Performance variability is a key consideration in Function as a Service environm
 % Ustiugov, Analyzing Tail Latency in Serverless Clouds with STeLLAR
 % https://www.pure.ed.ac.uk/ws/portalfiles/portal/228392988/Analyzing_Tail_Latency_USTIGOV_DOA27092021_AFV.pdf
 
-% Schirmer T. et al., Night Shift
+% Schirmer T. Night Shift
 % https://dl.acm.org/doi/10.1145/3592533.3592808
 
-One of the primary contributors to performance fluctuation is the phenomenon of \emph{cold starts}. When a function is invoked for the first time, the cloud provider must allocate resources, such as memory space, initialize the runtime, and load the required function code, including additional dependencies used by the function. Subsequent requests can reuse this environment, but due to the on-demand capacity management, these resources will be deallocated after a period of inactivity. FaaS providers do not provide any guarantees about the lifetime of the environment, and we must assume that they can be deallocated at any time. In this case, the provider must repeat the initialization process when a new request arrives, resulting in another cold start delay. Research \cite{dantas2022application} shows that the cold start latency depends on the deployment method, as well as the used programming language: 
-\begin{itemize}
-  \item \emph{ZIP deployments} - which use built-in runtimes, are the preferred methods for small functions with few dependencies for Node.js and Python runtimes, and the preferred option for Java functions of any size,
-  \item \emph{container deployments} - which use custom, user-provided container images - for larger functions written in Node.js and Python.
-\end{itemize}
+% Wang L. Peeking Behind the Curtains of Serverless Platforms
+% https://www.usenix.org/system/files/conference/atc18/atc18-wang-liang.pdf
 
-Especially Java functions \cite{wu2022performance} are known to take longer than those of other runtimes. Due to significantly larger size of the JVM, comparing to Node.js or Python runtimes
+One of the primary contributors to performance fluctuation is the phenomenon of \emph{cold starts}. When a function is invoked for the first time (or after a period of inactivity), the cloud provider must allocate resources, initialize the runtime, and load the function code. Subsequent "warm" invocations can reuse this environment, leading to significantly lower latency. However, FaaS providers offer no guarantees about environment lifetimes, meaning cold starts can occur unpredictably. Mitigation techniques like provisioned concurrency exist but introduce trade-offs in cost and resource utilization. Research \cite{dantas2022application} shows that the cold start latency depends on the deployment method (ZIP deployments being preferable for smaller Node.js, Python, and all Java functions, and container deployments for larger Node.js and Python functions), as well as the used programming language. 
+Java functions, in particular, are known to exhibit longer cold start times due to the overhead of the Java Virtual Machine (JVM) \cite{wu2022performance}. While the JVM's size and startup contribute to this latency, mitigation strategies such as Ahead-of-Time (AOT) compilation (e.g., with GraalVM) and memory snapshots (e.g., AWS Lambda SnapStart) can reduce this delay.
 
-% wu2022performance
-% https://ieeexplore.ieee.org/abstract/document/10061795
+Beyond cold starts, variability in resource allocation \cite{ginzburg2020serverless} also impacts performance. Cloud providers dynamically allocate resources (CPU, memory, network) to each function invocation. Multi-tenancy and hardware differences can lead to inconsistent execution times even for identical workloads. Network latency, especially when functions interact with other services and APIs, adds another layer of unpredictability due to factors like congestion and variable geographical location (for example, in different regions, or availability zones). Benchmarking from a client perspective is crucial to capture realistic performance.
 
-Java Virtual Machine (JVM) poses challenges in serverless environments due to its relatively large size and slow startup.
+% Serverless Isn’t Server-Less: Measuring and Exploiting Resource Variability on Cloud FaaS Platforms
+% https://www.cs.princeton.edu/~mfreed/docs/serverless-wosc20.pdf
 
-Leveraging ahead-of-time compilation, as well as utilizing memory snapshots of the initialized execution environment.
+Concurrency and queuing effects further contribute \cite{shahrad2019architectural} to variability. Simultaneous invocations can lead to queuing particularly during peak loads, as the cloud provider's orchestration layer manages resources. These peak loads often exhibit periodic patterns, influenced by human activity and the scheduling of recurring tasks, which tend to cluster at common intervals (e.g., the start or end of hours, days, or weeks).
 
-Cold starts are a major concern in FaaS.
+% Architectural Implications of Function-as-a-Service Computing
+% https://dl.acm.org/doi/pdf/10.1145/3352460.3358296
 
-Mitigation strategies include Ahead-of-Time (AOT) compilation with GraalVM, and memory snapshots (e.g., AWS Lambda SnapStart) to reduce startup time. However, AOT increases deployment size, and snapshots add complexity.
-
-Despite challenges, Java's ecosystem and performance make it suitable for serverless applications when optimized. 
-
-
-
-
-Provided minimize cold start latency for smaller functions, and container deployments are. Impacting the overall response time of applications. To mitigate this effect, techniques such as provisioned concurrency can be employed, though they come with trade-offs in cost and resource utilization.
-
-Another factor is the variability in resource allocation. Cloud providers dynamically assign CPU, memory, and network resources to each function invocation. Variations in resource availability—due to multi-tenancy and underlying hardware differences—can lead to inconsistent execution times even for identical workloads. This inherent unpredictability means that developers must design their FaaS applications to gracefully handle such fluctuations, possibly by incorporating adaptive retry mechanisms or external caching strategies.
-
-Network latency also plays a role, particularly when functions interact with other cloud services or external APIs. As these interactions occur over shared networks, factors such as transient congestion or geographic dispersion between cloud regions can introduce additional delays. This variability emphasizes the importance of benchmarking FaaS deployments from a client perspective to capture realistic performance profiles.
-
-Finally, concurrency and queuing effects contribute to performance variability. When multiple function invocations occur simultaneously, the cloud provider's orchestration layer may queue requests or reassign execution environments based on its internal scheduling algorithms. The resulting delays can be variable, especially during peak usage periods, and may affect the end-to-end latency experienced by users.
-
-In summary, the performance variability of FaaS platforms is influenced by a combination of cold start overheads, dynamic resource allocation, network variability, and concurrency management. A thorough understanding of these factors, is essential for designing robust serverless applications. In the subsequent sections, we will present experimental evaluations and benchmarking strategies that further illuminate how these factors affect image optimization workflows in serverless environments.
+Due to the inherent abstraction of the FaaS model, ensuring consistent performance is a critical requirement for providers, as it is a prerequisite for predictable application behavior and end-user experience. However, FaaS platform users can also influence workload performance, for example, by strategically scheduling workloads to avoid known periods of high usage mentioned above.
 
 
 % \clearpage
