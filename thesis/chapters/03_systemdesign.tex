@@ -2,24 +2,35 @@
 \label{cha:system-design}
 
 % How I selected different parameters that were included in the experiment
+In this chapter, we will describe different input parameters that we have considered while designing the image optimization benchmark, and the selection process we used to choose the distinct values of these parameters. It is necessary to focus our study on specific parameters only, as there are too many parameters that can be configured while building a general-purpose serverless image optimization system. We will present different performance-related metrics we are able to collect during image optimization process in the chosen environments, and the methodology used to collect and process these metrics.
 
 \subsection{Image processing workload design}
 % How is this benchmark different from purely synthetic (CPU/IO-bound) perf benchmarking?
+Because of the client-oriented characteristic of the process, a real-world image optimization workloads are using user-provided parameters, such as image formats and screen width to create an appropriate, optimized image asset supported by the client.
+
+\begin{figure}[ht]
+  \includegraphics[width=\textwidth]{image-optimization-devices.pdf}
+  \label{fig:aaa}
+\end{figure}
+
+
+
+
+
 % We will describe top-down
 
-\subsubsection{Serverless environment selection}
+\subsubsection{Serverless environment and image-manipulation library selection}
 % Clouds and region selection
 % Platforms
 % Runtime
 % Why Node: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8529465
 % CPU/Memory
 
-\subsubsection{Image manipulation library selection}
 % Review of popular image manipulation libraries
 % Why sharp/libvips
 % How sharp can be configured
 
-\subsubsection{Input image and output image selection}
+\subsubsection{Input image selection}
 % What is a typical image?
 % Input formats and widths
 % Output formats and widths
@@ -27,6 +38,8 @@
 
 
 \subsection{Benchmark design}
+
+\includegraphics[width=\textwidth]{benchmark-design.pdf}
 % What is exposed by serverless platforms?
 \subsubsection{Choice of serverless platform}
 % General differences in performance variability between AWS Lambda and GCP Cloud Run Functions

@@ -46,7 +46,8 @@
 
 \usepackage[
     maxbibnames=99,
-    style=alphabetic,
+    % style=alphabetic,
+    style=numeric,
     url=false,
     backend=biber,
     sortcites=true,
@@ -55,7 +56,7 @@
 \DeclareFieldFormat[online]{urldate}{Last accessed: #1}
 \DeclareFieldFormat{eprint}{arXiv: \href{https://arxiv.org/abs/#1}{#1}}
 \DeclareFieldFormat[report]{title}{``#1''}
-
+\graphicspath{ {./fig/} }
 
 \newcommand{\projectTitle}{Practical FaaS Performance Variability Implications in the Serverless Image Optimization Scenario}
 \newcommand{\thesisType}{Master's Thesis}

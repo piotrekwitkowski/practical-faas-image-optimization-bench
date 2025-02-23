@@ -46,3 +46,4 @@ YCbCr
 blockiness
 QoMEX
 SoftCOM
+Cloudinary

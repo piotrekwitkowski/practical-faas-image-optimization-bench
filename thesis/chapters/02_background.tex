@@ -385,7 +385,19 @@ Due to the inherent abstraction of the FaaS model, ensuring consistent performan
 \subsection{Image Optimization for the Web}
 
 % Explain why image optimization is crucial for web performance
-% Image optimization for the Web is 
+According to HTTP Archive's Web Almanac, images are the heaviest and most common resource on the Web. A typical webpage consists of the HTML markup and additional resources referenced from the page, such as fonts, styles (CSS), scripts (JS), and media (images, video, sounds). While videos are usually heavier than images on a per-request basis, it is the latter, not the former, that statistically are included on every landing page on the Internet, and consume the most bytes of all content types.
+
+\begin{figure}[h]  
+  \includegraphics[width=\textwidth]{median-homepage-weight.pdf}
+  \caption{
+    \href{https://almanac.httparchive.org/en/2024/page-weight}
+    {Median mobile homepage weight, by content type, 2024 HTTP Almanac}
+  }
+\end{figure}
+
+Transferring web content over the Internet is a delicate exercise of prioritizing different resources to deliver satisfactory user experience when accessing the content. Resources referenced by the page can be either \emph{blocking} or \emph{non-blocking} in regard to the critical rendering path\footnote{See \href{https://developer.mozilla.org/en-US/docs/Web/Performance/Critical_rendering_path}{Critical rendering path - Web performance | MDN Web Docs}}.
+
+Web Vitals is Google's initiative to quantify experience with reproducible, client-side measurements of loading performance, interactivity, and visual stability 
 
 \subsubsection{Impact of images and bandwidth usage on browsing experience}
 % Impact of images on page load times, user experience, and SEO.
@@ -412,3 +424,7 @@ Due to the inherent abstraction of the FaaS model, ensuring consistent performan
 % Explain how FaaS can be used to create efficient and scalable image optimization workflows.
 % Discuss the benefits of serverless image optimization (e.g., on-demand scaling, cost-effectiveness, automation).
 % Present examples of FaaS-based image optimization tools and services.
+
+Similar to other services deployed in the cloud, image optimization service can be deployed and operated by the consumer of the service, or used in the SaaS model. 
+
+Public image optimization services include Cloudinary Imgix, and 
