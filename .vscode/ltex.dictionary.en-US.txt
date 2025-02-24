@@ -47,3 +47,6 @@ blockiness
 QoMEX
 SoftCOM
 Cloudinary
+inlining
+ImageKit
+Imgix
