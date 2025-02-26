@@ -50,3 +50,7 @@ Cloudinary
 inlining
 ImageKit
 Imgix
+SIGWEB
+WebSockets
+WebSocket
+mWeb

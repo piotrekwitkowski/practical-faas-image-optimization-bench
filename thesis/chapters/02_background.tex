@@ -237,7 +237,7 @@ While based on common data representation principles, specific raster formats us
 % GK Wallace - Communications of the ACM, 1991 - dl.acm.org
 % https://dl.acm.org/doi/pdf/10.1145/103085.103089
 
-\clearpage
+% \clearpage
 \subsection{Cloud Computing}
 \label{sec:cloud-computing}
 % Provide a concise overview of cloud computing models.
@@ -384,7 +384,21 @@ Due to the inherent abstraction of the FaaS model, ensuring consistent performan
 % \clearpage
 \subsection{Image Optimization for the Web}
 
-A typical web page is composed of the HTML markup and additional resources, including fonts, stylesheets, scripts, and media, such as images, video, and audio. While there is no requirement to use any of these additional resources, in practice, according to the data from the HTTP Archive \cite{smart2024page-weight}, a median page is sending approximately 70 additional requests. Among them, videos are the heaviest on a per-request basis, however, it is \textbf{images that contribute the most to the overall weight of an average web page}\footnote{Average homepage weight.}, as 99.9\% of pages load at least one image resource, and only 7\% of pages load a video \cite{judis2024media}.
+In its broadest sense, web delivery refers to the process of transmitting web content from a web server to a user's web browser using technologies including the addressing system (URIs), the network protocol (HTTP) and the markup language (HTML), known together as the World Wide Web \cite{berners1994world}. These technologies have provided users of the Internet with \emph{a consistent means to access a variety of media in a simplified fashion} \cite{hughes1994entering}. Since its invention of \emph{the Web} over 35 years ago, we have seen enormous effort and investment put into optimizing web content delivery, including both its hardware (distributed, purpose-built networks for content delivery) and software part (protocols, including HTTPS \cite{fielding2022rfc-http-semantics}, HTTP/2 \cite{thomson2022rfc-http2}, HTTP/3 \cite{bishop2022rfc-http3}, WebSockets \cite{fette2021rfc-websockets}, and various other specifications\footnote{\url{https://developer.mozilla.org/docs/web/http/resources_and_specifications}}).
+
+Optimizing performance of the delivery can be achieved by following the general measures that answer the 6 common journalistic questions:
+\begin{itemize}
+  \item \textbf{What}: Website delivery is based on data transfer. We can optimize website loading time by reducing amount of content sent to the user. After selecting specific content, its size can be further reduced with compression (see Section \ref{sec:data-and-image-compression}). Text and other arbitrary data can be compressed using lossless techniques mentioned before. Media content, such as images, video and audio, can be compressed even further by using lossy techniques. In the context of data, we are limited by its entropy.
+  \item \textbf{How}: Quickly and reliably - using dedicated, high-bandwidth links with low packet loss and retransmission rates, and efficiently - using protocols that reduce signaling and minimize overheads on all layers of the networking stack.
+  \item \textbf{When}: Typically, when a client makes a request, but also in advance, by preparing content that is likely to be requested in the future. This can be achieved by preloading content, or using server-sent. In this context, we are limited by the time of the first interaction between the client and the server.
+  \item \textbf{Who}: Content can be specific to a given user, or applicable to a wider audience, enabling content reuse and request collapsing. Instead of generating unique response for each request, reusing previously generated content can reduce server load and improve response latency. In this context, we are limited by the degree of personalization of the content.
+  \item \textbf{Where}: Content can be delivered from a variety of locations, including the authoritative origin server, or a proxy (cache) server, such as a reverse proxy, also known as content delivery network (CDN\footnote{\url{https://developer.mozilla.org/docs/glossary/cdn}}), or a forward proxy, to optimize latency. In this context, we are limited by the physical distance between the client and the server and the speed of light if the content is not already present in the client's cache.
+  \item \textbf{Why}: While this does not directly influence the performance of the delivery, understanding the purpose of content can help in request prioritization and response ordering for the specific use case and audience. This optimization is limited by the previously mentioned objectives of the service owners, as well as the users' expectations of the service.
+\end{itemize}
+
+% \clearpage
+
+A typical web page is composed of the HTML markup and additional resources, including fonts, stylesheets, scripts, and media. While there is no requirement to use any of these additional resources, in practice, according to the data from the HTTP Archive \cite{smart2024page-weight}, a median page is sending approximately 70 additional requests. Among them, videos are the heaviest on a per-request basis, however, it is \textbf{images that contribute the most to the overall weight of an average homepage}, as 99.9\% of landing pages load at least one image resource, and only 7\% of pages load a video \cite{judis2024media}.
 
 \begin{figure}[h]
   \includegraphics[width=\textwidth]{median-homepage-weight.pdf}
@@ -394,37 +408,42 @@ A typical web page is composed of the HTML markup and additional resources, incl
   }
 \end{figure}
 
-Web content delivery is a nuanced task that requires thoughtful prioritization to create an engaging experience for users, and to achieve objectives of the site owners. In context of images, a balance needs to be found between the performance, or at least perceived performance of the page, and the visual quality of the images that are displayed. While subjective, visual quality is often associated with the resolution, color depth, and compression artifacts present in the image, as described in section \ref{sec:raster-and-vector-graphics}. Performance, on the other hand, is a measure of how quickly the images are rendered to provide added value to the users, and is influenced by the weight of images to be loaded, as well as the connection speed of the device.
+In context of images, a balance needs to be found between the performance, or at least perceived performance of the page, and the visual quality of the images that are displayed. Image performance is a measure of how quickly the images are rendered to provide value to the users. While subjective, image quality is often associated with the resolution, color depth, and compression artifacts present in the image, as described in section \ref{sec:raster-and-vector-graphics}. 
 
-Critical rendering path\footnote{ \url{https://developer.mozilla.org/docs/web/performance/critical_rendering_path}} is a sequence of steps a browser takes to render a web page, starting from the initial page request until it can be rendered on a screen. Resources referenced by a page can be either \emph{blocking} or \emph{non-blocking} in regard to the critical rendering path. Traditionally, most resources (styles, scripts, fonts, and images) are blocking, meaning that the browser must wait for them to be downloaded and processed before rendering the page. This can lead to a situation where the user sees a blank page for a prolonged time. To mitigate this, developers can optimize the delivery of resources, for example by inlining critical resources, and loading non-critical resources asynchronously, in an on-demand manner. In case of images, this can be achieved by loading only images placed in the viewport, and \emph{lazy loading}\footnote{Lazy loading is a practice of loading content only when, or immediately before it becomes visible.} the rest. An approach similar to lazy-loading, but on the opposite end of the spectrum, is \emph{preloading} content that is most likely to be needed in the future, for example when hovering over a link, but before the user actually clicks on it. This allows to immediately render images when the user decides to navigate to the linked page without any additional network latency.
+Critical rendering path\footnote{\href{https://developer.mozilla.org/docs/web/performance/critical_rendering_path}{https://developer.mozilla.org/docs/web/performance}} is a sequence of steps a browser takes to render a web page, starting from the initial page request until it can be rendered on a screen. Resources referenced by a page can be either \emph{blocking} or \emph{non-blocking} in regard to the critical rendering path. Traditionally, most resources (styles, scripts, fonts, and images) are blocking, meaning, the browser must wait for them to be downloaded and processed before rendering the page. This can lead to a situation where the user sees a blank page for a prolonged time. To mitigate this, developers can optimize the delivery of resources, for example by inlining critical resources, and loading non-critical resources asynchronously, in an on-demand manner. In case of images, this can be achieved by loading only images placed in the viewport, and \emph{lazy loading}\footnote{Client-side on-demand image loading only when, or immediately before, they become visible.} the rest. An approach similar to lazy-loading, but on the opposite end of the spectrum, is \emph{preloading} content that is most likely to be needed in the future, for example when hovering over a link, but before the user actually clicks on it. This allows to immediately render images when the user decides to navigate to the linked page without any additional network latency.
 
 
 \subsubsection{Impact of images and bandwidth usage on browsing experience}
-% Impact of images on page load times, user experience, and SEO.
-% Relationship between image optimization and Core Web Vitals.
 
-% \subsubsection{Bandwidth usage, visual quality, and browser support evolution}
-% Image resizing, cropping and applying compression
-% Progressive loading
-% Responsive web design
-% Evolution of browser support for responsive images on HTML and CSS
-% Evolution of browser support for image formats
-% https://medium.com/hceverything/applying-srcset-choosing-the-right-sizes-for-responsive-images-at-different-breakpoints-a0433450a4a3
-% https://nextjs.org/docs/app/api-reference/components/image#devicesizes
+Multiple studies demonstrate a strong correlation between webpage load times and user satisfaction. Research shows that even a minor increase in page load time correlates with an increased number of users leaving the website \cite{brutlag2009speed}. Users perceive delays exceeding 1 second as disruptive to their cognitive flow \cite{nielsen1993response}. Every other person expects a page to load in less than 2 seconds \cite{akamai2014expectations-survey}, and 53\% of mobile site visits are abandoned if pages take longer than 3 seconds to load \cite{google2016abandoned-websites}. Consequently, \textbf{the data volume contributed by unoptimized images directly translates to increased page load times}, potentially exceeding acceptable thresholds, and as a result, contributing to user frustration and attrition.
 
-% \subsubsection{Optimizing latency of image delivery}
-% On-demand vs pre-optimizing images
-% Inlining assets
-% Preloading assets
-% HTTP caching and CDNs
+Secondly, we can provide different clients with optimized assets based on their unique characteristics. Devices like mobile phones have smaller screens, rely on variable wireless networks, and have limited battery, unlike desktop computers. Therefore, delivering smaller, lower-resolution images to mobile conserves bandwidth and battery, while larger images can be sent to desktops without impacting performance. Network bandwidth is not a uniformly distributed across web users \cite{gsma2023mobile-economy}. We access the web across a spectrum of network conditions, from high-capacity wired connections to congested mobile networks. Mobile browsing may be reliant on cellular networks with limited infrastructure, or constrained bandwidth during usage peaks. In such situations, the impact of unoptimized images is amplified, resulting in unnecessary long content load times and a degraded browsing experience.
+
+\begin{figure}[ht]
+  \includegraphics[width=\textwidth]{image-optimization-devices.pdf}
+  \label{fig:aaa}
+  \caption{Device characteristics and their impact on image optimization}
+\end{figure}
+
+Lastly, developers may not test their applications under constrained network conditions, leading to a lack of awareness of the performance issues faced by users in these scenarios or lower-end devices \cite{russell2024performance-inequality}. For e-commerce platforms, page load speed directly impacts conversion rates and revenue generation \cite{akamai2014expectations-survey}. In regions with usage-based internet billing, excessive bandwidth consumption due to unoptimized images can lead to increased data charges for users, creating a financial barrier to accessing web content \cite{weforum2024-digital-inclusion}.
+
 
 \subsubsection{Deployment methods for cloud-based image optimization}
 \label{sec:deployment-methods-for-cloud-based-optimization}
-% Image CDNs
-% Explain how FaaS can be used to create efficient and scalable image optimization workflows.
-% Discuss the benefits of serverless image optimization (e.g., on-demand scaling, cost-effectiveness, automation).
-% Present examples of FaaS-based image optimization tools and services.
 
-Similar to other services deployed in the cloud, image optimization service can be deployed and operated by the consumer of the service, or used in the SaaS model. 
 
-Public image optimization services include Cloudinary\footnote{\url{https://cloudinary.com/}}, ImageKit\footnote{\url{https://imagekit.io/}}, and Imgix\footnote{\url{https://www.imgix.com/}}. These services offer a range of features, such as image resizing, cropping, and compression, as well as image transformation capabilities, such as applying filters, overlays, and watermarks. They also provide features for optimizing image delivery, such as lazy loading, responsive images, and automatic format selection. These services are typically priced based on the number of images processed, the amount of data transferred, and the number of transformations applied.
+Similar to other services deployed in the cloud, image optimization service can be deployed and operated by the consumer of the service, or used in the SaaS model.
+
+- What are Image CDNs?
+
+- Explain how FaaS can be used to create efficient and scalable image optimization workflows.
+
+- Discuss the benefits of serverless image optimization (e.g., on-demand scaling, cost-effectiveness, automation).
+
+- Present examples of FaaS-based image optimization tools and services.
+
+
+
+% Public image optimization services include Cloudinary\footnote{\url{https://cloudinary.com}}, ImageKit\footnote{\url{https://imagekit.io}}, and Imgix\footnote{\url{https://imgix.com}}. These services offer a range of features, such as image resizing, cropping, and compression, as well as image transformation capabilities, such as applying filters, overlays, watermarks, and object clipping.
+
+% They also provide features for optimizing image delivery, such as lazy loading, responsive images, and automatic format selection. These services are typically priced based on the number of images processed, the amount of data transferred, and the number of transformations applied.
