@@ -400,7 +400,7 @@ Optimizing performance of the delivery can be achieved by following the general 
 
 A typical web page is composed of the HTML markup and additional resources, including fonts, stylesheets, scripts, and media. While there is no requirement to use any of these additional resources, in practice, according to the data from the HTTP Archive \cite{smart2024page-weight}, a median page is sending approximately 70 additional requests. Among them, videos are the heaviest on a per-request basis, however, it is \textbf{images that contribute the most to the overall weight of an average homepage}, as 99.9\% of landing pages load at least one image resource, and only 7\% of pages load a video \cite{judis2024media}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \includegraphics[width=\textwidth]{median-homepage-weight.pdf}
   \caption{
     \href{https://almanac.httparchive.org/en/2024/page-weight}
@@ -431,8 +431,7 @@ Lastly, developers may not test their applications under constrained network con
 \subsubsection{Deployment methods for cloud-based image optimization}
 \label{sec:deployment-methods-for-cloud-based-optimization}
 
-
-Similar to other services deployed in the cloud, image optimization service can be deployed and operated by the consumer of the service, or used in the SaaS model.
+Similar to other cloud-based services, image optimization workloads can be deployed and operated by the consumer of the service, or used in the SaaS model.
 
 - What are Image CDNs?
 
@@ -440,7 +439,7 @@ Similar to other services deployed in the cloud, image optimization service can 
 
 - Discuss the benefits of serverless image optimization (e.g., on-demand scaling, cost-effectiveness, automation).
 
-- Present examples of FaaS-based image optimization tools and services.
+- Present examples of FaaS-based image optimization tools and services
 
 
 

@@ -54,3 +54,4 @@ SIGWEB
 WebSockets
 WebSocket
 mWeb
+FaaS-based

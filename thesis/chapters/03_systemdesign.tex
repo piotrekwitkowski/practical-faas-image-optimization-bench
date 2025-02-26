@@ -4,14 +4,39 @@
 % How I selected different parameters that were included in the experiment
 In this chapter, we will describe different input parameters that we have considered while designing the image optimization benchmark, and the selection process we used to choose the distinct values of these parameters. It is necessary to focus our study on specific parameters only, as there are too many parameters that can be configured while building a general-purpose serverless image optimization system. We will present different performance-related metrics we are able to collect during image optimization process in the chosen environments, and the methodology used to collect and process these metrics.
 
+
+\subsection{Benchmark design}
+
+\includegraphics[width=\textwidth]{benchmark-design.pdf}
+% What is exposed by serverless platforms?
+% Differences in performance variability between AWS Lambda and GCP Cloud Run Functions
+
+% Trever: What are we trying to find and ways to find it
+
+% Why we did it 
+
+% https://arxiv.org/pdf/2008.11110
+
+
+\subsubsection{Image optimization-related parameters}
+% We will execute every function every 5 minutes
+% Will hour of day or day of week influence execution duration
+% \subsubsection{Output formats and image widths}
+% What is the influence of the output format and size on the execution time?
+% AVIF / JPEG / WebP
+% \subsubsection{Available CPU / memory}
+% 0.5 / 1 / 2 CPUs 
+% \subsubsection{Cold starts}
+% Are warm functions faster/slower or the same?
+
+% Grain of salt anti-pattern: Richards, Mark. Microservices AntiPatterns and Pitfalls. O'Reilly.
+
+
 \subsection{Image processing workload design}
 % How is this benchmark different from purely synthetic (CPU/IO-bound) perf benchmarking?
 % Because of the client-oriented characteristic of the process, a real-world image optimization workloads are using user-provided parameters, such as image formats and screen width to create an appropriate, optimized image asset supported by the client.
 
 
-
-
-% We will describe top-down
 
 \subsubsection{Serverless environment and image-manipulation library selection}
 % Clouds and region selection
@@ -28,27 +53,6 @@ In this chapter, we will describe different input parameters that we have consid
 % What is a typical image?
 % Input formats and widths
 % Output formats and widths
-
-
-
-\subsection{Benchmark design}
-
-\includegraphics[width=\textwidth]{benchmark-design.pdf}
-% What is exposed by serverless platforms?
-\subsubsection{Choice of serverless platform}
-% General differences in performance variability between AWS Lambda and GCP Cloud Run Functions
-\subsubsection{Image optimization-related parameters}
-% We will execute every function every 5 minutes
-% Will hour of day or day of week influence execution duration
-% \subsubsection{Output formats and image widths}
-% What is the influence of the output format and size on the execution time?
-% AVIF / JPEG / WebP
-% \subsubsection{Available CPU / memory}
-% 0.5 / 1 / 2 CPUs 
-% \subsubsection{Cold starts}
-% Are warm functions faster/slower or the same?
-
-% Grain of salt anti-pattern: Richards, Mark. Microservices AntiPatterns and Pitfalls. O'Reilly.
 
 
 
