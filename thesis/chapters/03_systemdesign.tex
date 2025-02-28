@@ -1,26 +1,84 @@
 \section{System Design}
 \label{cha:system-design}
 
-% How I selected different parameters that were included in the experiment
 In this chapter, we will describe different input parameters that we have considered while designing the image optimization benchmark, and the selection process we used to choose the distinct values of these parameters. It is necessary to focus our study on specific parameters only, as there are too many parameters that can be configured while building a general-purpose serverless image optimization system. We will present different performance-related metrics we are able to collect during image optimization process in the chosen environments, and the methodology used to collect and process these metrics.
 
+\subsection{Benchmark Design}
 
-\subsection{Benchmark design}
+The benchmark is composed of two main components:
+\begin{itemize}
+  \item \textbf{Workload Generation Stack}, which is responsible for generating the image optimization workload and saving the results of the optimization requests in a database. 
+  \item \textbf{Image Optimization Stacks}, which are provider-specific systems under test (SUTs) that are responsible for hosting and exposing image optimization serverless functions.
+\end{itemize}
 
-\includegraphics[width=\textwidth]{benchmark-design.pdf}
+
+
+Both workload generation and image optimization were implemented in a serverless fashion. For simplicity, workload generator infrastructure was all deployed in one environment - in our case it was AWS, but any cloud provider (or even no cloud infrastructure) could be used, as long as it is connected to the Internet, capable of sending HTTP requests on a schedule and storing the results in a database.
+
+\begin{figure}[htb]
+  \includegraphics[width=\textwidth]{benchmark-design.pdf}
+  \caption{High-level overview of the image optimization benchmark design}
+  \label{fig:benchmark-design}
+\end{figure}
+
+The figure \ref{fig:benchmark-design} shows the main steps of the benchmark:
+\begin{enumerate}
+  \item \textbf{event scheduler} invokes the workload generator functions,
+  \item \textbf{workload generators} send requests to specific image processing functions,
+  \item \textbf{workload generators} save image optimization results in the database,
+  \item \textbf{benchmark results} are exported as JSON to a bucket for later offline analysis.
+\end{enumerate}
+
+The image optimization stacks were deployed in two different clouds - which we call \emph{providers} - AWS and GCP. These stacks are responsible for providing HTTP endpoints and function invocation in response an incoming HTTP request. Since the optimization process is consistent\footnote{By \emph{consistent} we mean producing comparable metadata outputs for identical input and optimization parameters, sufficient for reliable benchmark comparisons. Strict bit-for-bit determinism is not implied.} enough for our purposes, functions only return the metadata of an individual optimization execution, and the output images are discarded.
+
+The image processing function, except for the actual processing, is parsing environment variables, loading image into the function's memory, and calculating the time elapsed since the cold start, as well as the duration of the actual image processing. Figure \ref{fig:processing-code} illustrates a simplified function code, outlining the key steps from the environment setup to image processing and response generation.
+
+\begin{figure}[ht]
+  \includegraphics[width=\textwidth]{code.pdf}
+  \caption{Simplified image processing function code}
+  \label{fig:processing-code}
+\end{figure}
+
+In the actual image processing functions, we do return a few more optimization properties in the response object, such as exact dimensions and formats of the input and output images, as well as their byte length. We have omitted them from the code snippet here for brevity. Please note that the image processing duration strictly relates to the actual image processing: image resizing, and optionally image reformatting. It does not include any earlier steps necessary to facilitate processing, executed either on once cold start, or on every handler function call.
+
+Please also note that in a real-world image optimization scenario, the deployment package of a serverless function does not include any image. An additional network call, or a cloud SDK operation, is required on every function call to retrieve the original, unoptimized image from an external object storage. In our study, we are not interested in measuring performance variability of such operations, and in the interest of cloud service usage minimization we have decided to load the image into memory only once, outside the handler function definition, on a cold start.
+
+
+
+\subsubsection{Serverless environment, image, and optimization parameter selection}
+
+There were 5 variables for each optimization function variant, presented on figure \ref{fig:function-variants}. There were in total 108 ($2^2 \cdot 3^3 $) image optimization functions deployed. Every variant deployed as separate function to minimize interference between resources. Each function includes the request handler, as well as one unoptimized image within its deployment package (ZIP file).
+
+To simplify operations, functions were exposed behind a single domain name per provider, and we used a predictable path-based routing to invoke a specific function. For example, \texttt{portrait-1769-webp-1920} is an ID of a function that has the portrait picture stored within, is configured to use one vCPU\footnote{AWS Lambda is using the abbreviation MB (rather than MiB) across the documentation and log messages to refer to 1,024 KB. At 1,769 MB, a Lambda function has the equivalent of one vCPU.}, is using WebP as the image output format, and 1920 is the width of the output image. The use of HTTP is crucial, as it makes the workload generation provider-agnostic.
+
+\begin{figure}[hb]
+  \includegraphics[width=\textwidth]{function-variants.pdf}
+  \caption{All image optimization function variants deployed}
+  \label{fig:function-variants}
+\end{figure}
+
+\textbf{Providers}. We have selected Lambda because of its historical significance, presence in research, as well as its market share. Cloud Run functions (2nd generation) is the new generation of the serverless platform from Google Cloud that includes improved concurrency management, and granular memory and compute configuration. We have selected this platform, as it is still relatively new (2022) offering on the Google Cloud Platform, and many studies only researched its older version.
+
+\textbf{Input images}.
+
+
+For the image optimization stacks, nearby geographical regions were selected, North Virginia \texttt{(us-east-1)}, and South Carolina
+\texttt{(us-east1)} for AWS and GCP, respectively. North Virginia region is the oldest AWS region, and was selected for its comparability with existing literature, such as \cite{ginzburg2020serverless}. This also guided the region choice for the GCP environment. We have not decided to parametrize the region. 
+
+AWS Lambda allocates compute power proportionally to the amount of memory configured\footnote{\url{https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html}}. This offers less flexibility than Google Cloud Run, where memory and compute can be configured independently\footnote{\url{https://cloud.google.com/run/docs/configuring/services/cpu\#cpu-memory}}. 
+
+
+
 % What is exposed by serverless platforms?
 % Differences in performance variability between AWS Lambda and GCP Cloud Run Functions
 
 % Trever: What are we trying to find and ways to find it
-
 % Why we did it 
 
 % https://arxiv.org/pdf/2008.11110
 
 
-\subsubsection{Image optimization-related parameters}
-% We will execute every function every 5 minutes
-% Will hour of day or day of week influence execution duration
+
 % \subsubsection{Output formats and image widths}
 % What is the influence of the output format and size on the execution time?
 % AVIF / JPEG / WebP
@@ -32,13 +90,9 @@ In this chapter, we will describe different input parameters that we have consid
 % Grain of salt anti-pattern: Richards, Mark. Microservices AntiPatterns and Pitfalls. O'Reilly.
 
 
-\subsection{Image processing workload design}
 % How is this benchmark different from purely synthetic (CPU/IO-bound) perf benchmarking?
 % Because of the client-oriented characteristic of the process, a real-world image optimization workloads are using user-provided parameters, such as image formats and screen width to create an appropriate, optimized image asset supported by the client.
 
-
-
-\subsubsection{Serverless environment and image-manipulation library selection}
 % Clouds and region selection
 % Platforms
 % Runtime
@@ -49,18 +103,27 @@ In this chapter, we will describe different input parameters that we have consid
 % Why sharp/libvips
 % How sharp can be configured
 
-\subsubsection{Input image selection}
+
+
+\subsubsection{Image manipulation library and input image selection}
+
 % What is a typical image?
 % Input formats and widths
 % Output formats and widths
 
 
 
-\subsection{Workload generation and benchmark execution}
+
+\subsection{Workload Generation and Benchmark Execution}
+% We will execute every function every 5 minutes
+% Will hour of day or day of week influence execution duration
 % How to replicate infrastructure to run the benchmark
+
 \subsubsection{Serverless benchmark deployment}
 % Compare Cloud APIs vs IaC deployments quickly
+
 \subsubsection{Scheduling workload executions}
 % Cloud-native event scheduler 
+
 \subsubsection{Results collection and data analysis}
 % Cloud-native NoSQL database was used
