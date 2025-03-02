@@ -20,3 +20,4 @@
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qsame\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qevent scheduler invokes the Workload Generator Functions, workload generators send requests to specific image processing functions, workload generators save image optimization results in the database, results are exported from the database in a JSON format and stored in a bucket, to be downloaded for future analysis.\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qevent scheduler invokes the Workload Generator Functions, workload generators send requests to specific image processing functions, workload generators save image optimization results in the database, benchmark results are exported as JSON to a bucket for later offline analysis.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QIEEE MultiMedia\\E$"}

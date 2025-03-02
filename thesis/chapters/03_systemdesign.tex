@@ -1,7 +1,8 @@
 \section{System Design}
 \label{cha:system-design}
+\emergencystretch 2em
 
-In this chapter, we will describe different input parameters that we have considered while designing the image optimization benchmark, and the selection process we used to choose the distinct values of these parameters. It is necessary to focus our study on specific parameters only, as there are too many parameters that can be configured while building a general-purpose serverless image optimization system. We will present different performance-related metrics we are able to collect during image optimization process in the chosen environments, and the methodology used to collect and process these metrics.
+In this chapter, we present objectives and the high-level architecture of the benchmark. We will describe different input parameters that we have considered while designing the image optimization benchmark, and the selection process we used to choose the distinct values of these parameters. It was necessary to focus our study on specific parameters only, as there are too many parameters that can be configured while building a general-purpose image optimization system. We discuss different performance-related metrics we are able to collect during image optimization process in the chosen environments, as well as the methodology used to process these metrics.
 
 \subsection{Benchmark Design}
 
@@ -11,12 +12,11 @@ The benchmark is composed of two main components:
   \item \textbf{Image Optimization Stacks}, which are provider-specific systems under test (SUTs) that are responsible for hosting and exposing image optimization serverless functions.
 \end{itemize}
 
-
-
 Both workload generation and image optimization were implemented in a serverless fashion. For simplicity, workload generator infrastructure was all deployed in one environment - in our case it was AWS, but any cloud provider (or even no cloud infrastructure) could be used, as long as it is connected to the Internet, capable of sending HTTP requests on a schedule and storing the results in a database.
 
 \begin{figure}[htb]
-  \includegraphics[width=\textwidth]{benchmark-design.pdf}
+  \centering
+  \includegraphics[width=0.965\textwidth]{benchmark-design.pdf}
   \caption{High-level overview of the image optimization benchmark design}
   \label{fig:benchmark-design}
 \end{figure}
@@ -48,34 +48,28 @@ Please also note that in a real-world image optimization scenario, the deploymen
 
 There were 5 variables for each optimization function variant, presented on figure \ref{fig:function-variants}. There were in total 108 ($2^2 \cdot 3^3 $) image optimization functions deployed. Every variant deployed as separate function to minimize interference between resources. Each function includes the request handler, as well as one unoptimized image within its deployment package (ZIP file).
 
-To simplify operations, functions were exposed behind a single domain name per provider, and we used a predictable path-based routing to invoke a specific function. For example, \texttt{portrait-1769-webp-1920} is an ID of a function that has the portrait picture stored within, is configured to use one vCPU\footnote{AWS Lambda is using the abbreviation MB (rather than MiB) across the documentation and log messages to refer to 1,024 KB. At 1,769 MB, a Lambda function has the equivalent of one vCPU.}, is using WebP as the image output format, and 1920 is the width of the output image. The use of HTTP is crucial, as it makes the workload generation provider-agnostic.
-
 \begin{figure}[hb]
   \includegraphics[width=\textwidth]{function-variants.pdf}
   \caption{All image optimization function variants deployed}
   \label{fig:function-variants}
 \end{figure}
 
+% TODO: Fix "set current timestamp" in the code screenshot
+
 \textbf{Providers}. We have selected Lambda because of its historical significance, presence in research, as well as its market share. Cloud Run functions (2nd generation) is the new generation of the serverless platform from Google Cloud that includes improved concurrency management, and granular memory and compute configuration. We have selected this platform, as it is still relatively new (2022) offering on the Google Cloud Platform, and many studies only researched its older version.
 
-\textbf{Input images}. To simplify function code and allow for just one optimization run per function invocation, we opted for large input images. Specifically, we selected two high-resolution images produced using DSLR cameras, one in each orientation. For this purpose, in September 2024, we visited an online stock image portal to find popular stock image categories\footnote{\url{https://pexels.com/popular-searches}}. From these popular categories, two prominent ones, namely \emph{Travel} and \emph{Summer}, were chosen, and one image from each was downloaded. Only two images were selected, because our research was primarily driven by the parametrization of the optimization process, not influence of different images on the performance variability.
+\textbf{Input images}. To simplify function code and allow for just one optimization run per function invocation, we opted for large input images. Specifically, we selected two high-resolution images produced using DSLR cameras, one in each orientation. For this purpose, in September 2024, we visited an online stock image portal to find popular stock image categories\footnote{\url{https://pexels.com/popular-searches}}. From these popular categories, two prominent ones, namely \emph{Travel} and \emph{Summer}, were chosen, and one image from each was downloaded. Only two images were selected, because our research was primarily driven by the parametrization of the optimization process. For a study focused purely on input images, a larger image dataset, such as \cite{CID22} would have been used. Instead, we chose to focus on a larger scope of optimization parameters.
 
 \textbf{Output formats}. Three output formats were selected: JPEG (implies no reformatting), WebP, and AVIF. The latter two represent advancements in compression and browser support over the last decade. We considered, but eventually did not select JPEG XL due to its limited browser support and custom requirements around for the optimization tooling setup explained in the following section.
 
-\textbf{Output widths}. Three widths that were chosen, 640, 1080, 1920 pixels, aim to represent different screen widths of mobile, tablet and desktop devices. Popular image optimization solutions, such as , Next.js\footnote{\url{https://nextjs.org/docs/pages/api-reference/components/image\#devicesizes}}), we typically see more granular widths used, with smaller relative differences between each next value. 
+\textbf{Output widths}. Three output widths, 640, 1080, and 1920 pixels, were chosen to investigate the impact of this parameter on optimization performance variability. These values represent common display resolutions for mobile, tablet, and desktop devices, respectively. In production environments, more granular or freely configurable width options are commonly implemented, however, too many options can lead to a decreased cache hit ratio, as the frequency of identical requests is reduced. Therefore, in practice, a balance between resolution granularity and cache efficiency should be considered.
 
-\textbf{Performance settings}.
+\textbf{Performance settings}. As presented earlier in section \ref{sec:performance-variability}, the amount of assigned memory and compute power to serverless functions is a recurring theme in prior studies on serverless performance variability. The novel part of our research is that its influence will be evaluated in the practical image optimization scenario, and \emph{not a narrowly focused test} of a predominantly synthetic, CPU/IO/memory-bound nature. Specifically, we used three settings: 885, 1769, and 3538 MB\footnote{AWS Lambda is using the abbreviation MB (rather than MiB) to refer to 1024 KB.} of assigned memory. We have selected these values, because while Google Cloud Run functions let their users configure the amount of associated memory and compute independently, AWS Lambda allocates CPU power in proportion to memory. We have then configured   functions have access to exactly one vCPU at 1769 MB, half of a vCPU at 885 MB, and two vCPUs at 3538 MB of memory.
 
-most selecting the most popular photo category, and selecting one of the images 
-
-
-
+To simplify operations, functions were exposed behind a single domain name per provider, and we used a predictable path-based routing to invoke a specific function. For example, \texttt{portrait-1769-webp-1920} is an ID of a function that has the portrait picture stored within, is configured to use one vCPU and 1769 MB of memory, is using WebP as the image output format, and 1920 is the width of the resulting output image. The use of HTTP is crucial, as it makes the workload generation completely provider-agnostic. In our benchmark, we are comparing only serverless FaaS environments, but in a general case, this workload generator could work with any serverful environment too.
 
 For the image optimization stacks, nearby geographical regions were selected, North Virginia \texttt{(us-east-1)}, and South Carolina
-\texttt{(us-east1)} for AWS and GCP, respectively. North Virginia region is the oldest AWS region, and was selected for its comparability with existing literature, such as \cite{ginzburg2020serverless}. This also guided the region choice for the GCP environment. We have not decided to parametrize the region. 
-
-AWS Lambda allocates compute power proportionally to the amount of memory configured\footnote{\url{https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html}}. This offers less flexibility than Google Cloud Run, where memory and compute can be configured independently\footnote{\url{https://cloud.google.com/run/docs/configuring/services/cpu\#cpu-memory}}. 
-
+\texttt{(us-east1)} for AWS and GCP, respectively. North Virginia region is the oldest AWS region, and was selected for its comparability with existing literature, such as \cite{ginzburg2020serverless}. This also guided the region choice for the GCP environment. We have not decided to parametrize the region, as it would indicate yet another benchmark dimension and potentially introduce problems in regard to multidimensional data visualization that we tried to avoid by restricting ourselves to 5 dimensions only, but is otherwise a viable direction for future research.
 
 
 % What is exposed by serverless platforms?
