@@ -44,7 +44,6 @@ In the actual image processing functions, we do return a few more optimization p
 Please also note that in a real-world image optimization scenario, the deployment package of a serverless function does not include any image. An additional network call, or a cloud SDK operation, is required on every function call to retrieve the original, unoptimized image from an external object storage. In our study, we are not interested in measuring performance variability of such operations, and in the interest of cloud service usage minimization we have decided to load the image into memory only once, outside the handler function definition, on a cold start.
 
 
-
 \subsubsection{Serverless environment, image, and optimization parameter selection}
 
 There were 5 variables for each optimization function variant, presented on figure \ref{fig:function-variants}. There were in total 108 ($2^2 \cdot 3^3 $) image optimization functions deployed. Every variant deployed as separate function to minimize interference between resources. Each function includes the request handler, as well as one unoptimized image within its deployment package (ZIP file).
@@ -59,7 +58,17 @@ To simplify operations, functions were exposed behind a single domain name per p
 
 \textbf{Providers}. We have selected Lambda because of its historical significance, presence in research, as well as its market share. Cloud Run functions (2nd generation) is the new generation of the serverless platform from Google Cloud that includes improved concurrency management, and granular memory and compute configuration. We have selected this platform, as it is still relatively new (2022) offering on the Google Cloud Platform, and many studies only researched its older version.
 
-\textbf{Input images}.
+\textbf{Input images}. To simplify function code and allow for just one optimization run per function invocation, we opted for large input images. Specifically, we selected two high-resolution images produced using DSLR cameras, one in each orientation. For this purpose, in September 2024, we visited an online stock image portal to find popular stock image categories\footnote{\url{https://pexels.com/popular-searches}}. From these popular categories, two prominent ones, namely \emph{Travel} and \emph{Summer}, were chosen, and one image from each was downloaded. Only two images were selected, because our research was primarily driven by the parametrization of the optimization process, not influence of different images on the performance variability.
+
+\textbf{Output formats}. Three output formats were selected: JPEG (implies no reformatting), WebP, and AVIF. The latter two represent advancements in compression and browser support over the last decade. We considered, but eventually did not select JPEG XL due to its limited browser support and custom requirements around for the optimization tooling setup explained in the following section.
+
+\textbf{Output widths}. Three widths that were chosen, 640, 1080, 1920 pixels, aim to represent different screen widths of mobile, tablet and desktop devices. Popular image optimization solutions, such as , Next.js\footnote{\url{https://nextjs.org/docs/pages/api-reference/components/image\#devicesizes}}), we typically see more granular widths used, with smaller relative differences between each next value. 
+
+\textbf{Performance settings}.
+
+most selecting the most popular photo category, and selecting one of the images 
+
+
 
 
 For the image optimization stacks, nearby geographical regions were selected, North Virginia \texttt{(us-east-1)}, and South Carolina
@@ -105,11 +114,13 @@ AWS Lambda allocates compute power proportionally to the amount of memory config
 
 
 
-\subsubsection{Image manipulation library and input image selection}
+\subsubsection{Image manipulation library}
 
 % What is a typical image?
 % Input formats and widths
 % Output formats and widths
+
+% https://github.com/libvips/libvips/wiki/Speed-and-memory-use
 
 
 
