@@ -66,3 +66,7 @@ libjpeg
 libwebp
 libvips
 serverful
+Jimp
+squoosh
+npm
+EventBridge
