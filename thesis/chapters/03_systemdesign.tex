@@ -1,6 +1,6 @@
 \section{System Design}
 \label{cha:system-design}
-\emergencystretch 2em
+% \emergencystretch 2em
 
 In this chapter, we present objectives and the high-level architecture of the benchmark. We will describe different input parameters that we have considered while designing the image optimization benchmark, and the selection process we used to choose the distinct values of these parameters. It was necessary to focus our study on specific parameters only, as there are too many parameters that can be configured while building a general-purpose image optimization system. We discuss different performance-related metrics we are able to collect during image optimization process in the chosen environments, as well as the methodology used to process these metrics.
 
@@ -34,8 +34,8 @@ The image optimization stacks were deployed in two different clouds - which we c
 The image processing function, except for the actual processing, is parsing environment variables, loading image into the function's memory, and calculating the time elapsed since the cold start, as well as the duration of the actual image processing. Figure \ref{fig:processing-code} illustrates a simplified function code, outlining the key steps from the environment setup to image processing and response generation.
 
 \begin{figure}[ht]
-  \includegraphics[width=\textwidth]{code.pdf}
-  \caption{Simplified image processing function code}
+  \includegraphics[width=\textwidth]{code-image-processing.pdf}
+  \caption{Simplified image processing function logic}
   \label{fig:processing-code}
 \end{figure}
 
@@ -77,16 +77,29 @@ In this section, we will describe the parameters that remained constant across a
 \textbf{Image optimization library.} For image optimization, we chose the sharp Node.js module. It leverages libvips, a performant image processing library, known for its multi-threading capabilities and efficient memory management. Using libvips gives sharp performance of a native C library, which is advantageous in any scenario, not only serverless. We have reviewed capabilities (image format support) and popularity (weekly npm downloads) of sharp's alternatives, including ImageMagick, Jimp, and squoosh, and ultimately decided to implement our benchmark exclusively with sharp.
 % The figure \ref{fig:libvips-alternatives} shows differences in image manipulation performance between libvips and similar image manipulation libraries that supported our decision.
 
+% TODO: add reference
+% https://github.com/libvips/libvips/wiki/Speed-and-memory-use
+\begin{figure}[hp]
+  \includegraphics[width=\textwidth]{image-manipulation-libs.pdf}
+  \caption{Image processing library performance involving TIFF loading, cropping, scaling, and sharpening}
+  \label{fig:image-manipulation}
+\end{figure}
 
 \subsection{Workload Generation and Benchmark Execution}
 
-% Review of popular image manipulation libraries
-% https://github.com/libvips/libvips/wiki/Speed-and-memory-use
+To run our benchmark, we needed a way to automatically generate workloads and simulating user requests over time. We used a serverless event scheduler to trigger Workload Generator functions every 5 minutes\footnote{See Figure \ref{fig:benchmark-design}}. These functions are responsible for sending requests to the image processing functions under test. Our benchmark uses a simple and predictable path-based routing method to direct requests to the correct function, which makes it easy to target specific image optimization function.
 
-To simplify benchmark execution, functions were exposed behind a single domain\footnote{Cloud Run functions from the same project and region are exposed behind a single domain by default. Lambda functions required an additional path-based function router (proxy), such as Amazon API Gateway.} name per provider, and we used a predictable path-based routing to invoke a specific function. For example, \texttt{/portrait-1769-webp-1920} is the path associated with a function that has the portrait picture stored within, is configured to use one vCPU and 1769 MB of memory, is using WebP as the image output format, and 1920 pixels is the width of the resulting output image. The use of HTTP was crucial, as it made the workload generation FaaS provider-agnostic. In our benchmark, we are comparing only serverless FaaS environments, but in a general case, this workload generator could work with any serverful environment too.
+\begin{figure}[htbp]
+  \includegraphics[width=\textwidth]{code-workload-generator.pdf}
+  \caption{Simplified workload generator function logic}
+  \label{fig:code-workload-generator}
+\end{figure}
 
-% \subsubsection{Scheduling Workload Executions}
-To orchestrate the benchmark execution, we used a serverless event scheduler. Specifically, Amazon EventBridge rules were configured to periodically trigger the Workload Generator functions at 5 minute intervals. Upon invocation, the function was sending HTTP requests to the respective image optimization function deployed on the specific provider stack. Then, upon receiving the response from the image optimization function, the Workload Generator saved the optimization result, including performance metrics and function metadata, in a NoSQL database. This type of database turned out to be convenient, because the workload generator function itself was only aware of its execution time, but all other fields were set by the image optimization functions.
+To keep things simple when managing domain names, we grouped functions from the same cloud provider under a single domain name. This is how Cloud Run works by default: functions in the same project and region share the base domain. However, Lambda Function URLs do not, and require a bit more setup. We have added a (cloud-native) proxy to route requests to correct Lambda functions based on the path. Amazon API Gateway is one of the AWS services that can fulfill this purpose, but there are multiple other ways to solve this slight operational inconvenience, such as Elastic Load Balancing.
+
+The path-based routing is important because it makes our workload generator work consistently across different cloud providers. It relies on standard HTTP requests that do not utilize any additional request parameters (cookies, headers, query strings, or request body). Workload generation does not rely on any specific cloud platform, or proprietary interface. An example of a path specific to an individual image processing function is \texttt{/portrait-1769-webp-1920}. This path is associated with a function that has the portrait picture stored within, is configured to use one vCPU and 1769 MB of memory, is using WebP as the image output format, and 1920 pixels is the width of the resulting output image. While we are focused on serverless FaaS environments, this benchmarking approach could work with traditional, serverful image processing functions (or any other parametrized workloads) if required.
+
+% TODO: Add image with multiple rules, workload generator functions, one APIGW
 
 \subsubsection{Results Collection and Data Analysis}
 
