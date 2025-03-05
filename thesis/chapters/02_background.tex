@@ -41,7 +41,7 @@ However, the ease of image creation and sharing, coupled with the vast amount of
 % https://www.statista.com/chart/5782/digital-camera-shipments/
 % https://www.statista.com/chart/15524/worldwide-camera-shipments/
 
-\subsubsection{Digital imaging}
+\subsubsection{Digital Imaging}
 \label{sec:digital-imaging}
 % Trace the historical development of digital imaging.
 
@@ -84,7 +84,7 @@ To accurately capture color, most digital cameras use a \emph{color filter array
 Following the Bayer filter example, it is common for color images to have three channels, such as red, green, and blue (RGB), each with its own bit depth. If each channel in an RGB image has an 8-bit resolution, it allows for 256 different values per channel, resulting in over 16 million possible color combinations for each pixel. The resolution of an image refers to the total number of pixels it contains and is often measured in megapixels (millions of pixels). Higher resolution images have more pixels, what allows for larger prints and more detailed displays. The image resolution, along with the bit depth, directly affects the size of the uncompressed image file. However, because images often contain areas of similar color, compression techniques, discussed in the next section, are frequently employed to reduce file sizes, sometimes even during the image capture process within the camera devices.
 
 
-\subsubsection{Data and image compression}
+\subsubsection{Data and Image Compression}
 \label{sec:data-and-image-compression}
 
 % Describe their differences, strengths, weaknesses, and common use cases.
@@ -179,7 +179,7 @@ Another factor to consider with lossy compression is generation loss, which refe
 % Not really to include in the thesis
 % https://imgs.xkcd.com/comics/digital_data_2x.png
 
-\subsubsection{Overview of image formats}
+\subsubsection{Overview of Image Formats}
 \label{sec:raster-and-vector-graphics}
 
 Image formats are standardized ways of organizing digital image data and metadata within files. They ensure compatibility and allow different software, devices, and operating systems to work with the same images. Two fundamental categories of image formats are \emph{raster} and \emph{vector}.
@@ -295,7 +295,7 @@ The following sections and the rest of our thesis will focus on serverless compu
 % https://www.oreilly.com/tim/archives/ParadigmShift.pdf
 
 
-\subsubsection{Serverless computing}
+\subsubsection{Serverless Computing}
 % There are no solutions, only trade-offs. Thomas Sowell (1986)
 % The data center is now the computer. Luiz Barroso (2007)
 
@@ -331,7 +331,7 @@ In FaaS deployments, minification and tree-shaking can be used to reduce the siz
 In the following sections, when speaking about serverless, we will focus exclusively on the Function as a Service model, as it is more relevant to the self-hosted image optimization use case we are exploring in this thesis.
 
 
-\subsubsection{Cloud service benchmarking}
+\subsubsection{Cloud Service Benchmarking}
 % How can we measure performance of the cloud and services running in the cloud?
 
 Cloud service benchmarking is the process of systematically evaluating and comparing different qualities of cloud-based services. Quality can be defined as a measure of any non-functional property of a service. In other words, qualities tells us not \emph{if}, but \emph{how good} a system fulfills its purpose. Qualities may describe radically different aspects of a system, for example, measure the error rate of a given operation or degree of compliance with a particular standard or regulation. While importance of a quality depends on a specific system and application, qualities in general express the difference from an ideal, sometimes purely abstract reference point. Continuing with the previous examples, an ideal system or service of the highest quality would yield an error rate of 0 (no errors, or undesired results), and demonstrate complete alignment with, or no exception from, a certain specification.
@@ -347,7 +347,7 @@ Because cloud services are consumed over the Internet, designing benchmarks from
 To facilitate benchmarking, a few components of a \emph{benchmarking system} are needed. A \emph{workload generator} is responsible for creating a realistic load on the system under test, as otherwise the system is idling. An \emph{experiment controller} automates the execution of benchmark runs, managing configurations and collecting results. Finally, a \emph{measurement database} stores the collected performance data, enabling analysis and comparison across different scenarios.
 
 
-\subsubsection{Performance variability of serverless workloads}
+\subsubsection{Performance Variability of Serverless Workloads}
 \label{sec:performance-variability}
 
 Performance variability is a key consideration in Function as a Service (FaaS) environments due to the high level of abstraction and limited control over the underlying infrastructure. Existing literature has explored and identified several sources of this performance variability within serverless platforms, including \cite{lloyd2018serverless} studying cold and warm service performance, \cite{ustiugov2021analyzing} researching influence of storage accesses and bursty function invocations, and \cite{schirmer2023night} exploring variations in functions' execution duration and the frequency of cold starts depending on the diurnal and weekly patterns. \cite{wang2018peeking} investigates performance isolation efficiency of different serverless platforms. Additionally, all of these papers (\cite{lloyd2018serverless,ustiugov2021analyzing,schirmer2023night,wang2018peeking}) study the influence of performance-related settings, such as amount of assigned memory and compute, on the performance of Function as a Service platforms.
@@ -411,7 +411,7 @@ In context of images, a balance needs to be found between the performance, or at
 Critical rendering path\footnote{\href{https://developer.mozilla.org/docs/web/performance/critical_rendering_path}{https://developer.mozilla.org/docs/web/performance}} is a sequence of steps a browser takes to render a web page, starting from the initial page request until it can be rendered on a screen. Resources referenced by a page can be either \emph{blocking} or \emph{non-blocking} in regard to the critical rendering path. Traditionally, most resources (styles, scripts, fonts, and images) are blocking, meaning, the browser must wait for them to be downloaded and processed before rendering the page. This can lead to a situation where the user sees a blank page for a prolonged time. To mitigate this, developers can optimize the delivery of resources, for example by inlining critical resources, and loading non-critical resources asynchronously, in an on-demand manner. In case of images, this can be achieved by loading only images placed in the viewport, and \emph{lazy loading}\footnote{Client-side on-demand image loading only when, or immediately before, they become visible.} the rest. An approach similar to lazy-loading, but on the opposite end of the spectrum, is \emph{preloading} content that is most likely to be needed in the future, for example when hovering over a link, but before the user actually clicks on it. This allows to immediately render images when the user decides to navigate to the linked page without any additional network latency.
 
 
-\subsubsection{Impact of images and bandwidth usage on browsing experience}
+\subsubsection{Impact of Images and Bandwidth Usage on Browsing Experience}
 
 Multiple studies demonstrate a strong correlation between webpage load times and user satisfaction. Research shows that even a minor increase in page load time correlates with an increased number of users leaving the website \cite{brutlag2009speed}. Users perceive delays exceeding 1 second as disruptive to their cognitive flow \cite{nielsen1993response}. Every other person expects a page to load in less than 2 seconds \cite{akamai2014expectations-survey}, and 53\% of mobile site visits are abandoned if pages take longer than 3 seconds to load \cite{google2016abandoned-websites}. Consequently, \textbf{the data volume contributed by unoptimized images directly translates to increased page load times}, potentially exceeding acceptable thresholds, and as a result, contributing to user frustration and attrition.
 
