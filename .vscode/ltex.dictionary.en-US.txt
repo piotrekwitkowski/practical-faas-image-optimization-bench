@@ -96,3 +96,7 @@ Deno
 PyPy
 nodejs
 seaborn
+http
+OpenTofu
+IaC
+Pulumi
