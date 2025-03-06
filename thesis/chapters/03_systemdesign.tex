@@ -14,13 +14,6 @@ The benchmark is composed of two main components:
 
 Both workload generation and image optimization were implemented in a serverless fashion. For simplicity, workload generator infrastructure was all deployed in one environment - in our case it was AWS, but any cloud provider (or even no cloud infrastructure) could be used, as long as it is connected to the Internet, capable of sending HTTP requests on a schedule and storing the results in a database.
 
-\begin{figure}[htb]
-  \centering
-  \includegraphics[width=0.965\textwidth]{benchmark-design.pdf}
-  \caption{High-level overview of the image optimization benchmark design.}
-  \label{fig:benchmark-design}
-\end{figure}
-
 The figure \ref{fig:benchmark-design} shows the main steps of the benchmark:
 \begin{enumerate}
   \item \textbf{Event scheduler} invokes the workload generator functions,
@@ -28,6 +21,13 @@ The figure \ref{fig:benchmark-design} shows the main steps of the benchmark:
   \item \textbf{Workload generators} save image optimization results in the database,
   \item \textbf{Benchmark results} are exported as JSON to a bucket for later offline analysis.
 \end{enumerate}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.965\textwidth]{benchmark-design.pdf}
+  \caption{High-level design of the image optimization benchmark.}
+  \label{fig:benchmark-design}
+\end{figure}
 
 The image optimization stacks were deployed in two different clouds - which we call \emph{providers} - AWS and GCP. These stacks are responsible for providing HTTP endpoints and function invocation in response an incoming HTTP request. Since the optimization process is consistent\footnote{By \emph{consistent} we mean producing comparable metadata outputs for identical input and optimization parameters, sufficient for reliable benchmark comparisons. Strict bit-for-bit determinism is not implied.} enough for our purposes, functions only return the metadata of an individual optimization execution, and the output images are discarded.
 
@@ -91,7 +91,7 @@ Our benchmark uses a simple and predictable path-based routing method to direct 
 
 The path-based routing is important because it allows the workload generator to work across different providers. It relies on standard HTTP requests that do not utilize any additional request characteristics, like cookies, headers, query strings, or request body. Workload generation does not rely on any proprietary interface or features of a particular serverless provider. While we are focused on serverless environments, this approach could also work with traditional, serverful image processing, or any other workloads, if required.
 
-\begin{figure}[h!bp]
+\begin{figure}[h!b]
   \centering
   \includegraphics[width=0.8\textwidth]{proxy-architecture.pdf}
   \caption{1:1:1 mapping between rules, workload generators, and image processing functions, and proxy providing single domain name for Lambda functions.}
@@ -100,6 +100,7 @@ The path-based routing is important because it allows the workload generator to 
 
 
 \subsubsection{Results Collection and Data Analysis}
+\label{sec:results-collection-data-analysis}
 
 To enable thorough performance analysis, we designed the image processing functions to return detailed metadata upon each function invocation. This metadata, structured as a JSON object, includes performance indicators and additional contextual information.
 
@@ -141,6 +142,15 @@ Secondly, the platforms differ in the exact way how function handlers are expose
 
 In both cases, processing relies on the fact that the provider is responsible for invoking an entry point upon an event, such as an HTTP request. This abstraction allows the image optimization logic to be consistent across providers, with the only difference being the package organization and handler format. The underlying environments, while implemented with some differences, provide a comparable set of capabilities, enabling the deployment of functionally equivalent image optimization across both platforms. This facilitates portability, reducing the effort when transitioning between providers in real-world, production scenarios.
 
-Finally, as both workload generator and image optimization functions were using Node.js runtime, we wanted to use an imperative infrastructure-as-code framework to deploy the stacks onto serverless platforms. Declarative frameworks based on the YAML or HCL, including AWS CloudFormation\footnote{\url{https://aws.amazon.com/cloudformation}}, HashiCorp's Terraform\footnote{\url{https://terraform.io}} and OpenTofu\footnote{\url{https://opentofu.org}} are a typical IaC approach. However, platform's unique requirements described earlier and the additional proxy module in the AWS case, made the initial attempt at a unified, provider-agnostic code solution less advantageous than anticipated.
+As both workload generator and image optimization functions were using Node.js runtime, we also wanted to use an imperative Infrastructure as Code (IaC) framework to deploy the stacks onto serverless platforms. We acknowledge the popularity of declarative approach, including Ansible\footnote{\url{https://github.com/ansible/ansible}}, HashiCorp's Terraform\footnote{\url{https://terraform.io}}, and OpenTofu\footnote{\url{https://opentofu.org}}. Nevertheless, platforms' unique requirements described earlier, and the additional proxy module in the AWS case, made the initial goal of a unified, provider-agnostic approach less advantageous than anticipated. As a result, we decided to optimize the deployment strategy for AWS - the provider where the workload generation was implemented. We have reviewed various imperative IaC solutions, including Cloud Development Kit for Terraform\footnote{\url{https://developer.hashicorp.com/terraform/cdktf}}, Pulumi\footnote{\url{https://pulumi.com}}, and Wing\footnote{\url{https://winglang.io}}. Eventually, we have decided to use AWS Cloud Development Kit\footnote{\url{https://aws.amazon.com/cdk}} (CDK), as it offers a dedicated Node.js Lambda function \emph{construct}, which is a reusable component that encapsulates cloud infrastructure definition. Similar to other IaC solutions, CDK provides a library of constructs covering most of the commonly used AWS services and features.
 
-As a result, we decided to optimize the deployment strategy for AWS - the platform where the workload generation was implemented. From various imperative IaC solutions, including Pulumi\footnote{\url{https://pulumi.com}} and CDKTF\footnote{\url{https://developer.hashicorp.com/terraform/cdktf}}, we have decided to use AWS CDK\footnote{\url{https://aws.amazon.com/cdk}}, as it offers a dedicated module (higher-level construct) for Node.js Lambda functions specifically. For Cloud Run functions, we prepared shell scripts that build and deploy all function variations with correct optimization parameters set as the environment variables and correct memory and compute settings. This approach, while less elegant, turned out to be very effective, and ultimately introduced only minimal operational overhead. The image optimization benchmark was running for over two months, from December 2024 until February 2025.
+AWS CDK supports multiple programming languages, including TypeScript, JavaScript, Python, Java, C\#, and Go. As an abstraction layer over AWS CloudFormation\footnote{\url{https://aws.amazon.com/cloudformation}}, CDK allowed us to use usual loops and variables instead of declarative and relatively verbose YAML or HCL templates. The use of nested loops to iterate through various optimization parameters was extremely useful, making the deployment configuration far more concise.
+
+For Cloud Run functions, we prepared shell scripts that build and deploy all function variations with correct optimization parameters set as the environment variables and correct memory and compute settings. This approach, while less elegant, turned out to be very effective, and ultimately introduced only minimal operational overhead. The benchmark code was written and deployed around November 2024, and is using the service offerings and feature sets of both service providers available at that time.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{code-scheduling.pdf}
+  \caption{CDK semantics allow for an extremely compact infrastructure definition.}
+  \label{fig:code-scheduling}
+\end{figure}
