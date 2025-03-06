@@ -17,103 +17,110 @@ Both workload generation and image optimization were implemented in a serverless
 \begin{figure}[htb]
   \centering
   \includegraphics[width=0.965\textwidth]{benchmark-design.pdf}
-  \caption{High-level overview of the image optimization benchmark design}
+  \caption{High-level overview of the image optimization benchmark design.}
   \label{fig:benchmark-design}
 \end{figure}
 
 The figure \ref{fig:benchmark-design} shows the main steps of the benchmark:
 \begin{enumerate}
-  \item \textbf{event scheduler} invokes the workload generator functions,
-  \item \textbf{workload generators} send requests to specific image processing functions,
-  \item \textbf{workload generators} save image optimization results in the database,
-  \item \textbf{benchmark results} are exported as JSON to a bucket for later offline analysis.
+  \item \textbf{Event scheduler} invokes the workload generator functions,
+  \item \textbf{Workload generators} send requests to specific image processing functions,
+  \item \textbf{Workload generators} save image optimization results in the database,
+  \item \textbf{Benchmark results} are exported as JSON to a bucket for later offline analysis.
 \end{enumerate}
 
 The image optimization stacks were deployed in two different clouds - which we call \emph{providers} - AWS and GCP. These stacks are responsible for providing HTTP endpoints and function invocation in response an incoming HTTP request. Since the optimization process is consistent\footnote{By \emph{consistent} we mean producing comparable metadata outputs for identical input and optimization parameters, sufficient for reliable benchmark comparisons. Strict bit-for-bit determinism is not implied.} enough for our purposes, functions only return the metadata of an individual optimization execution, and the output images are discarded.
 
 The image processing function, except for the actual processing, is parsing environment variables, loading image into the function's memory, and calculating the time elapsed since the cold start, as well as the duration of the actual image processing. Figure \ref{fig:processing-code} illustrates a simplified function code, outlining the key steps from the environment setup to image processing and response generation.
 
-\begin{figure}[ht]
-  \includegraphics[width=\textwidth]{code-image-processing.pdf}
-  \caption{Simplified image processing function logic}
-  \label{fig:processing-code}
-\end{figure}
-
-In the actual benchmark code\footnote{\url{https://github.com/piotrekwitkowski/practical-faas-image-optimization-bench}}, we do return a few more optimization properties in the response object, omitted in the above code snippet for brevity. Please note that the image processing duration strictly relates to the actual image processing: image resizing, and optionally image reformatting, but does not include any earlier steps necessary to facilitate processing, any code running before the handler initialization, any time spent on loading the image into the function's memory, or request and response handling.
+In the actual benchmark code \cite{witkowski2025github}, we do return a few more optimization properties in the response object, omitted in the above code snippet for brevity. Please note that the image processing duration strictly relates to the actual image processing: image resizing, and optionally image reformatting, but does not include any earlier steps necessary to facilitate processing, any code running before the handler initialization, any time spent on loading the image into the function's memory, or request and response handling.
 
 Please also note that in a real-world image optimization scenario, the deployment package of a serverless function does not include any image. An additional network call, or a cloud SDK operation, is required on every function call to retrieve the original, unoptimized image from an external object storage. In our study, we are not interested in measuring performance variability of such operations, and in the interest of cloud service usage minimization we have decided to load the image into memory only once, outside the handler function definition, on a cold start.
 
-
 \subsubsection{Providers, Images, and Optimization Parameters Selection}
+\label{sec:providers-images-optimization-parameters}
 
 There were 5 variables for each optimization function variant, presented on figure \ref{fig:function-variants}. There were in total 108 ($2^2 \cdot 3^3$) image optimization functions deployed, with every variant deployed as separate function to minimize interference between resources. Each function includes the request handler, dependencies required for image optimization, as well as one unoptimized image within its deployment package (ZIP file).
-
-\begin{figure}[hb]
-  \includegraphics[width=\textwidth]{function-variants.pdf}
-  \caption{All image optimization function variants deployed}
-  \label{fig:function-variants}
-\end{figure}
-
-% TODO: Fix "set current timestamp" in the code screenshot
 
 \textbf{Providers}. We have selected Lambda because of its presence in research, as well as its market share \cite{eismann2020review}. Cloud Run functions (2nd generation) is the new generation of the serverless platform from Google Cloud that includes improved concurrency management, and granular memory and compute configuration. We have selected this platform, as it is still relatively new (2022) offering on the Google Cloud Platform, and many studies only researched its older version.
 
 \textbf{Input images}. To simplify function code and allow for just one optimization run per function invocation, we opted for large input images. Specifically, we selected two high-resolution images produced using DSLR cameras, one in each orientation. For this purpose, in September 2024, we visited an online stock image portal to find popular stock image categories\footnote{\url{https://pexels.com/popular-searches}}. From the list of most popular searches, two most popular categories, namely \emph{Travel} and \emph{Summer}, were chosen. One image from each category was downloaded from another stock image portal because of the previously mentioned requirement of high resolution. For a study focused purely on input images, a larger image dataset, such as \cite{CID22} would have been used. In our case, only two images were selected in total, because our research was driven by the multidimensional parametrization of the optimization process. 
 
-\textbf{Output formats}. Three output formats were selected: JPEG (implies no reformatting), WebP, and AVIF. The latter two represent advancements in compression and browser support over the last decade, but on the other hand they are more computationally demanding\footnote{\url{https://developers.cloudflare.com/images/transform-images/\#format-limitations}}. We considered, but eventually did not select JPEG XL due to its limited browser support and custom requirements around for the optimization tooling setup explained in the following section.
+\textbf{Output formats}. Three output formats were selected: JPEG (implies no reformatting), WebP, and AVIF. The latter two represent advancements in compression and browser support over the last decade, but on the other hand they are more computationally demanding\footnote{\url{https://developers.cloudflare.com/images/transform-images/\#format-limitations}}. We considered, but eventually did not select JPEG XL due to its limited browser support and custom requirements around for the optimization tooling setup.
 
 \textbf{Output widths}. Three output widths, 640, 1080, and 1920 pixels, were chosen to investigate the impact of this parameter on optimization performance variability. These values represent common display resolutions for mobile, tablet, and desktop devices, respectively. In production environments, more granular or freely configurable width options are commonly implemented, however, too many options can lead to a decreased cache hit ratio, as the frequency of identical requests is reduced. Therefore, in practice, a balance between resolution granularity and cache efficiency should be considered.
 
 \textbf{Performance settings}. As presented earlier in section \ref{sec:performance-variability}, the amount of assigned memory and compute power to serverless functions is a recurring theme in prior studies on serverless performance variability. The novel part of our research is that its influence will be evaluated in the practical image optimization scenario, and \emph{not a narrowly focused test} of a predominantly synthetic, CPU/IO/memory-bound nature. Specifically, we used three settings: 885, 1769, and 3538 MB\footnote{AWS Lambda is using the abbreviation MB (rather than MiB) to refer to 1024 KB.} of assigned memory. We have selected these values, because while Google Cloud Run functions let their users configure the amount of associated memory and compute independently, AWS Lambda allocates CPU power in proportion to memory. We have then configured functions have access to half of a vCPU at 885 MB, exactly one vCPU at 1769 MB, and two vCPUs at 3538 MB of memory.  Especially with the last two options, we aimed to understand the degree to which the image optimization workload can leverage parallel processing, and whether increasing compute allocation over one vCPU will influence performance variability.
 
+\begin{figure}[!hbp]
+  \includegraphics[width=\textwidth]{function-variants.pdf}
+  \caption{All deployed image optimization function variants.}
+  \label{fig:function-variants}
+\end{figure}
+
 \subsubsection{Regions, Runtime, and Image Optimization Library Selection}
 
-In this section, we will describe the parameters that remained constant across all functions. Each additional dimension results in an exponential increase in the number of functions and the volume of collected data. We considered adding further variables, but eventually we decided against it to limit the complexity of the multidimensional analysis of the results.
+In this section, we will describe the parameters that remained constant across all functions. Each additional dimension results in an exponential increase in the number of functions and the volume of collected data. We considered adding further variables, but eventually we decided against it to limit the complexity of the multidimensional data analysis and data visualization.
 
-\textbf{Cloud regions}. For the image optimization stacks, cloud regions in close geographical proximity were selected: AWS region in North Virginia \texttt{(us-east-1)} and GCP region in South Carolina \texttt{(us-east1)}. North Virginia is the oldest AWS region, and was selected for consistency and comparability with existing literature, such as \cite{ginzburg2020serverless}. This fact also guided the region choice for the GCP deployment. 
+\textbf{Cloud regions}. For the image optimization stacks, cloud regions in close geographical proximity were selected: AWS region in North Virginia \texttt{(us-east-1)} and GCP region in South Carolina \texttt{(us-east1)}. North Virginia is the oldest AWS region, and was selected for consistency and comparability with existing literature, such as \cite{ginzburg2020serverless}. This fact also guided the region choice for the GCP deployment. In production environments, where latency minimization is key, image optimization stacks can be deployed in multiple physical locations, and latency-based or location-based routing can be used to route users to the closest region.
 
-\textbf{Runtimes}. Another property that we haven't parametrized was \emph{runtime}. We have selected the built-in Node.js runtimes in the latest stable version (22) at the time of writing. This was an intentional choice to illustrate that built-in runtimes are an effective approach to tackle image optimization and that building a custom container image is not required, even if we are using OS-specific and CPU-specific dependencies. Secondly, the very choice of the programming language could be parametrized, but we have decided that this is out of this benchmark's scope.
+\textbf{Runtimes}. Another property that we haven't parametrized was \emph{runtime}. We have selected the built-in Node.js runtimes in the latest stable version (22) at the time of writing. This was an intentional choice to illustrate that built-in runtimes can be an effective approach to tackle image optimization, and that building a custom container image is not required, even if using OS-specific and CPU-specific dependencies is required. Secondly, the very choice of the programming language could be parametrized, but we have decided that this is out of this benchmark's scope. Thirdly, there may exist alternative implementations of runtimes (such as Deno\footnote{\url{https://deno.com}}, PyPy\footnote{{\url{https://pypy.org}}}, GraalVM\footnote{\url{https://graalvm.org}}, and more). However, these are not natively provided by the serverless providers, not compatible with ZIP deployments, and therefore out of this benchmark's scope.
 
-\textbf{Image optimization library.} For image optimization, we chose the sharp Node.js module. It leverages libvips, a performant image processing library, known for its multi-threading capabilities and efficient memory management. Using libvips gives sharp performance of a native C library, which is advantageous in any scenario, not only serverless. We have reviewed capabilities (image format support) and popularity (weekly npm downloads) of sharp's alternatives, including ImageMagick, Jimp, and squoosh, and ultimately decided to implement our benchmark exclusively with sharp.
-% The figure \ref{fig:libvips-alternatives} shows differences in image manipulation performance between libvips and similar image manipulation libraries that supported our decision.
+\textbf{Image optimization library}. For image optimization, we chose the sharp Node.js module. It leverages libvips, a performant image processing library, known for its multi-threading capabilities and efficient memory management \cite{cupitt2024libvips-speed}. Using libvips gives sharp performance of a native C library, which is advantageous in any scenario, not only serverless. We have reviewed capabilities (image format support), popularity (weekly npm downloads), and performance \cite{fuller2024sharp} of sharp's alternatives, including ImageMagick\footnote{\url{https://imagemagick.org}}, Jimp\footnote{\url{https://jimp-dev.github.io/jimp}}, and squoosh\footnote{\url{https://squoosh.app}}, and ultimately decided to implement our benchmark exclusively with sharp. Figure \ref{fig:libvips-alternatives} shows differences in image manipulation performance between libvips and similar image manipulation libraries that supported our decision.
 
-% TODO: add reference
-% https://github.com/libvips/libvips/wiki/Speed-and-memory-use
+While we have decided not to proceed with parametrization, we would like to acknowledge that the categories presented above would be a valuable addition to any benchmark not specifically requiring high-frequency measurements. For example, in the compatibility benchmarking of different cloud service providers, runtimes, software libraries, and data formats, adding more dimensions could be beneficial. This is because, unlike the requirements of this thesis, a lower frequency of benchmarking would be sufficient given the consistent long-term behavior of qualities such as compatibility.
+
 \begin{figure}[hp]
   \includegraphics[width=\textwidth]{image-manipulation-libs.pdf}
-  \caption{Image processing library performance involving TIFF loading, cropping, scaling, and sharpening}
-  \label{fig:image-manipulation}
+  \caption{Image processing libraries performance comparison involving TIFF loading, cropping, scaling, and sharpening after \cite{cupitt2024libvips-speed}.}
+  \label{fig:libvips-alternatives}
 \end{figure}
 
-\subsection{Workload Generation and Benchmark Execution}
+% \begin{figure}[htp!b]
+%   \includegraphics[width=\textwidth]{code-workload-generator.pdf}
+%   \caption{Simplified workload generator function logic.}
+%   \label{fig:code-workload-generator}
+% \end{figure}
 
-To run our benchmark, we needed a way to automatically generate workloads and simulating user requests over time. We used a serverless event scheduler to trigger Workload Generator functions every 5 minutes\footnote{See Figure \ref{fig:benchmark-design}}. These functions are responsible for sending requests to the image processing functions under test. Our benchmark uses a simple and predictable path-based routing method to direct requests to the correct function, which makes it easy to target specific image optimization function.
 
-\begin{figure}[htbp]
-  \includegraphics[width=\textwidth]{code-workload-generator.pdf}
-  \caption{Simplified workload generator function logic}
-  \label{fig:code-workload-generator}
-\end{figure}
+\subsection{Implementation}
 
-To keep things simple when managing domain names, we grouped functions from the same cloud provider under a single domain name. This is how Cloud Run works by default: functions in the same project and region share the base domain. However, Lambda Function URLs do not, and require a bit more setup. We have added a (cloud-native) proxy to route requests to correct Lambda functions based on the path. Amazon API Gateway is one of the AWS services that can fulfill this purpose, but there are multiple other ways to solve this slight operational inconvenience, such as Elastic Load Balancing.
+To run our benchmark at scale, we required a way to automatically generate workloads and simulate user requests over time. We used a serverless event scheduler to trigger Workload Generator functions every 5 minutes\footnote{See Figure \ref{fig:benchmark-design}}. These functions are responsible for sending requests to the image processing functions under test.
 
-The path-based routing is important because it makes our workload generator work consistently across different cloud providers. It relies on standard HTTP requests that do not utilize any additional request parameters (cookies, headers, query strings, or request body). Workload generation does not rely on any specific cloud platform, or proprietary interface. An example of a path specific to an individual image processing function is \texttt{/portrait-1769-webp-1920}. This path is associated with a function that has the portrait picture stored within, is configured to use one vCPU and 1769 MB of memory, is using WebP as the image output format, and 1920 pixels is the width of the resulting output image. While we are focused on serverless FaaS environments, this benchmarking approach could work with traditional, serverful image processing functions (or any other parametrized workloads) if required.
+Our benchmark uses a simple and predictable path-based routing method to direct requests to the correct function, which makes it easy to target specific image optimization function. To simplify domain name management, we grouped functions from the same cloud provider under a single domain name. This is how Cloud Run works by default: functions in the same project and region share the base domain. However, Lambda Function URLs do not, and require more manual effort for the same result. We have added a (cloud-native) proxy to route requests to correct Lambda functions based on the path. Amazon API Gateway is one of the AWS services that can fulfill this purpose, but there are various other ways to solve this slight operational inconvenience. In the benchmark, we never transfer images, meaning potential restrictions in HTTP body size most likely won't cause any problems during benchmark's execution. However, serverless image optimization, especially with large input images and low amount of assigned compute, may be prone to timeouts on various layers of the serverless benchmark stack. Adding any new element to the benchmark architecture needs to be done carefully, so that it does not skew results, whether quantitative (such as the number of measurements) or qualitative (response latency, and the actual measurements embedded in the response body). In this case, the benchmark does not measure the total response latency, and it is therefore safe to use additional proxy for the operational reason of simpler domain management.
 
-% TODO: Add image with multiple rules, workload generator functions, one APIGW
+The path-based routing is important because it allows the workload generator to work across different providers. It relies on standard HTTP requests that do not utilize any additional request characteristics, like cookies, headers, query strings, or request body. Workload generation does not rely on any proprietary interface or features of a particular serverless provider. While we are focused on serverless environments, this approach could also work with traditional, serverful image processing, or any other workloads, if required.
 
 \subsubsection{Results Collection and Data Analysis}
 
-% Trever: What are we trying to find and ways to find it
-% What is exposed by serverless platforms?
-% How is this benchmark different from purely synthetic (CPU/IO-bound) perf benchmarking? The client-oriented characteristic of the process, a real-world image optimization workloads are using user-provided parameters, such as image formats and screen width to create an appropriate, optimized image asset supported by the client.
+To enable thorough performance analysis, we designed the image processing functions to return detailed metadata upon each function invocation. This metadata, structured as a JSON object, includes performance indicators and additional contextual information.
+\begin{figure}[!hp]
+  \includegraphics[width=\textwidth]{code-image-processing.pdf}
+  \caption{Simplified image processing function logic.}
+  \label{fig:processing-code}
+\end{figure}
 
+The specific properties addressing our research questions about FaaS performance variability in the image optimization scenario are:
+\begin{itemize}
+  \item \emph{coldStart} flags the first invocation in a new execution environment,
+  \item \emph{durationProcessingMs} captures the time spent performing single image optimization,
+  \item \emph{durationSinceColdStartMs} measures the elapsed time from the initial cold start of the execution environment to the start of image processing,
+  \item \emph{environmentId} is a unique identifier generated at cold start to track executions within the same environment during the whole lifetime of the environment,
+  \item \emph{handlerCount} tracks the number of invocations handled by a specific environment instance, and is incremented with each request / function invocation,
+  \item \emph{imageName} indicates whether the landscape or portrait image was processed,
+  \item \emph{providerArch} indicates the processor architecture of the execution environment,
+  \item \emph{providerCpus} reports the number of CPU cores available to the function,
+  \item \emph{providerMemoryAssociated} (MB) reports the configured memory size for the function,
+  \item \emph{providerMemoryAvailable} (MB) reports the total available memory,
+  \item \emph{providerMemoryUsageRss} (MB) measures the memory usage of the function process,
+  \item \emph{providerName} identifies the image processing stack provider,
+  \item \emph{providerNodeVersion} indicates the Node.js version embedded into the runtime.
+\end{itemize}
 
-We have stored optimization metadata in Amazon DynamoDB\footnote{\url{https://aws.amazon.com/dynamodb}}, a serverless, NoSQL, fully managed database on the AWS cloud. 
+For optimization consistency monitoring, we store additional metadata related to images before and after their optimization, such as their byte size, formats, and resolution. Values reported by these parameters do not change over time for the individual optimization configurations. All this data is stored in a serverless, non-relational database\footnote{\url{https://aws.amazon.com/dynamodb}} managed by the cloud provider. Upon getting the response from image optimization function, the workload generator function adds a timestamp field and stores remaining data \emph{as is} in the database using the cloud provider's SDK.
 
+Because benchmarking results are processed offline (off-cloud), one database table is shared across all workload generator functions to simplify data export procedure. DynamoDB offers a data export in the chunked DynamoDB JSON format, which after conversion to CSV and merging process can be consumed by standard data analytics tooling. We have used Pandas library to filter and aggregate benchmark data.
 
-% We will execute every function every 5 minutes
-% Will hour of day or day of week influence execution duration
-% How to replicate infrastructure to run the benchmark
 
 \subsubsection{Serverless Benchmark Deployment}
 % Compare Cloud APIs vs IaC deployments quickly
