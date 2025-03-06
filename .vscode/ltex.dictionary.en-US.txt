@@ -94,3 +94,5 @@ outputBytes
 outputHeight
 Deno
 PyPy
+nodejs
+seaborn

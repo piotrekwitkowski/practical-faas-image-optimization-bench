@@ -91,14 +91,17 @@ Our benchmark uses a simple and predictable path-based routing method to direct 
 
 The path-based routing is important because it allows the workload generator to work across different providers. It relies on standard HTTP requests that do not utilize any additional request characteristics, like cookies, headers, query strings, or request body. Workload generation does not rely on any proprietary interface or features of a particular serverless provider. While we are focused on serverless environments, this approach could also work with traditional, serverful image processing, or any other workloads, if required.
 
+\begin{figure}[h!bp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{proxy-architecture.pdf}
+  \caption{1:1:1 mapping between rules, workload generators, and image processing functions, and proxy providing single domain name for Lambda functions.}
+  \label{fig:proxy-architecture}
+\end{figure}  
+
+
 \subsubsection{Results Collection and Data Analysis}
 
 To enable thorough performance analysis, we designed the image processing functions to return detailed metadata upon each function invocation. This metadata, structured as a JSON object, includes performance indicators and additional contextual information.
-\begin{figure}[!hp]
-  \includegraphics[width=\textwidth]{code-image-processing.pdf}
-  \caption{Simplified image processing function logic.}
-  \label{fig:processing-code}
-\end{figure}
 
 The specific properties addressing our research questions about FaaS performance variability in the image optimization scenario are:
 \begin{itemize}
@@ -117,11 +120,23 @@ The specific properties addressing our research questions about FaaS performance
   \item \emph{providerNodeVersion} indicates the Node.js version embedded into the runtime.
 \end{itemize}
 
-For optimization consistency monitoring, we store additional metadata related to images before and after their optimization, such as their byte size, formats, and resolution. Values reported by these parameters do not change over time for the individual optimization configurations. All this data is stored in a serverless, non-relational database\footnote{\url{https://aws.amazon.com/dynamodb}} managed by the cloud provider. Upon getting the response from image optimization function, the workload generator function adds a timestamp field and stores remaining data \emph{as is} in the database using the cloud provider's SDK.
+\begin{figure}[!htbp]
+  \includegraphics[width=\textwidth]{code-image-processing.pdf}
+  \caption{Simplified image processing function logic.}
+  \label{fig:processing-code}
+\end{figure}  
 
-Because benchmarking results are processed offline (off-cloud), one database table is shared across all workload generator functions to simplify data export procedure. DynamoDB offers a data export in the chunked DynamoDB JSON format, which after conversion to CSV and merging process can be consumed by standard data analytics tooling. We have used Pandas library to filter and aggregate benchmark data.
+For optimization consistency monitoring, we also return additional metadata related to images before and after their optimization, such as their byte size, formats, and resolution. Values reported by these parameters do not change over time for the individual optimization configurations. All results are stored in a serverless, non-relational database managed by the cloud provider, where the workload generation stack is deployed. Upon getting the response from image optimization function, the workload generator adds a timestamp field and stores remaining data \emph{as is} in the database using the cloud provider's SDK.
+
+Because benchmarking results are processed off-cloud, one database table is shared across all workload generator functions to simplify the data export procedure. The database we used, DynamoDB\footnote{\url{https://aws.amazon.com/dynamodb}}, offers an export in a chunked JSON format. After conversion to CSV it can be consumed by standard data analytics tooling, and we have used pandas\footnote{\url{https://pandas.pydata.org}} library to clean and aggregate benchmark data and the seaborn\footnote{\url{https://seaborn.pydata.org}} library for data visualization.
 
 
 \subsubsection{Serverless Benchmark Deployment}
+
+Implementation of functions across providers is as similar as possible. Managed runtimes for Lambda and Cloud Run functions differ in only two meaningful ways for the image optimization scenario.
+
+Firstly, the location of the image within the deployment package is provider-specific. On AWS, it is possible to use so-called Lambda layers\footnote{}, and the unoptimized image is mounted in the Lambda file system as \texttt{/opt/nodejs/image.ext}. Using a layer allows us to use the Layers are an AWS-proprietary
+way to expose the handler function
+
 % Compare Cloud APIs vs IaC deployments quickly
 % Mention CDK
