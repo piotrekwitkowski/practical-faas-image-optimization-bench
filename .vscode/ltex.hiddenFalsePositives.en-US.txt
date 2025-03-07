@@ -23,3 +23,5 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QIEEE MultiMedia\\E$"}
 {"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QMissed executions of the portrait image.\\E$"}
 {"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QEnvironment reuse on Google Cloud Run functions.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QEnvironment reuse per provider.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QEnvironment lifecycle and environment reuse is from 65 up to 213 times higher on Google Cloud Run functions than on AWS Lambda.\\E$"}
