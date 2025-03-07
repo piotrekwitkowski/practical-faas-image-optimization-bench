@@ -110,15 +110,22 @@ The longest running Cloud Run function was reusing the environment over 200 time
 
 % ------------------------------------------------------------
 \subsection{Measuring Image Processing Duration}
-This metric determines how quickly optimized images are ready to be delivered to end users. It is measured in millisecond resolution and captures the core operation of transforming images according to specified optimization parameters. It is heavily related to the performance settings, such as amount of compute assigned to the function, output format and width, as well the input image resolution. For completeness, visualization of absolute optimization times is provided for one of the input images in all 54 function variants.
+This metric determines how quickly optimized images are ready to be delivered to end users. It is measured in millisecond resolution and captures the core operation of transforming images according to specified optimization parameters. It is heavily related to the performance settings, such as amount of compute assigned to the function, output format and width, as well the input image resolution. For completeness, two visualizations of absolute optimization times are provided for one of the images in all 54 function variants.
 
-Please note that lower performance settings imply longer processing duration. Different output formats have different computational complexity, with JPEG having the shortest processing times, and AVIF having the longest. Different providers also exhibit difference in processing duration, even for \emph{"the same"} compute (vCPUs) and memory configurations.
+Please note that lower performance settings imply longer processing duration. Different output formats have different computational complexity, with JPEG having the shortest processing times, and AVIF having the longest. Different providers also exhibit difference in processing duration, even for \emph{"the same"} compute (vCPUs) and memory configurations. In absolute numbers, Lambda is consistently outperforming Cloud Run functions across all output formats, output widths, and all performance setting configurations.
 
-\begin{figure}[!htb]
+\begin{figure}[!hb]
   \centering
-  \includegraphics[width=0.99\textwidth]{2-duration-portrait.pdf}
-  \caption{Absolute image processing durations \emph{(durationProcessingMs, portrait)}.}
+  \includegraphics[width=0.93\textwidth]{2-duration-portrait.pdf}
+  \caption{Absolute image processing durations, \emph{portrait}.}
   \label{fig:image-processing-duration-portrait}
+\end{figure}
+
+\begin{figure}[!p]
+  \centering
+  \includegraphics[width=\textwidth]{4-duration-normalized-how-portrait.pdf}
+  \caption{Absolute image processing durations by hour of week.}
+  \label{fig:image-processing-duration-portrait-how}
 \end{figure}
 
 
@@ -126,6 +133,7 @@ Please note that lower performance settings imply longer processing duration. Di
 % ------------------------------------------------------------
 
 % Handler Count-Related Duration Variability
+\newpage
 \newpage
 % ------------------------------------------------------------
 \subsection{Handler Count-Related Processing Duration Variability}
@@ -154,7 +162,7 @@ On average, the first execution of the image optimization on AWS Lambda is aroun
 
 % ------------------------------------------------------------
 \subsection{Environment Variability}
-These metrics exhibited both static and variable behavior over the total duration of the experiment:
+The following metrics showed a mix of constant and provider-dependent variable behavior. The prime example is the Lambda function with 885 MB of memory, where we observed 5 different CPU configurations and 8 different memory configurations. While over 90\% of Lambda functions use a \emph{typical} configuration, there have been several cases when functions were granted significantly more compute or memory than requested. 
 \begin{itemize}
   \item \emph{providerArch} - x64 across all function variants on both serverless platforms,
   \item \emph{providerCpus} - variable on AWS, but constant on GCP,
@@ -164,7 +172,7 @@ These metrics exhibited both static and variable behavior over the total duratio
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=0.9\textwidth]{provider-cpus-memory.pdf}
+  \includegraphics[width=0.85\textwidth]{provider-cpus-memory.pdf}
   \caption{Differences in actual hardware configuration for identical performance setting.}
   \label{fig:provider-cpus-and-memory}
 \end{figure}
@@ -246,7 +254,18 @@ Also, the \textbf{increased processing time for the initial few invocations with
 \section{Discussion}
 \label{cha:discussion}
 
-\subsection{User vs operator perspective}
-\subsection{Cloud computing as a utility}
+Studying serverless image optimization performance reveals insights relevant from different viewpoints. In this section we will discuss implications for both users and operators of such systems, but also implications of this benchmark on the wider serverless performance research.
+% We will conclude by looking at the study through the perspective of cloud computing being a modern utility that is consumed in a way similar to electricity or water.
 
-% "Three sentences at the end about stuff that didn't work out"
+% \subsection{User vs. operator perspective}
+From the user's perspective, the key insight is the nuanced performance landscape. While serverless promises on-demand scalability, the reality includes variability. This is less of a concern if images are immutable and can be cached for a long period of time, which is a common practice in web delivery. However, for scenarios where cache misses are frequent, or real-time optimization is critical, the choice of the platform (self-hosted, serverless, third-party SaaS, or other) becomes important.
+
+Daily and weekly temporal variability in processing times, though on the order of a few percent, highlights that serverless environments are not static. In the image optimization scenario, variability is less prominent than in previous, general research on this topic. It is however measurable, and highly variable across FaaS platforms. 
+
+From the operator's perspective, choosing a serverless platform for image optimization requires finding a balance between reduced infrastructure management and potential limitations in fine-grained control over image processing parameters. While Google Cloud Run functions offer lower number of cold starts and more consistent hardware configuration, this does not necessarily translate to more performant image handling. AWS Lambda has a more mature ecosystem and wider adoption, which might be advantageous for integration with other services, but at the same time a cold start occurrence is almost guaranteed if the function is running over two hours. Ultimately, also the location of the original images that matters - deploying compute closer to the data can reduce latency and increase throughput while downloading unoptimized images. Pricing-wise, our benchmark showed that AWS Lambda was consistently faster at image optimization when configured with the same memory and compute. To achieve comparable optimization speeds on Cloud Run, operators might need to allocate more vCPUs, which will directly impact costs.
+
+It's worth noting that both platforms support ZIP deployments and support use of OS/CPU-specific libraries like sharp. This makes deployment simpler and lets operators leverage the performance benefits of highly optimized native libraries. Initially, it wasn't certain whether both platforms would such straightforward support. In our opinion, this will be a contributing factor to the success of efficient serverless functions across both AWS Lambda and Google Cloud Run functions.
+
+In terms of wider serverless performance research, we have expected (and eventually confirmed) a smaller performance variability comparing to strongly CPU- or IO-bound benchmarks. We were surprised to discover that Google Cloud Run functions were able to keep the state for over 20 days, which may have been an exception, nevertheless does not seem to be common experience in the serverless community. We also did not expect \emph{that} predictable cold start behavior on AWS Lambda - our benchmark showed that there was very little, almost no randomness to when a function starts cold. This however may be only applicable to ZIP deployments like in our benchmark, and not directly translatable to container-based workloads.
+
+Finally, we would like to acknowledge that while we were able to deploy and analyze results from over 100 versions of essentially very similar image optimizing functions, we recognize that extending the parameter space further would likely introduce a level of combinatorial complexity that may present a logistical challenge. Ideally, a benchmark like ours should operate on continuous, rather than discrete, parameter values, allowing for a more granular exploration of the optimization landscape. However, the implementation of such a system would necessitate a sophisticated framework capable of managing and analyzing the resulting high-dimensional data, a task that surpasses the scope of this study.
