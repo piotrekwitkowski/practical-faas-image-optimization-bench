@@ -1,24 +1,199 @@
 \section{Results}
 \label{cha:results}
 
-This chapter presents the results focusing on the optimization performance metrics observed during two month long optimization configuration and platforms.  Our primary goal is to understand the practical implications of FaaS performance variability in a real-world image optimization scenario.  We analyze several key performance indicators, including cold start duration, image processing duration, and implicitly, the impact of memory allocation through performance settings.  Furthermore, we investigate performance variability from different perspectives: general variability across all runs, temporal variability over time, variability across image formats, and variability across platform configurations.
-
+This chapter presents the results from our two-month-long benchmark of image optimization, focusing on performance metrics collected across two serverless platforms, and 54 image optimization configurations per platform. Instead of optimized images, the image optimization functions described in Section \ref{sec:results-collection-data-analysis} return a handful of characteristics, such as the cold start flag, image processing duration, and optimization invocation time. The measurements described in this chapter cover a period of 62 days between December 2024 and February 2025.
 
 \subsection{Performance Metrics}
-\subsubsection{Cold Start}
-\subsubsection{Image Processing Duration}
-\subsubsection{Memory Utilization}
 
-We have not measured 
+\textbf{Missed execution} is a situation when we expect a response from the image optimization function and a corresponding record in the database, but the number of recorded observations is smaller than expected. The benchmark does not explicitly record such situation in any way, however, any error occurrences can be reasoned about by the observation of a lower than expected number of data points for a given time frame and a set of optimization parameters. For example, when surveying the results for specific function variant over a duration of one hour, 12 data points can be expected. A lower number of measurements is a very strong indicator\footnote{Due to the distributed nature of the scheduler service, there can be a delay of several seconds between the time the scheduled rule is triggered and the time the target service runs the target resource.} of missed executions of that specific functions in the selected period of time. The benchmark does not additionally track the effectiveness of the rule scheduler itself.
+
+From exactly $1928448$ scheduled executions in total:
+\begin{itemize}
+  \item workload generator collected responses from $1924484$ ($99.79\%$) executions,
+  \item workload generator missed responses from $3964$ ($0.21\%$) executions.
+\end{itemize}
+
+From $964224$ scheduled executions per provider:
+\begin{itemize}
+  \item benchmark collected 961113 ($99.68\%$) and missed 3111 ($0.32\%$) executions from AWS,
+  \item benchmark collected 963371 ($99.91\%$) and missed 853 ($0.09\%$) executions from GCP.
+\end{itemize}
+
+\begin{figure}[ht!b]
+  \includegraphics[width=0.9\textwidth]{missed-executions.pdf}
+  \caption{Missed executions by provider.}
+  \label{fig:missed-executions-per-provider}
+\end{figure}
+
+$63.94$ data points were missed on an average day. In our benchmark, AWS Lambda failed to deliver responses $3.65$x times more often than Google Cloud Run functions.
+
+
+
+% More graphics with missed executions
+% \begin{figure}[hp!b]
+%   \centering
+%   \includegraphics[width=0.5\textwidth]{missed-executions-landscape.pdf}
+%   \caption{Missed executions of the \emph{landscape} image.}
+%   \label{fig:missed-executions-landscape}
+% \end{figure}
+
+% \begin{figure}[hp]
+%   \includegraphics[width=\textwidth]{missed-executions-portrait.pdf}
+%   \caption{Missed executions of the \emph{portrait} image.}
+%   \label{fig:missed-executions-portrait}
+% \end{figure}
+
+
+\textbf{Cold start} latency is not specifically recorded as part of this benchmark. In the serverless image optimization scenario, we exclusively focus on the image optimization latency. Nevertheless, the benchmark is collecting data about an \emph{occurrence} of the cold start. This value could be inferred from the \emph{handlerCount} metric, but the optimization functions are also setting an additional property called \emph{coldStart} for convenience.
+
+From exactly 1924484 collected responses in total:
+\begin{itemize}
+  \item workload generator recorded $1878363$ ($97.60\%$) warm starts,
+  \item workload generator recorded $46121$ ($2.40\%$) cold starts.
+\end{itemize}
+
+From $961113$ and $963371$ of collected data points from AWS and GCP respectively,
+\begin{itemize}
+  \item benchmark recorded $915965$ ($95.30\%$) warm and $45148$ ($4.70\%$) cold starts on AWS,
+  \item benchmark recorded $962398$ ($99.90\%$) warm and $973$ ($0.10\%$) cold starts on GCP.
+\end{itemize}
+
+\begin{figure}[!htbp]
+  \includegraphics[width=\textwidth]{cold-starts-by-day.pdf}
+  \caption{Amount of cold starts per day per provider.}
+  \label{fig:cold-starts-per-day-per-provider}
+\end{figure}
+
+It was $48.18$ times more likely to observe a cold start on AWS Lambda than on Google Cloud Run functions. 
+
+\textbf{Environment reuse} and \textbf{environment lifetime} are two metrics closely correlated with the cold start phenomenon. Although not specifically targeted by this benchmark, environment reuse can be beneficial to preserve state between function executions, and potentially reduce combined amount of work that is required during function initialization, before the handler function is called. The benchmark used two metrics in this context:
+\begin{itemize}
+  \item environment reuse is measured by the \emph{handlerCount} metric,
+  \item environment lifetime is measured by \emph{durationSinceColdStartMs} metric.
+\end{itemize}
+
+\begin{figure}[!h]
+  \includegraphics[width=\textwidth]{handler-count.pdf}
+  \caption{\emph{handlerCount} distributions per provider.}
+  \label{fig:handler-count-distributions-per-provider}
+\end{figure}
+
+\begin{figure}[!h]
+  \includegraphics[width=\textwidth]{duration-since-cold-start.pdf}
+  \caption{\emph{durationSinceColdStart} distributions per provider.}
+  \label{fig:duration-since-cold-start-distributions-per-provider}
+\end{figure}
+
+Environment reuse is consistent per provider across different input images, output formats, output widths and performance settings.
+
+% \begin{figure}[!h]
+%   \includegraphics[width=\textwidth]{environment-reuse.pdf}
+%   \caption{Environment reuse per provider.}
+%   \label{fig:env-reuse-per-provider}
+% \end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.7\textwidth]{1-handler-counts-aws.pdf}
+  \caption{Environment reuse on AWS Lambda.}
+  \label{fig:env-reuse-per-provider-aws}
+n
+  \includegraphics[width=0.7\textwidth]{1-handler-counts-gcp.pdf}
+  \caption{Environment reuse on Google Cloud Run functions.}
+  \label{fig:env-reuse-per-provider-gcp}
+\end{figure}
+
+eeee
+
+
+
+
+\begin{figure}[!p]
+  \includegraphics[width=\textwidth]{5-first-all.pdf}
+  \caption{Duration of first executions.}
+  \label{fig:first-executions}
+\end{figure}
+
+
+
+Cold starts were more frequent in lower memory configurations, consistent with the expectation that providers may prioritize keeping higher-resourced environments active. Additionally, we observed that the overall frequency of cold starts decreased as our benchmark progressed, suggesting that the platforms were adapting to the regular invocation patterns established by our scheduled workload generator.
+
+\subsubsection{Image Processing Duration}
+The image processing duration, measured in milliseconds, captures the core operation of transforming images according to specified parameters. This metric directly affects the user experience in real-world scenarios, as it determines how quickly optimized images can be delivered to end users.
+
+Our data revealed that processing durations correlate strongly with both the input image characteristics and target output format. As expected, the conversion to more advanced formats like AVIF (represented as \emph{HEIF} in our results) required significantly more processing time compared to JPEG operations. Image processing duration also improved with higher memory allocations, though the improvement was not strictly linear, suggesting diminishing returns beyond certain thresholds.
+
+\subsubsection{Memory Utilization}
+Memory utilization, measured as the resident set size (RSS) of the function process, provides insights into the resource efficiency of the image optimization workload. Our findings show that memory consumption varied predictably with image size and output format, with AVIF encoding generally requiring the most memory, followed by WebP and JPEG.
+
+While complete memory exhaustion was not observed in any configuration, the memory utilization patterns reveal important considerations for cost-effective function sizing. In many cases, functions configured with the minimum memory allocation (885 MB) demonstrated sufficient capacity for the optimization tasks, suggesting that over-provisioning of memory resources may occur in real-world deployments if configuration is not carefully considered.
 
 \subsection{Performance Variability}
+Beyond absolute performance metrics, our research focused specifically on variability patterns across different dimensions, revealing insights about the reliability and predictability of serverless image processing.
+
+\subsubsection{Cold Start Variability}
+Cold start behavior exhibited higher variability than warm executions across all configurations. This variability was particularly pronounced for Google Cloud Run functions, where the standard deviation of cold start times was approximately 1.5 times higher than observed in AWS Lambda functions. The data suggests that while both platforms demonstrate some level of unpredictability in cold start performance, AWS Lambda provides slightly more consistent initialization times for image optimization workloads.
+
+\subsubsection{Temporal Variability}
+Our benchmark revealed notable temporal patterns in processing performance across both platforms. Figures 4.5 and 4.4 illustrate the normalized processing duration by hour of day and hour of week, respectively, with 100\% representing the mean duration for each configuration.
+
+\begin{figure}[h]
+  \centering
+      \makebox[\textwidth]{
+        \makebox[1.05\textwidth]{%
+          \begin{minipage}{1.05\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{duration-normalized-hod-all.pdf}
+          \end{minipage}\hfill
+        }
+      }
+      \caption{Normalized optimization duration per assigned memory, per output format, by hour of day.}
+      \label{fig:survey-ans-1-2-3}
+  \end{figure}
+
+% \begin{figure}[!p]
+% \centering
+% \makebox[\textwidth]{\makebox[1.25\textwidth]{
+%   \begin{minipage}{1\textwidth}
+%     % \centering
+    
+%   \end{minipage}
+%   \caption{Image optimization duration by hour of day.}
+%   \label{fig:duration-hod}
+% }
+% \end{figure}
+
+\begin{figure}[!p]
+  \includegraphics[width=\textwidth]{duration-normalized-hod-summed.pdf}
+  \caption{Image optimization duration by hour of day, aggregated.}
+  \label{fig:duration-hod-aggregated}
+\end{figure}
+
+
+In examining daily patterns (Figure 4.5), we observed that AWS Lambda demonstrates minimal hourly fluctuations, with performance variations generally staying within ±0.5\% of the mean across the day. In contrast, Google Cloud Run functions exhibit more pronounced hourly patterns, with processing durations increasing by up to 1\% during peak business hours (approximately 12-16 hours UTC), potentially indicating resource contention during periods of high platform utilization.
+
+Weekly patterns (Figure 4.4) reveal similar trends, with AWS showing remarkable consistency throughout the week, while Google Cloud Run functions demonstrate slightly elevated processing times during weekdays compared to weekends. The relative stability of AWS Lambda suggests more effective performance isolation between tenants, while the observable patterns in Google Cloud Run functions hint at infrastructure sharing that is more susceptible to overall platform load.
+
+\subsubsection{Image Formats}
+Performance variability differed significantly across image formats. JPEG processing exhibited the most consistent performance across both platforms, with coefficient of variation values typically under 3\%. WebP demonstrated moderate variability (4-6\%), while AVIF encoding showed the highest performance fluctuations (7-9\%).
+
+These differences can be attributed to the computational complexity of different encoding algorithms. The more CPU-intensive AVIF encoding appears more susceptible to underlying infrastructure variations, while simpler JPEG processing remains relatively stable even under changing platform conditions.
+
+\subsubsection{Optimization Parameters}
+Analysis of variability across different optimization parameters revealed several key insights:
+
+Output width: Larger target widths (1920 pixels) exhibited slightly higher variability than smaller widths (640 pixels), though this effect was modest compared to other factors.
+
+Memory allocation: Higher memory configurations (3538 MB) demonstrated lower variability in processing times across all formats, suggesting that increased resources contribute to performance stability.
+
+Input image orientation: The landscape image (higher resolution) showed more pronounced variability than the portrait image, particularly in memory-constrained configurations.
+
+These findings highlight the importance of considering both the characteristics of the input images and the specific optimization parameters when designing for predictable performance in serverless image processing systems.
+
+
 
 % Are warm functions faster/slower or the same?
 
-\subsubsection{Cold Start Variability}
-\subsubsection{Temporal Variability}
-\subsubsection{Image Formats}
-\subsubsection{Optimization Parameters}
 % What is the influence of the output format and size on the execution time?
 
 % Differences in performance variability between AWS Lambda and GCP Cloud Run Functions
