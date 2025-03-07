@@ -5,7 +5,7 @@ This chapter presents the results from our two-month-long benchmark of image opt
 
 % ------------------------------------------------------------
 
-% MISSED EXECUTIONS
+% Missed Executions
 
 % ------------------------------------------------------------
 \subsection{Missed Executions}
@@ -34,7 +34,7 @@ From $964224$ scheduled executions per provider,
 
 % ------------------------------------------------------------
 
-% COLD STARTS
+% Cold Starts
 
 % ------------------------------------------------------------
 \subsection{Cold Starts}
@@ -106,7 +106,7 @@ The longest running Cloud Run function was reusing the environment over 200 time
 
 % ------------------------------------------------------------
 
-% IMAGE PROCESSING DURATION
+% .Image Processing Duration
 
 % ------------------------------------------------------------
 \subsection{Measuring Image Processing Duration}
@@ -119,6 +119,54 @@ Please note that lower performance settings imply longer processing duration. Di
   \includegraphics[width=0.99\textwidth]{2-duration-portrait.pdf}
   \caption{Absolute image processing durations \emph{(durationProcessingMs, portrait)}.}
   \label{fig:image-processing-duration-portrait}
+\end{figure}
+
+
+
+% ------------------------------------------------------------
+
+% Handler Count-Related Duration Variability
+\newpage
+% ------------------------------------------------------------
+\subsection{Handler Count-Related Processing Duration Variability}
+We have observed increased average image processing duration on the first 3 to 6 optimization invocations. This should be not confused with the \emph{cold start latency}. This is the duration of the individual image optimization instruction within the function handler.
+
+On average, the first execution of the image optimization on AWS Lambda is around 7\% higher than baseline. Actually, it is a bit more than that, due to the relative commonness of the cold starts on this platform, and given the p100 handlerCount on AWS Lambda presented in the previous section is only 28. This effect is also noticeable, but not so pronounced on Google Cloud Run functions, where the value reaches only 3\% above the \emph{true} baseline. Please note the difference in the confidence intervals between the providers.
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=\textwidth]{5-first-25.pdf}
+  \caption{Average image processing duration by handler count.}
+  \label{fig:image-processing-duration-by-handler-count}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=\textwidth]{5-first-all.pdf}
+  \caption{Average image processing duration in different variants by handler count.}
+  \label{fig:image-processing-duration-by-handler-count-variants}
+\end{figure}
+
+
+% ------------------------------------------------------------
+
+% Environment Variability
+
+% ------------------------------------------------------------
+\subsection{Environment Variability}
+These metrics exhibited both static and variable behavior over the total duration of the experiment:
+\begin{itemize}
+  \item \emph{providerArch} - x64 across all function variants on both serverless platforms,
+  \item \emph{providerCpus} - variable on AWS, but constant on GCP,
+  \item \emph{providerMemoryAvailable} - variable on AWS, but constant on GCP, these metrics represent the actual vCPU and memory available from within the function,
+  \item \emph{providerNodeVersion} - v20.18.0 across all function variants.
+\end{itemize}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.9\textwidth]{provider-cpus-memory.pdf}
+  \caption{Differences in actual hardware configuration for identical performance setting.}
+  \label{fig:provider-cpus-and-memory}
 \end{figure}
 
 
@@ -159,7 +207,7 @@ The benchmark data also shows changes of the image processing duration depending
   \caption{Average image optimization duration throughout a day in various configurations.}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=\textwidth]{how.pdf}
 \caption{Image optimization duration throughout a week: raw aggregated values (above) and smoothened aggregate based on a rolling average (below).}
@@ -167,68 +215,27 @@ The benchmark data also shows changes of the image processing duration depending
 
 
 
-
-
-
 % ------------------------------------------------------------
+
+% Results discussion
 \newpage
-% Environment-related Metrics
-
 % ------------------------------------------------------------
-\subsection{Environment Variability}
-These metrics exhibited both static and variable behavior over the total duration of the experiment:
-\begin{itemize}
-  \item \emph{providerArch} - x64 across all function variants on both serverless platforms,
-  \item \emph{providerCpus} - variable on AWS, but constant on GCP,
-  \item \emph{providerMemoryAvailable} - variable on AWS, but constant on GCP, these metrics represent the actual vCPU and memory available from within the function,
-  \item \emph{providerNodeVersion} - v20.18.0 across all function variants.
-\end{itemize}
-
-\begin{figure}[!h]
-  \centering
-  \includegraphics[width=0.9\textwidth]{provider-cpus-memory.pdf}
-  \caption{Differences in actual hardware configuration for identical performance setting.}
-  \label{fig:provider-cpus-and-memory}
-\end{figure}
-
-
-% ------------------------------------------------------------
-\newpage
-% Handler Count-Related Duration Variability
-
-% ------------------------------------------------------------
-\subsection{Handler Count-Related Processing Duration Variability}
-We have observed increased average image processing duration on the first 3 to 6 optimization invocations. This should be not confused with the \emph{cold start latency}. This is the duration of the individual image optimization instruction within the function handler.
-
-On average, the first execution of the image optimization on AWS Lambda is around 7\% higher than baseline. Actually, it is a bit more than that, due to the relative commonness of the cold starts on this platform, and given the p100 handlerCount on AWS Lambda presented in the previous section is only 28. This effect is also noticeable, but not so pronounced on Google Cloud Run functions, where the value reaches only 3\% above the \emph{true} baseline. Please note the difference in the confidence intervals between the providers.
-
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\textwidth]{5-first-25.pdf}
-  \caption{Average image processing duration by handler count.}
-  \label{fig:image-processing-duration-by-handler-count}
-\end{figure}
-
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\textwidth]{5-first-all.pdf}
-  \caption{Average image processing duration in different variants by handler count.}
-  \label{fig:image-processing-duration-by-handler-count-variants}
-\end{figure}
-
-\newpage
 \subsection{Results discussion}
 We have presented 8 different categories of results detailing the performance and behavior of serverless image optimization on AWS Lambda and Google Cloud Run functions. These results span missed executions, cold starts, temporal processing variations, and underlying environment configurations. Several key differences between the platforms, and their implications for practical image optimization deployments, are worth highlighting.
 
-The \textbf{cold start frequency} is a major difference between providers. AWS Lambda experienced cold starts in 4.70\% of invocations, almost 50 times more often than Google Cloud Run functions' 0.10\%. This may influence platforms' applicability for latency-sensitive applications. The benchmark is exploring on-demand image-optimization performance, but in the web delivery practice, images are cached on further web stack layers, and reused among multiple users. Most of the subsequent requests for images can be served from caches, but selected users who happen to be accessing a not-yet-optimized image may see a slight latency increase if the image optimizing function has not been previously used.
+The \textbf{cold start frequency} is a major difference between providers. AWS Lambda experienced cold starts in 4.7\% of invocations, almost 50 times more often than Google Cloud Run functions' 0.1\%. This may influence platforms' applicability for latency-sensitive applications. The benchmark is exploring on-demand image-optimization performance, but in the web delivery practice, images are cached on further web stack layers, and reused among multiple users. Most of the subsequent requests for images can be served from caches, but selected users who happen to be accessing a not-yet-optimized image may see a slight latency increase if the image optimizing function has not been previously used.
 
-The contrast in \textbf{reliability, measured by missed executions}, is also immediately visible. Lambda's 0.32\% missed execution rate, compared to Google Cloud's 0.09\%, translates to a 3.65x higher failure rate. For high-volume image optimization services, this difference could mean thousands failed executions per million requests. At the same, we have not been testing reliability of the functions, or collecting the error traces, and failures could happen any layer of the benchmark. While both platforms exhibit a high overall success rate exceeding 99.6\%, the failure rate might necessitate more retry mechanisms or error handling in client applications, particularly those demanding high availability. This may also indicate differences in how different platforms handle functions' errors and timeouts.
+The contrast in \textbf{reliability, measured by missed executions}, is also immediately visible. Lambda's 0.32\% missed execution rate, compared to Google Cloud's 0.09\%, translates to a 3.5x higher failure rate. For high-volume image optimization services, this difference could mean thousands failed executions per million requests. At the same, we image processing functions have not been architected with reliability, but portability in mind. We were not collecting error traces, and failures could essentially happen at any layer of the benchmark. While both platforms exhibit a high overall success rate exceeding 99.6\%, the failure rate might necessitate more retry mechanisms or error handling in client applications, particularly those demanding high availability. This may also indicate differences in how different platforms handle functions' errors and timeouts.
 
-Google Cloud's aggressive \textbf{environment reuse}, with maximum environment lifetime exceeding 20 days and almost 6000 requests served from the same function instance, compared to Lambda's 2 hours and 28 executions, suggest a fundamentally different approach to the environment reuse. While a \emph{warm instance} may be advantageous for the clients from the latency perspective, more predictable cold start frequency on AWS may (or not) translate to other operational benefits not directly visible for the users, such as better load balancing, or noisy neighbor avoidance. \textbf{Variations in absolute image processing duration}, while expected given the differences in image formats, resolutions, and performance settings, also reveal provider-specific nuances. Even with comparable compute and memory configurations, difference in performance was obvious between both providers. On average, AWS Lambda was around 10\% faster given the same amount of vCPUs and memory in absolute numbers. This directly affects pricing comparison of both offerings, as 1vCPU on AWS $\neq$ 1vCPU on GCP.
+Google Cloud's aggressive \textbf{environment reuse}, with maximum environment lifetime exceeding 20 days and almost 6000 requests served from the same function instance, compared to Lambda's 2 hours and 28 executions, suggest a fundamentally different approach to the environment reuse. While a \emph{warm instance} may be advantageous for the clients from the latency perspective, more predictable cold start frequency on AWS may (or not) translate to other operational benefits not directly visible for the users, such as better load balancing, or noisy neighbor avoidance.
+
+\textbf{Variations in absolute image processing duration}, while expected given the differences in image formats, resolutions, and performance settings, also reveal provider-specific nuances. Even with comparable compute and memory configurations, difference in performance was obvious between both providers. On average, AWS Lambda was around 10\% faster given the same amount of vCPUs and memory in absolute numbers. This directly affects pricing comparison of both offerings, as 1vCPU on AWS $\neq$ 1vCPU on GCP.
 
 The \textbf{temporal variability} observed daily, hourly, and minutely in processing durations highlights the dynamic nature of serverless platforms. The hourly fluctuations, in particular, suggest that there is an increased demand for compute around the beginning of every hour. Also, we are able to clearly see daily usage peak around 1:30pm UTC, which translates to 8.30am Eastern Time, where the benchmark was running. Secondly, the high usage period lasts until 8pm UTC, which translates to 3pm Eastern Time. If peak serverless demand overlaps with periods of increased image processing, developers might need to provision additional resources or implement more sophisticated scaling policies (such as \emph{provisioned concurrency}) to maintain consistent service levels.
 
-Finally, the \textbf{variability in the amount of vCPUs memory} available on AWS Lambda, despite consistent configuration settings, introduces an element of unpredictability. While the majority of environments were usually given an expected memory and compute configurations, the presence of outliers suggests that the underlying hardware provisioning is not entirely uniform. It's worth noting that Google Cloud Run functions demonstrated fully consistent hardware configuration during two months of benchmarking. Also, the slight increase in processing time for the initial few invocations within a function instance, more pronounced on AWS, suggests a "warm-up" period beyond the cold start itself. This might be attributed to factors like just-in-time (JIT) compilation of code, the internal optimizations of the image processing library, such as caching of intermediate image segments. While the effect is relatively small, it is an indicator that cold starts may be influencing not only the very first invocation of serverless functions across platforms.
+Finally, the \textbf{variability in the amount of vCPUs memory} available on AWS Lambda, despite consistent configuration settings, introduces an element of unpredictability. While the majority of environments were usually given an expected memory and compute configurations, the presence of outliers suggests that the underlying hardware provisioning is not entirely uniform. It's worth noting that Google Cloud Run functions demonstrated fully consistent hardware configuration during two months of benchmarking.
+
+Also, the \textbf{increased processing time for the initial few invocations within serverless functions}, more pronounced on AWS, suggests a \emph{warm-up} period beyond the cold start itself. This might be attributed to factors like just-in-time (JIT) compilation of code, or the internal optimizations of the image processing library, such as caching of intermediate image segments. While the effect is relatively small, it is an indication that cold starts may be influencing not only the very first invocation of serverless functions across platforms.
 
 
 % ------------------------------------------------------------
