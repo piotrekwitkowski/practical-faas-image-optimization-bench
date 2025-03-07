@@ -1,6 +1,18 @@
 \section{Conclusion \& Future Work}
 \label{cha:conclusion}
 
-Finally, we would like to acknowledge that while we were able to deploy and analyze results from over 100 versions of essentially very similar image optimizing functions, we recognize that extending the parameter space further would likely introduce a level of combinatorial complexity that may present a logistical challenge. Ideally, a benchmark like ours should operate on continuous, rather than discrete, parameter values, allowing for a more granular exploration of the optimization landscape. However, the implementation of such a system would necessitate a sophisticated framework capable of managing and analyzing the resulting high-dimensional data, a task that surpasses the scope of this study.
+This thesis has examined how serverless platforms perform when handling image optimization tasks. Our two-month benchmark comparing AWS Lambda and Google Cloud Run functions across 108 function variants reveals significant differences in how these platforms operate under real-world workloads.
 
-"Three sentences at the end about stuff that didn't work out"
+We found that AWS Lambda and Google Cloud Run take fundamentally different approaches to environment management. Lambda recycles execution environments more frequently, which likely improves resource utilization but results in more cold starts. Google Cloud, meanwhile, maintains environments for remarkably long periods - sometimes over 20 days - minimizing cold starts but potentially limiting infrastructure flexibility.
+
+By testing multiple function variants with different performance settings, we discovered that hardware allocation significantly impacts performance variability. More compute-intensive formats like AVIF showed greater sensitivity to underlying infrastructure changes than simpler formats like JPEG, suggesting that as computational demands increase, image optimization becomes more vulnerable to performance fluctuations.
+
+One practical finding is that highly optimized image processing using native libraries works efficiently within serverless ZIP deployments without requiring custom containers. This is good news for developers who want to minimize operational complexity while maintaining processing speed.
+
+Our research adds to the understanding of serverless computing by testing performance through a specific, practical use case. Image optimization makes an excellent test subject for serverless platforms because it's event-driven, has variable computational requirements, and directly impacts user experience in web applications.
+
+We should note that while we tested over 100 variations of image optimizing functions, expanding the parameter space further would create significant logistical challenges. Ideally, a benchmark like ours would test continuous parameter values rather than discrete ones, allowing for more nuanced exploration of the optimization landscape. However, building such a system would require sophisticated frameworks for managing and analyzing high-dimensional data - something beyond our current scope.
+
+Future work could investigate how network latency affects end-to-end image optimization, particularly when retrieving source images from cloud storage. Testing how these functions handle traffic spikes would better simulate real-world conditions. Including more cloud providers would also give a broader view of the serverless ecosystem.
+
+As web performance standards evolve and new image formats emerge, the intersection of serverless computing and image optimization will remain relevant. We hope this research helps developers make informed decisions about serverless image optimization and provides a solid foundation for future performance studies.
