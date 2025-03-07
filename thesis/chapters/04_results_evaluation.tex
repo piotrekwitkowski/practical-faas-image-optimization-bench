@@ -225,10 +225,10 @@ The benchmark data also shows changes of the image processing duration depending
 
 % ------------------------------------------------------------
 
-% Results discussion
+% Results Discussion
 \newpage
 % ------------------------------------------------------------
-\subsection{Results discussion}
+\subsection{Results Discussion}
 We have presented 8 different categories of results detailing the performance and behavior of serverless image optimization on AWS Lambda and Google Cloud Run functions. These results span missed executions, cold starts, temporal processing variations, and underlying environment configurations. Several key differences between the platforms, and their implications for practical image optimization deployments, are worth highlighting.
 
 The \textbf{cold start frequency} is a major difference between providers. AWS Lambda experienced cold starts in 4.7\% of invocations, almost 50 times more often than Google Cloud Run functions' 0.1\%. This may influence platforms' applicability for latency-sensitive applications. The benchmark is exploring on-demand image-optimization performance, but in the web delivery practice, images are cached on further web stack layers, and reused among multiple users. Most of the subsequent requests for images can be served from caches, but selected users who happen to be accessing a not-yet-optimized image may see a slight latency increase if the image optimizing function has not been previously used.
@@ -268,4 +268,3 @@ It's worth noting that both platforms support ZIP deployments and support use of
 
 In terms of wider serverless performance research, we have expected (and eventually confirmed) a smaller performance variability comparing to strongly CPU- or IO-bound benchmarks. We were surprised to discover that Google Cloud Run functions were able to keep the state for over 20 days, which may have been an exception, nevertheless does not seem to be common experience in the serverless community. We also did not expect \emph{that} predictable cold start behavior on AWS Lambda - our benchmark showed that there was very little, almost no randomness to when a function starts cold. This however may be only applicable to ZIP deployments like in our benchmark, and not directly translatable to container-based workloads.
 
-Finally, we would like to acknowledge that while we were able to deploy and analyze results from over 100 versions of essentially very similar image optimizing functions, we recognize that extending the parameter space further would likely introduce a level of combinatorial complexity that may present a logistical challenge. Ideally, a benchmark like ours should operate on continuous, rather than discrete, parameter values, allowing for a more granular exploration of the optimization landscape. However, the implementation of such a system would necessitate a sophisticated framework capable of managing and analyzing the resulting high-dimensional data, a task that surpasses the scope of this study.

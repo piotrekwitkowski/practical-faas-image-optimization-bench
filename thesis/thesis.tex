@@ -79,29 +79,13 @@
 \newpage
 
 \section*{Abstract}
-
-% FaaS is a cutting-edge new service model that has developed with the current advancement of cloud computing.
-% It allows software developers to deploy their applications quickly and with needed flexibility and scalability, while keeping infrastructure maintenance requirements very low.
-% These benefits are very desirable in edge computing, where ever-changing technologies and requirements need to be implemented rapidly and the fluctuation and heterogeneity of service consumers is a considerable factor.
-% However, edge nodes can often provide only a fraction of the performance of cloud computing infrastructure, which makes running traditional FaaS platforms infeasible.
-% In this thesis, we present a new approach to FaaS that is designed from the ground up with edge computing and IoT requirements in mind.
-% To keep it as lightweight as possible, we use CoAP for communication and Docker to allow for isolation between tenants while re-using containers to achieve the best performance.
-% We also present a proof-of-concept implementation of our design, which we have benchmarked using a custom benchmarking tool, and we compare our results with benchmarks of Lean OpenWhisk, another FaaS platform for the edge.
-% We find that our platform can outperform Lean OpenWhisk in terms of latency and throughput in all tests but that Lean OpenWhisk has higher success rates for a low number of simultaneous clients.
+The research investigates performance variability in Function-as-a-Service (FaaS) platforms when applied to serverless image optimization workloads. Through a comprehensive two-month benchmark comparing AWS Lambda and Google Cloud Run functions, the study quantifies various aspects of serverless performance including cold starts, environment reuse patterns, hardware allocation inconsistencies, and temporal performance variations. The benchmark utilized a systematic approach with 108 distinct function variants processing different image types across multiple performance configurations. Results reveal significant differences between platforms: AWS Lambda experienced cold starts 48 times more frequently than Google Cloud Run, but consistently delivered faster absolute processing times. Google Cloud environments demonstrated remarkable longevity, sometimes persisting for over 20 days and handling thousands of requests, while Lambda environments typically lasted under 2 hours. Both platforms exhibited daily and weekly performance fluctuations of 1-2\%, with higher variability observed for compute-intensive formats. The findings provide valuable insights for developers implementing serverless image optimization solutions, highlighting the trade-offs between cold start frequency, processing speed, environment stability, and infrastructure reliability across platforms.
 
 % GERMAN
 \clearpage
-\begin{otherlanguage}
-    {ngerman}
-    \section*{Kurzfassung}
-    % FaaS ist ein innovatives neues Servicemodell, das sich mit dem aktuellen Vormarsch des Cloud Computing entwickelt hat.
-    % Softwareentwicklende können ihre Anwendungen schneller und mit der erforderlichen Flexibilität und Skalierbarkeit bereitstellen und gleichzeitig den Wartungsaufwand für die Infrastruktur sehr gering halten.
-    % Diese Vorteile sind im Edge-Computing sehr wünschenswert, da sich ständig ändernde Technologien und Anforderungen schnell umgesetzt werden müssen und die Fluktuation und Heterogenität der Service-Consumer ein wichtiger Faktor ist.
-    % Edge-Nodes können jedoch häufig nur einen Bruchteil der Leistung von Cloud-Computing-Infrastruktur bereitstellen, was die Ausführung herkömmlicher FaaS-Plattformen unmöglich macht.
-    % In dieser Arbeit stellen wir einen neuen Ansatz für FaaS eine Platform vor, die von Grund auf unter Berücksichtigung von Edge-Computing- und IoT-Anforderungen entwickelt wurde.
-    % Um den Overhead so gering wie möglich zu halten, nutzen wir CoAP als Messaging-Protokoll und Docker, um Applikationen voneinander zu isolieren, während Container wiederverwendet werden, um die bestmögliche Leistung zu erzielen.
-    % Wir präsentieren auch eine Proof-of-Concept-Implementierung unseres Designs, die wir mit einem eigenen Benchmarking-Tool getestet haben, und vergleichen unsere Ergebnisse mit Benchmarks von Lean OpenWhisk, einer weiteren FaaS-Plattform für die Edge.
-    % Wir stellen fest, dass unsere Plattform Lean OpenWhisk in Bezug auf Latenz und Durchsatz in allen Tests übertreffen kann, Lean OpenWhisk jedoch höhere Erfolgsraten bei einer geringen Anzahl gleichzeitiger Clients aufweist.
+\begin{otherlanguage}{ngerman}
+\section*{Kurzfassung}
+Die Forschung untersucht die Leistungsvariabilität in Function-as-a-Service Plattformen bei der Anwendung auf serverlose Bildoptimierungs-Workloads. Die Studie vergleicht in einem umfassenden zweimonatigen Benchmark AWS Lambda- und Google Cloud Run-Funktionen und quantifiziert verschiedene Aspekte der serverlosen Leistung, darunter Kaltstarts, Muster der Umgebungswiederverwendung, Inkonsistenzen bei der Hardwarezuweisung und zeitliche Leistungsvariabilität. Für den Benchmark wurde ein systematischer Ansatz mit mehr als 100 verschiedenen Funktionsvarianten verwendet, die unterschiedliche Bildtypen in verschiedenen Leistungskonfigurationen verarbeiten. Die Ergebnisse zeigen signifikante Unterschiede zwischen den Plattformen: AWS Lambda erlebte 48 Mal häufiger Kaltstarts als Google Cloud Run, lieferte aber durchweg schnellere absolute Verarbeitungszeiten. Google Cloud-Umgebungen wiesen eine bemerkenswerte Langlebigkeit auf, die manchmal über 20 Tage anhielt und Tausende von Anforderungen verarbeitete, während Lambda-Umgebungen in der Regel weniger als 2 Stunden dauerten. Beide Plattformen wiesen tägliche und wöchentliche Leistungsschwankungen von 1 bis 2 \% auf, wobei bei rechenintensiven Formaten eine höhere Variabilität beobachtet wurde. Die Ergebnisse liefern wertvolle Erkenntnisse für Entwickler, die serverlose Bildoptimierungslösungen implementieren, und zeigen die Kompromisse zwischen Kaltstarthäufigkeit, Verarbeitungsgeschwindigkeit, Stabilität der Umgebung und Zuverlässigkeit der Infrastruktur auf verschiedenen Plattformen auf.
 \end{otherlanguage}
 
 \clearpage

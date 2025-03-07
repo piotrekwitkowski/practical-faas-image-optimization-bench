@@ -3,22 +3,18 @@
 
 This chapter explains how this thesis fits within the existing research. We will break down this explanation by looking at research about serverless performance in general and studies focused on image processing in cloud environments.
 
-\subsection{Serverless performance research}
+\subsection{Serverless Performance Research}
 Serverless computing is a vibrant area of study, and several benchmarking systems have been created to test Function-as-a-Service (FaaS) platforms.
 
-FunctionBench \cite{kim2019functionbench} presents a collection of tests and real-world examples designed for public cloud services. It includes 4 different categories of benchmarks, including Micro benchmarks, Application benchmarks, ML model training and ML model serving. Image processing is one of the benchmarks in this benchmark suite, however, it is implemented with the Pillow library that we described earlier, that has inferior performance comparing to sharp. PanOpticon \cite{somu2020panopticon} is another tool for testing serverless applications. It automates the process of setting up tests and running them across different setups and cloud platforms, focusing on stress-testing the application under different configurations. It also supports function chaining.
+\cite{kim2019functionbench} presents a collection of tests and real-world examples designed for public cloud services. It includes 4 different categories of benchmarks, including Micro benchmarks, Application benchmarks, ML model training and ML model serving. Image processing is one of the benchmarks in this benchmark suite, however, it is implemented with the Pillow library that we described earlier, that has inferior performance comparing to sharp.
 
-\cite{lloyd2018serverless} describes factors contributing to cold starts, focusing on different states, on the spectrum from cold to warm, of serverless infrastructure. Unfortunately, their research is primarily geared towards container deployments. \cite{schirmer2023night} looks specifically at performance changes in cloud serverless platforms, especially daily and weekly patterns in how long functions take and when cold starts happen. \cite{wang2018peeking} studies how well different serverless platforms keep performance separate for different users, which also helps us understand performance changes. 
+\cite{somu2020panopticon} is another tool for testing serverless applications. It automates the process of setting up tests and running them across different setups and cloud platforms, focusing on stress-testing the application under different configurations. It also supports function chaining. \cite{lloyd2018serverless} describes factors contributing to cold starts, focusing on different states, on the spectrum from cold to warm, of serverless infrastructure. Their research is primarily geared towards container deployments and not directly applicable to ZIP deployments.
 
-Deployment Strategies for Reducing the Cold Start Delay of AWS Lambda
+\cite{schirmer2023night} looks specifically at performance changes in cloud serverless platforms, especially daily and weekly patterns in how long functions take and when cold starts happen. Their research, which involved frequent benchmarking over two months, revealed significant performance fluctuations throughout the day, with differences of up to 15\%. The study also found an increase in cold starts during peak hours and at the beginning of the week.
 
+\cite{wang2018peeking} studies how well different serverless platforms keep performance separate for different users, which also helps us understand performance changes. They find that AWS Lambda has the best scalability and the lowest cold start latency, followed by Google Cloud Functions (1st gen). However, the lack of performance isolation in AWS between function instances from the same account may cause decrease in IO, networking, or general performance. \cite{dantas2022application} analyzes, we analyze the
+performance of the container-based deployment and ZIP-based
+deployment of AWS Lambda using a variety of language runtimes
+and applications running with different function configurations
 
-
-
-
-
-
-\subsection{Image processing research}
-
-% TODO / consider: anything else?
-% Lambda Power Tuning is an open-source project gea
+\subsection{Image Processing Research}
